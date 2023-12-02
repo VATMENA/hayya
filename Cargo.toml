@@ -15,3 +15,7 @@ path = "api/src/lib.rs"
 [[bin]]
 name = "handler"
 path = "api/handler.rs"
+
+[[bin]]
+name = "api_auth_info"
+path = "api/auth/info.rs"
