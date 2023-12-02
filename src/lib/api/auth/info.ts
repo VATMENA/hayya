@@ -1,3 +1,5 @@
+import {fetchTimeout} from "$lib/api/fetch_timeout";
+
 export const API_AUTH_INFO_ENDPOINT = "/api/auth/info";
 
 export interface AuthInfo {
@@ -5,8 +7,10 @@ export interface AuthInfo {
     client_id: string,
 }
 
-// Example response:
-// GET /api/auth/info
-// {"vatsim_endpoint":"https://auth-dev.vatsim.net","client_id":"2"}
-// ... which will redirect the user to
-// https://auth-dev.vatsim.net/oauth/authorize?response_type=string&client_id=2&redirect_uri=http://localhost:3000/callback&scope=full_name%20vatsim_details&state=<random state>
+export async function getAuthInfo(): Promise<AuthInfo> {
+    let resp = await fetchTimeout(API_AUTH_INFO_ENDPOINT);
+    if (!resp.ok) {
+        throw new Error("server returned error response");
+    }
+    return await resp.json();
+}
