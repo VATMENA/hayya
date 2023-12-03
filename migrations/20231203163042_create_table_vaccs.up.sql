@@ -1,0 +1,5 @@
+CREATE TABLE vaccs
+(
+    id   VARCHAR NOT NULL PRIMARY KEY,
+    name VARCHAR NOT NULL
+);
