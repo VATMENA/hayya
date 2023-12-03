@@ -1,25 +1,13 @@
 <script lang="ts">
     import * as Card from "$lib/components/ui/card";
-    import { Button } from "$lib/components/ui/button";
-    import { Cog, AlertCircle } from "lucide-svelte";
-    import {getAuthInfo} from "$lib/api/auth/info";
     import * as Alert from "$lib/components/ui/alert";
-    import {redirectUrl} from "$lib/vatsimoauth";
+    import {onMount} from "svelte";
 
-    let buttonIsSpinner = false;
     let error: string | undefined = undefined;
 
-    async function startLogin() {
-        buttonIsSpinner = true;
-        try {
-            let auth_info = await getAuthInfo();
-            window.location = redirectUrl(auth_info);
-        } catch (e) {
-            buttonIsSpinner = false;
-            error = `The server returned an error (${e})`;
-            console.error(e);
-        }
-    }
+    onMount(async () => {
+
+    })
 </script>
 
 <div class="h-screen flex items-center justify-center">
@@ -37,13 +25,7 @@
                     <Alert.Description>{error}</Alert.Description>
                 </Alert.Root>
             {/if}
-            <Button class="w-[15em] mt-0" on:click={startLogin} bind:disabled={buttonIsSpinner}>
-                {#if buttonIsSpinner}
-                    <Cog class="animate-spin" />
-                {:else}
-                    Login with VATSIM SSO
-                {/if}
-            </Button>
+            <h3>Logging you in...</h3>
         </Card.Content>
     </Card.Root>
 </div>
