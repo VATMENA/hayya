@@ -23,6 +23,9 @@
 </script>
 
 <div class="h-screen flex items-center justify-center">
+    <img src="/login_bg_dark.png" alt="background" width="1919" height="1075" class="hidden dark:block bg_image" />
+    <img src="/login_bg_light.png" alt="background" width="1919" height="1079" class="block dark:hidden bg_image" />
+
     <Card.Root class="w-min">
         <Card.Header>
             <Card.Title>Login to MENA HQ</Card.Title>
@@ -46,8 +49,13 @@
 </div>
 
 <style>
-    :global(body) {
-        background-image: url("/login_bg.png");
+    .bg_image {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        background-position: center;
+        background-repeat: no-repeat;
         background-size: cover;
+        z-index: -1;
     }
 </style>
