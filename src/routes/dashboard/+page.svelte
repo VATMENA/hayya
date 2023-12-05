@@ -2,9 +2,12 @@
     import {needsPermissions} from "$lib/perms";
     import * as Card from "$lib/components/ui/card";
     import {Button} from "$lib/components/ui/button";
+    import Nav from "$lib/components/Nav.svelte";
 
     needsPermissions(["loggedin"]);
 </script>
+
+<Nav selected="dashboard"></Nav>
 
 <div class="flex-1 space-y-4 p-8 pt-6">
     <div class="flex items-center justify-between space-y-2">

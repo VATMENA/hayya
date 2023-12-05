@@ -10,7 +10,6 @@
 
 
 <div class="flex-col md:flex">
-    <Nav />
     <slot></slot>
 </div>
 

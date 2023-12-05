@@ -2,7 +2,7 @@
     import {can} from "$lib/perms";
     import {Button} from "$lib/components/ui/button";
 
-    export let page = "dashboard";
+    export let selected = "dashboard";
 
     let pages = {
         "dashboard":   ["Dashboard",           "/dashboard",                 []],
@@ -22,7 +22,7 @@
             <nav class="flex items-center space-x-6 text-sm font-medium">
                 {#each Object.entries(pages) as [id, [name, link, visible]]}
                     {#if visible}
-                        {#if page === id}
+                        {#if selected === id}
                             <a class="transition-colors hover:text-foreground/80 text-foreground" href={link}>{name}</a>
                         {:else}
                             <a class="transition-colors hover:text-foreground/80 text-foreground/60" href={link}>{name}</a>
