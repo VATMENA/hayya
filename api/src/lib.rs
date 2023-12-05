@@ -3,6 +3,7 @@ pub mod jwt;
 pub mod audit_log;
 pub mod id;
 pub mod roles;
+mod auth;
 
 use serde::Serialize;
 use sqlx::{Pool, Postgres};

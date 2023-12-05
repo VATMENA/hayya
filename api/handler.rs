@@ -1,3 +1,5 @@
+mod audit_logs;
+
 use serde_json::json;
 use vercel_runtime::{run, Body, Error, Request, Response, StatusCode};
 
