@@ -16,7 +16,7 @@ async-trait = "0.1"
 ulid = "1.1"
 
 [lib]
-path = "api/src/lib.rs"
+path = "src-rs/lib.rs"
 
 [[bin]]
 name = "handler"
@@ -35,5 +35,5 @@ name = "generate_keypair"
 path = "tools/generate_keypair.rs"
 
 [[bin]]
-name = "audit_logs"
+name = "api_audit_logs"
 path = "api/audit_logs.rs"
