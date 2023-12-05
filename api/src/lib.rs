@@ -1,4 +1,8 @@
-mod models;
+pub mod models;
+pub mod jwt;
+pub mod audit_log;
+pub mod id;
+pub mod roles;
 
 use serde::Serialize;
 use sqlx::{Pool, Postgres};

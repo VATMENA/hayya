@@ -9,6 +9,9 @@
     import * as Popover from "$lib/components/ui/popover";
     import * as Accordion from "$lib/components/ui/accordion";
     import {cn} from "$lib/utils";
+    import {needsPermissions} from "$lib/perms";
+
+    needsPermissions(["system.role.create", "system.role.delete", "system.role.edit"]);
 
     let permissions = {
         "system.feedback.view": "View HQ feedback",

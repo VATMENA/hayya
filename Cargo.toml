@@ -10,6 +10,10 @@ serde_json = "1"
 vercel_runtime = "1"
 reqwest = { version = "0.11", default-features = false, features = ["rustls-tls", "json"] }
 sqlx = { version = "0.7", features = ["runtime-tokio", "tls-rustls", "postgres"] }
+jwt-simple = "0.12"
+hex = "0.4"
+async-trait = "0.1"
+ulid = "1.1"
 
 [lib]
 path = "api/src/lib.rs"
@@ -25,3 +29,7 @@ path = "api/auth/info.rs"
 [[bin]]
 name = "api_auth_token"
 path = "api/auth/token.rs"
+
+[[bin]]
+name = "geneate_keypair"
+path = "tools/generate_keypair.rs"

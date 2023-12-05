@@ -17,6 +17,8 @@
             let auth_resp = await authWithVatsimCode(search_params.get("code")!);
             console.log(auth_resp);
             window.localStorage.setItem("menahq-token", auth_resp.token);
+            window.localStorage.setItem("menahq-user", JSON.stringify(auth_resp.user));
+            window.localStorage.setItem("menahq-role", JSON.stringify(auth_resp.role));
             window.location.href = "/dashboard";
         } catch (e) {
             error = `Login failed (${e})`;

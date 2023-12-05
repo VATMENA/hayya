@@ -1,12 +1,15 @@
 import {fetchTimeout} from "$lib/api/fetch_timeout";
+import type {Role, User} from "$lib/api/models";
 
 export const API_AUTH_TOKEN_ENDPOINT = "/api/auth/token";
 
 export interface TokenResponse {
-    token: string
+    token: string,
+    user: User,
+    role: Role
 }
 
-export async function authWithVatsimCode(code: string): TokenResponse {
+export async function authWithVatsimCode(code: string): Promise<TokenResponse> {
     let resp = await fetchTimeout(API_AUTH_TOKEN_ENDPOINT, {
         method: 'POST',
         headers: {
