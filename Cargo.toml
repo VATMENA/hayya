@@ -33,3 +33,7 @@ path = "api/auth/token.rs"
 [[bin]]
 name = "generate_keypair"
 path = "tools/generate_keypair.rs"
+
+[[bin]]
+name = "audit_logs"
+path = "api/audit_logs.rs"
