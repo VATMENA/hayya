@@ -1,6 +1,8 @@
 <script lang="ts">
     import * as Tabs from "$lib/components/ui/tabs";
     import * as Card from "$lib/components/ui/card";
+    import * as Table from "$lib/components/ui/table";
+    import { Badge } from "$lib/components/ui/badge";
 </script>
 
 <div class="flex-1 space-y-4 p-8 pt-6">
@@ -18,11 +20,60 @@
             <Card.Root>
                 <Card.Header>
                     <Card.Title>Full Division Home Roster</Card.Title>
-                    <Card.Description>
-                        Members which do not hold a staff position, are not registered with a vACC, and do not hold any ratings are omitted.
-                    </Card.Description>
                 </Card.Header>
-                <Card.Content class="space-y-2">
+                <Card.Content>
+
+                    <Table.Root>
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.Head>Name</Table.Head>
+                                <Table.Head>Rating</Table.Head>
+                                <Table.Head>vACC</Table.Head>
+                            </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                            <Table.Row>
+                                <Table.Cell>Web Eight <Badge class="bg-fuchsia-500">Developer</Badge></Table.Cell>
+                                <Table.Cell>I1</Table.Cell>
+                                <Table.Cell>N/A</Table.Cell>
+                            </Table.Row>
+                        </Table.Body>
+                        <Table.Body>
+                            <Table.Row>
+                                <Table.Cell>Test User One <Badge class="bg-red-500">Division Director</Badge></Table.Cell>
+                                <Table.Cell>I1</Table.Cell>
+                                <Table.Cell>N/A</Table.Cell>
+                            </Table.Row>
+                        </Table.Body>
+                        <Table.Body>
+                            <Table.Row>
+                                <Table.Cell>Test User Two <Badge class="bg-orange-500">Division Staff</Badge></Table.Cell>
+                                <Table.Cell>I1</Table.Cell>
+                                <Table.Cell>N/A</Table.Cell>
+                            </Table.Row>
+                        </Table.Body>
+                        <Table.Body>
+                            <Table.Row>
+                                <Table.Cell>Test User Three <Badge class="bg-emerald-500">Arabian vACC Director</Badge></Table.Cell>
+                                <Table.Cell>I1</Table.Cell>
+                                <Table.Cell>N/A</Table.Cell>
+                            </Table.Row>
+                        </Table.Body>
+                        <Table.Body>
+                            <Table.Row>
+                                <Table.Cell>Test User Four <Badge class="bg-green-500">Arabian vACC Staff</Badge></Table.Cell>
+                                <Table.Cell>I1</Table.Cell>
+                                <Table.Cell>N/A</Table.Cell>
+                            </Table.Row>
+                        </Table.Body>
+                        <Table.Body>
+                            <Table.Row>
+                                <Table.Cell>Test User Five <Badge class="bg-sky-500">Mentor</Badge></Table.Cell>
+                                <Table.Cell>I1</Table.Cell>
+                                <Table.Cell>N/A</Table.Cell>
+                            </Table.Row>
+                        </Table.Body>
+                    </Table.Root>
 
                 </Card.Content>
             </Card.Root>
