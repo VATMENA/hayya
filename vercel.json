@@ -4,5 +4,8 @@
     "api/**/*.rs": {
       "runtime": "vercel-rust@4.0.6"
     }
-  }
+  },
+  "crons": [
+    {"path": "/api/cron/roster", "schedule": "0 * * * *"}
+  ]
 }
