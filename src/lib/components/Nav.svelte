@@ -1,15 +1,15 @@
 <script lang="ts">
     import {can} from "$lib/perms";
     import {Button} from "$lib/components/ui/button";
-
-    export let selected = "dashboard";
+    import {page} from "$app/stores";
 
     let pages = {
-        "dashboard":   ["Dashboard",           "/dashboard",                 []],
-        "role_editor": ["Role Editor",         "/dashboard/role_editor",     can("system.role.create") || can("system.role.edit") || can("system.role.delete")],
-        "system":      ["System Management",   "/dashboard/system",          can("system.feedback.view") || can("system.log.view") || can("system.blacklist.add") || can("system.blacklist.remove")],
-        "division":    ["Division Management", "/dashboard/division/manage", can("division.details.edit") || can("division.vacc.create") || can("division.vacc.delete")],
-        "vacc":        ["vACC Management",     "/dashboard/vacc/manage",     can("vacc.details.edit")],
+        "dashboard":   ["Dashboard",           "/dashboard",                  []],
+        "role_editor": ["Role Editor",         "/dashboard/role_editor",      can("system.role.create") || can("system.role.edit") || can("system.role.delete")],
+        "system":      ["System Management",   "/dashboard/system",           can("system.feedback.view") || can("system.log.view") || can("system.blacklist.add") || can("system.blacklist.remove")],
+        "division":    ["Division Management", "/dashboard/division/manage",  can("division.details.edit") || can("division.vacc.create") || can("division.vacc.delete")],
+        "vacc":        ["vACC Management",     "/dashboard/vacc/manage",      can("vacc.details.edit")],
+        "rosters":     ["Rosters",             "/dashboard/division/rosters", []]
     };
 </script>
 
@@ -20,9 +20,9 @@
                 <span class="hidden font-bold sm:inline-block text-[15px] lg:text-base">MENA HQ</span>
             </a>
             <nav class="flex items-center space-x-6 text-sm font-medium">
-                {#each Object.entries(pages) as [id, [name, link, visible]]}
+                {#each Object.entries(pages) as [_, [name, link, visible]]}
                     {#if visible}
-                        {#if selected === id}
+                        {#if $page.url.pathname === link}
                             <a class="transition-colors hover:text-foreground/80 text-foreground" href={link}>{name}</a>
                         {:else}
                             <a class="transition-colors hover:text-foreground/80 text-foreground/60" href={link}>{name}</a>

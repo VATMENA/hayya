@@ -25,7 +25,7 @@
   },
   "type": "module",
   "dependencies": {
-    "bits-ui": "^0.9.9",
+    "bits-ui": "^0.11.3",
     "clsx": "^2.0.0",
     "cmdk-sv": "^0.0.12",
     "lucide-svelte": "^0.294.0",
