@@ -159,7 +159,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
                 role: if should_be_controller { ROLE_CONTROLLER_ID.to_string() } else { ROLE_MEMBER_ID.to_string() },
                 vacc: None
             };
-            match new_user.create(&mut conn).await {
+            match new_user.upsert(&mut conn).await {
                 Ok(_) => (),
                 Err(e) => {
                     return internal_server_error(APIError { code: "database_error_create_user".to_string(), message: format!("database error: {}", e) })
@@ -174,7 +174,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
                 after: Some(serde_json::to_value(&new_user).unwrap()),
                 message: "Created new user".to_string(),
             };
-            match audit_log.create(&mut conn).await {
+            match audit_log.upsert(&mut conn).await {
                 Ok(_) => (),
                 Err(e) => {
                     return internal_server_error(APIError { code: "database_error_create_user_log".to_string(), message: format!("database error: {}", e) })
@@ -202,7 +202,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         after: None,
         message: "Logged in on new session".to_string(),
     };
-    match audit_log.create(&mut conn).await {
+    match audit_log.upsert(&mut conn).await {
         Ok(_) => (),
         Err(e) => {
             return internal_server_error(APIError { code: "database_error_create_log".to_string(), message: format!("database error: {}", e) })

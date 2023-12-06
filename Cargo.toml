@@ -37,3 +37,7 @@ path = "tools/generate_keypair.rs"
 [[bin]]
 name = "api_audit_logs"
 path = "api/audit_logs.rs"
+
+[[bin]]
+name = "api_cron_roster"
+path = "api/cron/roster.rs"
