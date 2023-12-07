@@ -1,18 +1,14 @@
 <script>
-    import { Button } from "$lib/components/ui/button";
-    import { Save } from "lucide-svelte";
-    import "../../app.pcss";
-    import { ModeWatcher } from "mode-watcher";
-    import Nav from "$lib/components/Nav.svelte";
+	import "../../app.pcss";
+	import { ModeWatcher } from "mode-watcher";
+	import Nav from "$lib/components/Nav.svelte";
 </script>
 
 <ModeWatcher />
 
-
-<div class="flex-col md:flex">
-    <Nav></Nav>
-    <slot></slot>
+<Nav></Nav>
+<div
+	class="flex-1 w-full bg-background shadow-lg space-y-4 p-8 pt-6 rounded-md"
+>
+	<slot />
 </div>
-
-
-
