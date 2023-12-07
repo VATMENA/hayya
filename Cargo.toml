@@ -9,13 +9,13 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 vercel_runtime = "1"
 reqwest = { version = "0.11", default-features = false, features = ["rustls-tls", "json"] }
-sqlx-oldapi = { version = "0.6", features = ["runtime-tokio-rustls", "postgres"] }
+sqlx = { version = "0.7", git = "https://github.com/VATMENA/sqlx", features = ["runtime-tokio", "tls-rustls", "postgres"] }
 jwt-simple = "0.11"
 hex = "0.4"
 async-trait = "0.1"
 ulid = "1.1"
-tracing-subscriber = { version = "0.3", features = ["fmt"] }
-tracing = "0.1"
+log = "0.4"
+simple_logger = "4"
 
 [lib]
 path = "src-rs/lib.rs"

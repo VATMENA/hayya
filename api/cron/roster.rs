@@ -1,7 +1,8 @@
 use std::collections::HashMap;
 use std::time::SystemTime;
+use log::info;
 use serde_json::json;
-use sqlx_oldapi::Executor;
+use sqlx::Executor;
 use vercel_runtime::{run, Body, Error, Request, Response, StatusCode};
 use vercel_runtime::http::internal_server_error;
 use menahq_api::{APIError, get_connection};
@@ -12,18 +13,19 @@ use menahq_api::roles::{ROLE_CONTROLLER_ID, ROLE_MEMBER_ID};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
+    simple_logger::init_with_env().unwrap();
     run(handler).await
 }
 
 pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
-    eprintln!("Roster update task started...");
+    info!("Roster update task started...");
     let full_start_time = SystemTime::now();
     let client = reqwest::Client::new();
 
     let vatsim_core_token = std::env::var("MENAHQ_API_VATSIM_CORE_API_TOKEN").unwrap();
 
     let start_time = SystemTime::now();
-    eprintln!("[RosterUpdate] fetching roster from VATSIM");
+    info!("[RosterUpdate] fetching roster from VATSIM");
     let r = match client.get("https://api.vatsim.net/v2/orgs/division/MENA?limit=10000").header("X-API-Key", &vatsim_core_token).send().await {
         Ok(r) => r,
         Err(e) => {
@@ -38,10 +40,10 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
         }
     };
     let duration = SystemTime::now().duration_since(start_time).unwrap().as_millis() as f64 / 1000.0;
-    eprintln!("[RosterUpdate] ...done ({} seconds)", duration);
+    info!("[RosterUpdate] ...done ({} seconds)", duration);
 
     let start_time = SystemTime::now();
-    eprintln!("[RosterUpdate] loading datafile from VATSIM");
+    info!("[RosterUpdate] loading datafile from VATSIM");
     let r = match client.get("https://data.vatsim.net/v3/vatsim-data.json").header("X-API-Key", &vatsim_core_token).send().await {
         Ok(r) => r,
         Err(e) => {
@@ -56,7 +58,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
         }
     };
     let duration = SystemTime::now().duration_since(start_time).unwrap().as_millis() as f64 / 1000.0;
-    eprintln!("[RosterUpdate] ...done ({} seconds)", duration);
+    info!("[RosterUpdate] ...done ({} seconds)", duration);
 
     let mut controller_rating_hashmap = HashMap::new();
     for controller_rating in datafeed.ratings {
@@ -84,10 +86,10 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
         }
     };
 
-    eprintln!("[RosterUpdate] loading existing users");
+    info!("[RosterUpdate] loading existing users");
     conn.execute("BEGIN").await?;
     let mut existing_users_hashmap = HashMap::new();
-    let all_existing_members = match sqlx_oldapi::query_as::<_, User>("SELECT * FROM users").fetch_all(&mut *conn).await {
+    let all_existing_members = match sqlx::query_as::<_, User>("SELECT * FROM users").fetch_all(&mut *conn).await {
         Ok(n) => n,
         Err(e) => {
             return internal_server_error(APIError { code: "find_users_error".to_string(), message: format!("{}", e) })
@@ -102,10 +104,10 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
 
     for (no, member) in division_home_roster.items.iter().enumerate() {
         if member.rating == -1 {
-            eprintln!("roster update skipping {}, suspended", member.id);
+            info!("roster update skipping {}, suspended", member.id);
         }
         if member.name_first.is_none() || member.name_last.is_none() {
-            eprintln!("update ignored {}, name unavailable", member.id);
+            info!("update ignored {}, name unavailable", member.id);
             continue;
         }
 
@@ -132,7 +134,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
                 vacc: existing_member.vacc.clone(),
             };
             if user != *existing_member {
-                eprintln!("updating {} #{}/{} {:?} {:?}", member.id, no, division_home_roster.count, member.name_first, member.name_last);
+                info!("updating {} #{}/{} {:?} {:?}", member.id, no, division_home_roster.count, member.name_first, member.name_last);
                 match user.upsert(&mut conn).await {
                     Ok(u) => u,
                     Err(e) => {
@@ -165,7 +167,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
                 role: ROLE_CONTROLLER_ID.to_string(),
                 vacc: None,
             };
-            eprintln!("updating {} #{}/{} {:?} {:?}", member.id, no, division_home_roster.count, member.name_first, member.name_last);
+            info!("updating {} #{}/{} {:?} {:?}", member.id, no, division_home_roster.count, member.name_first, member.name_last);
             match user.upsert(&mut conn).await {
                 Ok(u) => u,
                 Err(e) => {
@@ -179,7 +181,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
 
     let duration = SystemTime::now().duration_since(full_start_time).unwrap().as_millis() as f64 / 1000.0;
 
-    eprintln!("Roster update completed {} users updated successfully in {} seconds", updated, duration);
+    info!("Roster update completed {} users updated successfully in {} seconds", updated, duration);
 
     Ok(Response::builder()
         .status(StatusCode::OK)

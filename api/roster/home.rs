@@ -3,12 +3,14 @@ use vercel_runtime::http::{internal_server_error, unauthorized};
 use menahq_api::{APIError, get_connection};
 use menahq_api::jwt::{get_keypair, JwtData};
 use jwt_simple::prelude::*;
+use log::info;
 use reqwest::StatusCode;
-use sqlx_oldapi::query_as;
+use sqlx::query_as;
 use menahq_api::models::User;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
+    simple_logger::init_with_env().unwrap();
     run(handler).await
 }
 
@@ -19,6 +21,7 @@ fn can_view_extended_data(req: &Request) -> bool {
         let token = match tkn.to_str() {
             Ok(tok) => tok,
             Err(_) => {
+                info!("Roster view not extended: invalid header");
                 return false;
             }
         };
@@ -26,17 +29,20 @@ fn can_view_extended_data(req: &Request) -> bool {
         let claims = match key.verify_token::<JwtData>(token, None) {
             Ok(claims) => claims,
             Err(_) => {
+                info!("Roster view not extended: invalid token");
                 return false;
             }
         };
         token_data = claims.custom;
     } else {
+        info!("Roster view not extended: header missing");
         return false;
     }
 
     let reqd_perms = ["division.roster.extended"];
     for perm in reqd_perms {
         if !token_data.role.permissions.contains(&perm.to_string()) {
+            info!("Roster view not extended: missing perm {}", perm);
             return false;
         }
     }
@@ -49,7 +55,8 @@ pub struct HomeUser {
     pub name_first: String,
     pub name_last: String,
     pub role: String,
-    pub rating: String
+    pub rating: String,
+    pub vacc: Option<String>
 }
 
 #[derive(Serialize)]
@@ -58,27 +65,16 @@ pub struct HomeRoster {
 }
 
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
-    // construct a subscriber that prints formatted traces to stdout
-    let subscriber = tracing_subscriber::FmtSubscriber::new();
-    // use that subscriber to process traces emitted after this point
-    tracing::subscriber::set_global_default(subscriber)?;
-
     let mut can_view_extended_data = can_view_extended_data(&req);
 
-    let mut pool = match get_connection().await {
+    let mut conn = match get_connection().await {
         Ok(c) => c,
         Err(e) => {
             return internal_server_error(APIError { code: "pool_acquire_error".to_string(), message: format!("{}", e) })
         }
     };
-    let mut conn = match pool.acquire().await {
-        Ok(c) => c,
-        Err(e) => {
-            return internal_server_error(APIError { code: "conn_acquire_error".to_string(), message: format!("{}", e) })
-        }
-    };
 
-    let users = match query_as::<_, User>("SELECT * FROM users WHERE division = 'MENA'").fetch_all(&mut conn).await {
+    let users = match query_as::<_, User>("SELECT * FROM users WHERE division_id = $1 AND controller_rating_short <> $2").bind("MENA").bind("SUS").fetch_all(&conn).await {
         Ok(u) => u,
         Err(e) => {
             return internal_server_error(APIError { code: "db_error".to_string(), message: format!("{}", e) })
@@ -96,6 +92,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
                 name_last: user.name_last,
                 role: user.role,
                 rating: user.controller_rating_short,
+                vacc: user.vacc
             });
         } else {
             roster.users.push(HomeUser {
@@ -103,6 +100,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
                 name_last: format!("({})", user.id),
                 role: user.role,
                 rating: user.controller_rating_short,
+                vacc: user.vacc
             })
         }
     }

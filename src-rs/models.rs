@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
-use sqlx_oldapi::{Error, Executor, FromRow, PgConnection};
+use sqlx::{Error, Executor, FromRow, PgConnection};
 
 #[async_trait]
 pub trait Model {
@@ -18,22 +18,14 @@ pub struct Role {
 #[async_trait]
 impl Model for Role {
     async fn find(id: &str, conn: &mut PgConnection) -> Result<Option<Role>, Error> {
-        conn.execute("BEGIN").await?;
-
-        let r = sqlx_oldapi::query_as::<_, Role>("SELECT * FROM roles WHERE id = $1").bind(id).fetch_optional(&mut *conn).await?;
-
-        conn.execute("COMMIT").await?;
-
-        Ok(r)
+        sqlx::query_as::<_, Role>("SELECT * FROM roles WHERE id = $1").bind(id).fetch_optional(&mut *conn).await
     }
     async fn upsert(&self, conn: &mut PgConnection) -> Result<(), Error> {
-        conn.execute("BEGIN").await?;
-        sqlx_oldapi::query("INSERT INTO roles (id, name, permissions) VALUES ($1, $2, $3) ON CONFLICT (id) DO UPDATE SET (id, name, permissions) = ($1, $2, $3)")
+        sqlx::query("INSERT INTO roles (id, name, permissions) VALUES ($1, $2, $3) ON CONFLICT (id) DO UPDATE SET (id, name, permissions) = ($1, $2, $3)")
             .bind(&self.id)
             .bind(&self.name)
             .bind(&self.permissions)
             .execute(&mut *conn).await?;
-        conn.execute("COMMIT").await?;
         Ok(())
     }
 }
@@ -49,20 +41,15 @@ pub struct Vacc {
 #[async_trait]
 impl Model for Vacc {
     async fn find(id: &str, conn: &mut PgConnection) -> Result<Option<Vacc>, Error> where Self: Sized {
-        conn.execute("BEGIN").await?;
-        let r = sqlx_oldapi::query_as::<_, Vacc>("SELECT * FROM vaccs WHERE id = $1").bind(id).fetch_optional(&mut *conn).await?;
-        conn.execute("COMMIT").await?;
-        Ok(r)
+        sqlx::query_as::<_, Vacc>("SELECT * FROM vaccs WHERE id = $1").bind(id).fetch_optional(&mut *conn).await
     }
     async fn upsert(&self, conn: &mut PgConnection) -> Result<(), Error> {
-        conn.execute("BEGIN").await?;
-        sqlx_oldapi::query("INSERT INTO vaccs (id, name, website, contact_email) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET (id, name, website, contact_email) = ($1, $2, $3, $4)")
+        sqlx::query("INSERT INTO vaccs (id, name, website, contact_email) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET (id, name, website, contact_email) = ($1, $2, $3, $4)")
             .bind(&self.id)
             .bind(&self.name)
             .bind(&self.website)
             .bind(&self.contact_email)
             .execute(&mut *conn).await?;
-        conn.execute("COMMIT").await?;
         Ok(())
     }
 }
@@ -93,14 +80,10 @@ pub struct User {
 #[async_trait]
 impl Model for User {
     async fn find(id: &str, conn: &mut PgConnection) -> Result<Option<User>, Error> where Self: Sized {
-        conn.execute("BEGIN").await?;
-        let r = sqlx_oldapi::query_as::<_, User>("SELECT * FROM users WHERE id = $1").bind(id).fetch_optional(&mut *conn).await?;
-        conn.execute("COMMIT").await?;
-        Ok(r)
+        sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1").bind(id).fetch_optional(&mut *conn).await
     }
     async fn upsert(&self, conn: &mut PgConnection) -> Result<(), Error> {
-        conn.execute("BEGIN").await?;
-        sqlx_oldapi::query("INSERT INTO users (id, name_first, name_last, name_full, controller_rating_id, controller_rating_short, controller_rating_long, pilot_rating_id, pilot_rating_short, pilot_rating_long, region_id, region_name, division_id, division_name, subdivision_id, subdivision_name, role, vacc) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) ON CONFLICT (id) DO UPDATE SET (id, name_first, name_last, name_full, controller_rating_id, controller_rating_short, controller_rating_long, pilot_rating_id, pilot_rating_short, pilot_rating_long, region_id, region_name, division_id, division_name, subdivision_id, subdivision_name, role, vacc) = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)")
+        sqlx::query("INSERT INTO users (id, name_first, name_last, name_full, controller_rating_id, controller_rating_short, controller_rating_long, pilot_rating_id, pilot_rating_short, pilot_rating_long, region_id, region_name, division_id, division_name, subdivision_id, subdivision_name, role, vacc) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) ON CONFLICT (id) DO UPDATE SET (id, name_first, name_last, name_full, controller_rating_id, controller_rating_short, controller_rating_long, pilot_rating_id, pilot_rating_short, pilot_rating_long, region_id, region_name, division_id, division_name, subdivision_id, subdivision_name, role, vacc) = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)")
             .bind(&self.id)
             .bind(&self.name_first)
             .bind(&self.name_last)
@@ -120,7 +103,6 @@ impl Model for User {
             .bind(&self.role)
             .bind(&self.vacc)
             .execute(&mut *conn).await?;
-        conn.execute("COMMIT").await?;
         Ok(())
     }
 }
@@ -139,15 +121,11 @@ pub struct AuditLogEntry {
 #[async_trait]
 impl Model for AuditLogEntry {
     async fn find(id: &str, conn: &mut PgConnection) -> Result<Option<AuditLogEntry>, Error> where Self: Sized {
-        conn.execute("BEGIN").await?;
-        let r = sqlx_oldapi::query_as::<_, AuditLogEntry>("SELECT * FROM audit_log_entries WHERE id = $1").bind(id).fetch_optional(&mut *conn).await?;
-        conn.execute("COMMIT").await?;
-        Ok(r)
+        sqlx::query_as::<_, AuditLogEntry>("SELECT * FROM audit_log_entries WHERE id = $1").bind(id).fetch_optional(&mut *conn).await
     }
 
     async fn upsert(&self, conn: &mut PgConnection) -> Result<(), Error> {
-        conn.execute("BEGIN").await?;
-        sqlx_oldapi::query("INSERT INTO audit_log_entries (id, timestamp, actor, item, before, after, message) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (id) DO UPDATE SET (id, timestamp, actor, item, before, after, message) = ($1, $2, $3, $4, $5, $6, $7)")
+        sqlx::query("INSERT INTO audit_log_entries (id, timestamp, actor, item, before, after, message) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (id) DO UPDATE SET (id, timestamp, actor, item, before, after, message) = ($1, $2, $3, $4, $5, $6, $7)")
             .bind(&self.id)
             .bind(&self.timestamp)
             .bind(&self.actor)
@@ -156,7 +134,6 @@ impl Model for AuditLogEntry {
             .bind(&self.after)
             .bind(&self.message)
             .execute(&mut *conn).await?;
-        conn.execute("COMMIT").await?;
         Ok(())
     }
 }
