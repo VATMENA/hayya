@@ -6,7 +6,7 @@ pub mod roles;
 pub mod datafeed;
 pub mod members;
 
-use std::sync::{Arc, Mutex, OnceLock};
+use std::sync::{OnceLock};
 use serde::Serialize;
 use sqlx::{Acquire, Pool, Postgres};
 use sqlx::pool::PoolConnection;

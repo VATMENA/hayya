@@ -1,5 +1,5 @@
-use vercel_runtime::{Body, Error, Request, Response, run};
-use vercel_runtime::http::{internal_server_error, unauthorized};
+use vercel_runtime::{Body, Error, Request, Response};
+use vercel_runtime::http::{internal_server_error};
 use menahq_api::{APIError, get_connection};
 use menahq_api::jwt::{get_keypair, JwtData};
 use jwt_simple::prelude::*;
@@ -59,7 +59,7 @@ pub struct HomeRoster {
 }
 
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
-    let mut can_view_extended_data = can_view_extended_data(&req);
+    let can_view_extended_data = can_view_extended_data(&req);
 
     let mut conn = match get_connection().await {
         Ok(c) => c,

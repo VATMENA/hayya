@@ -3,13 +3,13 @@ use std::time::SystemTime;
 use log::info;
 use serde_json::json;
 use sqlx::Executor;
-use vercel_runtime::{run, Body, Error, Request, Response, StatusCode};
+use vercel_runtime::{Body, Error, Request, Response, StatusCode};
 use vercel_runtime::http::internal_server_error;
 use menahq_api::{APIError, get_connection};
 use menahq_api::datafeed::Datafeed;
 use menahq_api::members::MembersResponse;
 use menahq_api::models::{Model, User};
-use menahq_api::roles::{ROLE_CONTROLLER_ID, ROLE_MEMBER_ID};
+use menahq_api::roles::{ROLE_CONTROLLER_ID};
 
 pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
     info!("Roster update task started...");
@@ -65,7 +65,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
         ("APAC".into(), "Asia Pacific".into()),
         ("EMEA".into(), "Europe, Middle East and Africa".into())
     ]);
-    let divions = HashMap::from([
+    let _divions = HashMap::from([
         ("MENA".to_string(), "Middle East and North Africa".to_string())
     ]);
 

@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use vercel_runtime::{run, Body, Error, Request, Response, StatusCode, RequestPayloadExt};
+use vercel_runtime::{Body, Error, Request, Response, StatusCode, RequestPayloadExt};
 use vercel_runtime::http::{bad_request, internal_server_error};
 use menahq_api::{APIError, get_connection};
 use menahq_api::audit_log::{Actor, ItemType, now};
@@ -7,7 +7,7 @@ use menahq_api::id::id;
 use menahq_api::jwt::generate_token;
 use menahq_api::models::{AuditLogEntry, Model, Role, User};
 use menahq_api::roles::{ROLE_CONTROLLER_ID, ROLE_MEMBER_ID};
-use sqlx::Acquire;
+
 
 #[derive(Debug, Deserialize, Serialize)]
 struct ReqPayload {
