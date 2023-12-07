@@ -14,6 +14,8 @@ jwt-simple = "0.11"
 hex = "0.4"
 async-trait = "0.1"
 ulid = "1.1"
+tracing-subscriber = { version = "0.3", features = ["fmt"] }
+tracing = "0.1"
 
 [lib]
 path = "src-rs/lib.rs"
@@ -41,3 +43,7 @@ path = "api/audit_logs.rs"
 [[bin]]
 name = "api_cron_roster"
 path = "api/cron/roster.rs"
+
+[[bin]]
+name = "api_roster_home"
+path = "api/roster/home.rs"

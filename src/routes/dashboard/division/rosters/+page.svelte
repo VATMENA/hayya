@@ -2,6 +2,7 @@
     import * as Tabs from "$lib/components/ui/tabs";
     import * as Card from "$lib/components/ui/card";
     import * as Table from "$lib/components/ui/table";
+    import * as Alert from "$lib/components/ui/alert";
     import { Badge } from "$lib/components/ui/badge";
 </script>
 
@@ -9,6 +10,13 @@
     <div class="flex items-center justify-between space-y-2">
         <h2 class="text-3xl font-bold tracking-tight">Division Roster</h2>
     </div>
+
+    <Alert.Root>
+        <Alert.Title>Heads up!</Alert.Title>
+        <Alert.Description>
+            Rosters are updated hourly. If information is outdated, check back later!
+        </Alert.Description>
+    </Alert.Root>
 
     <Tabs.Root>
         <Tabs.List class="grid w-full grid-cols-3">
