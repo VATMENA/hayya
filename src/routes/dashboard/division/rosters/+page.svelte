@@ -117,13 +117,6 @@
 								</Table.Row>
 							{/if}
 						{/each}
-						{#each new Array(100) as []}
-							<Table.Row>
-								<Table.Cell>1</Table.Cell>
-								<Table.Cell>1</Table.Cell>
-								<Table.Cell>1</Table.Cell>
-							</Table.Row>
-						{/each}
 					</Table.Body>
 				</Table.Root>
 			</Card.Content>
