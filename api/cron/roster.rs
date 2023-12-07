@@ -20,7 +20,9 @@ async fn main() -> Result<(), Error> {
 pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
     info!("Roster update task started...");
     let full_start_time = SystemTime::now();
-    let client = reqwest::Client::new();
+    let client = reqwest::Client::builder()
+        .pool_max_idle_per_host(0)
+        .build()?;
 
     let vatsim_core_token = std::env::var("MENAHQ_API_VATSIM_CORE_API_TOKEN").unwrap();
 

@@ -1,5 +1,8 @@
-UPDATE roles SET permissions = array_remove(permissions, '{"division.roster.extended", "vacc.roster.extended"}') WHERE id = '01HGR7FB0YK0D6YMHF4VW7JNFG';
-UPDATE roles SET permissions = array_remove(permissions, '{"division.roster.extended", "vacc.roster.extended"}') WHERE id = '01HGRGYFZ7B56PPHK7XWXSMFAC';
-UPDATE roles SET permissions = array_remove(permissions, '{"division.roster.extended", "vacc.roster.extended"}') WHERE id = '01HGRH84ZKZSQR1NTG3HJTGKRC';
-UPDATE roles SET permissions = array_remove(permissions, '{"vacc.roster.extended"}') WHERE id = '01HGRHDEHDBWBTB9JZ8K0Z03WT';
-UPDATE roles SET permissions = array_remove(permissions, '{"vacc.roster.extended"}') WHERE id = '01HGRHG38Y0NASG4A3GFS10X0T';
+UPDATE roles SET permissions = array_remove(permissions, 'division.roster.extended') WHERE id = '01HGR7FB0YK0D6YMHF4VW7JNFG';
+UPDATE roles SET permissions = array_remove(permissions, 'vacc.roster.extended') WHERE id = '01HGR7FB0YK0D6YMHF4VW7JNFG';
+UPDATE roles SET permissions = array_remove(permissions, 'division.roster.extended') WHERE id = '01HGRGYFZ7B56PPHK7XWXSMFAC';
+UPDATE roles SET permissions = array_remove(permissions, 'vacc.roster.extended') WHERE id = '01HGRGYFZ7B56PPHK7XWXSMFAC';
+UPDATE roles SET permissions = array_remove(permissions, 'division.roster.extended') WHERE id = '01HGRH84ZKZSQR1NTG3HJTGKRC';
+UPDATE roles SET permissions = array_remove(permissions, 'vacc.roster.extended') WHERE id = '01HGRH84ZKZSQR1NTG3HJTGKRC';
+UPDATE roles SET permissions = array_remove(permissions, 'vacc.roster.extended') WHERE id = '01HGRHDEHDBWBTB9JZ8K0Z03WT';
+UPDATE roles SET permissions = array_remove(permissions, 'vacc.roster.extended') WHERE id = '01HGRHG38Y0NASG4A3GFS10X0T';

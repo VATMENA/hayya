@@ -92,7 +92,10 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         code: payload.code
     };
 
-    let client = reqwest::Client::new();
+    let client = reqwest::Client::builder()
+        .pool_max_idle_per_host(0)
+        .build()?;
+
     let res = match client.post(format!("{}/oauth/token", endpoint)).form(&vatsim_req).send().await {
         Ok(res) => res,
         Err(e) => {
