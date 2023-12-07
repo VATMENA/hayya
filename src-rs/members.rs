@@ -3,7 +3,7 @@ use serde::Deserialize;
 #[derive(Deserialize, Clone)]
 pub struct MembersResponse {
     pub count: i64,
-    pub items: Vec<Member>
+    pub items: Vec<Member>,
 }
 
 #[derive(Deserialize, Clone)]
@@ -20,5 +20,5 @@ pub struct Member {
     pub region_id: String,
     pub division_id: String,
     pub subdivision_id: Option<String>,
-    pub lastratingchange: Option<String>
+    pub lastratingchange: Option<String>,
 }

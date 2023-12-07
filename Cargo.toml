@@ -21,5 +21,21 @@ simple_logger = "4"
 path = "src-rs/lib.rs"
 
 [[bin]]
-name = "menahq-api"
-path = "api/main.rs"
+name = "menahq_api_auth_info"
+path = "api/auth/info.rs"
+[[bin]]
+name = "menahq_api_auth_token"
+path = "api/auth/token.rs"
+[[bin]]
+name = "menahq_api_cron_roster"
+path = "api/cron/roster.rs"
+[[bin]]
+name = "menahq_api_roster_home"
+path = "api/roster/home.rs"
+[[bin]]
+name = "menahq_api_audit_logs"
+path = "api/audit_logs.rs"
+
+[[bin]]
+name = "menahq_generate_keypair"
+path = "tools/generate_keypair.rs"

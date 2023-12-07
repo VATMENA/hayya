@@ -1,10 +1,12 @@
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
-use sqlx::{Error, Executor, FromRow, PgConnection};
+use sqlx::{Error, FromRow, PgConnection};
 
 #[async_trait]
 pub trait Model {
-    async fn find(id: &str, conn: &mut PgConnection) -> Result<Option<Self>, Error> where Self: Sized;
+    async fn find(id: &str, conn: &mut PgConnection) -> Result<Option<Self>, Error>
+    where
+        Self: Sized;
     async fn upsert(&self, conn: &mut PgConnection) -> Result<(), Error>;
 }
 
@@ -18,7 +20,10 @@ pub struct Role {
 #[async_trait]
 impl Model for Role {
     async fn find(id: &str, conn: &mut PgConnection) -> Result<Option<Role>, Error> {
-        sqlx::query_as::<_, Role>("SELECT * FROM roles WHERE id = $1").bind(id).fetch_optional(&mut *conn).await
+        sqlx::query_as::<_, Role>("SELECT * FROM roles WHERE id = $1")
+            .bind(id)
+            .fetch_optional(&mut *conn)
+            .await
     }
     async fn upsert(&self, conn: &mut PgConnection) -> Result<(), Error> {
         sqlx::query("INSERT INTO roles (id, name, permissions) VALUES ($1, $2, $3) ON CONFLICT (id) DO UPDATE SET (id, name, permissions) = ($1, $2, $3)")
@@ -40,8 +45,14 @@ pub struct Vacc {
 
 #[async_trait]
 impl Model for Vacc {
-    async fn find(id: &str, conn: &mut PgConnection) -> Result<Option<Vacc>, Error> where Self: Sized {
-        sqlx::query_as::<_, Vacc>("SELECT * FROM vaccs WHERE id = $1").bind(id).fetch_optional(&mut *conn).await
+    async fn find(id: &str, conn: &mut PgConnection) -> Result<Option<Vacc>, Error>
+    where
+        Self: Sized,
+    {
+        sqlx::query_as::<_, Vacc>("SELECT * FROM vaccs WHERE id = $1")
+            .bind(id)
+            .fetch_optional(&mut *conn)
+            .await
     }
     async fn upsert(&self, conn: &mut PgConnection) -> Result<(), Error> {
         sqlx::query("INSERT INTO vaccs (id, name, website, contact_email) VALUES ($1, $2, $3, $4) ON CONFLICT (id) DO UPDATE SET (id, name, website, contact_email) = ($1, $2, $3, $4)")
@@ -79,8 +90,14 @@ pub struct User {
 
 #[async_trait]
 impl Model for User {
-    async fn find(id: &str, conn: &mut PgConnection) -> Result<Option<User>, Error> where Self: Sized {
-        sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1").bind(id).fetch_optional(&mut *conn).await
+    async fn find(id: &str, conn: &mut PgConnection) -> Result<Option<User>, Error>
+    where
+        Self: Sized,
+    {
+        sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+            .bind(id)
+            .fetch_optional(&mut *conn)
+            .await
     }
     async fn upsert(&self, conn: &mut PgConnection) -> Result<(), Error> {
         sqlx::query("INSERT INTO users (id, name_first, name_last, name_full, controller_rating_id, controller_rating_short, controller_rating_long, pilot_rating_id, pilot_rating_short, pilot_rating_long, region_id, region_name, division_id, division_name, subdivision_id, subdivision_name, role, vacc) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) ON CONFLICT (id) DO UPDATE SET (id, name_first, name_last, name_full, controller_rating_id, controller_rating_short, controller_rating_long, pilot_rating_id, pilot_rating_short, pilot_rating_long, region_id, region_name, division_id, division_name, subdivision_id, subdivision_name, role, vacc) = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)")
@@ -88,10 +105,10 @@ impl Model for User {
             .bind(&self.name_first)
             .bind(&self.name_last)
             .bind(&self.name_full)
-            .bind(&self.controller_rating_id)
+            .bind(self.controller_rating_id)
             .bind(&self.controller_rating_short)
             .bind(&self.controller_rating_long)
-            .bind(&self.pilot_rating_id)
+            .bind(self.pilot_rating_id)
             .bind(&self.pilot_rating_short)
             .bind(&self.pilot_rating_long)
             .bind(&self.region_id)
@@ -120,14 +137,20 @@ pub struct AuditLogEntry {
 
 #[async_trait]
 impl Model for AuditLogEntry {
-    async fn find(id: &str, conn: &mut PgConnection) -> Result<Option<AuditLogEntry>, Error> where Self: Sized {
-        sqlx::query_as::<_, AuditLogEntry>("SELECT * FROM audit_log_entries WHERE id = $1").bind(id).fetch_optional(&mut *conn).await
+    async fn find(id: &str, conn: &mut PgConnection) -> Result<Option<AuditLogEntry>, Error>
+    where
+        Self: Sized,
+    {
+        sqlx::query_as::<_, AuditLogEntry>("SELECT * FROM audit_log_entries WHERE id = $1")
+            .bind(id)
+            .fetch_optional(&mut *conn)
+            .await
     }
 
     async fn upsert(&self, conn: &mut PgConnection) -> Result<(), Error> {
         sqlx::query("INSERT INTO audit_log_entries (id, timestamp, actor, item, before, after, message) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (id) DO UPDATE SET (id, timestamp, actor, item, before, after, message) = ($1, $2, $3, $4, $5, $6, $7)")
             .bind(&self.id)
-            .bind(&self.timestamp)
+            .bind(self.timestamp)
             .bind(&self.actor)
             .bind(&self.item)
             .bind(&self.before)

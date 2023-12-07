@@ -1,12 +1,17 @@
-use vercel_runtime::{Body, Error, Request, Response};
-use vercel_runtime::http::{internal_server_error};
-use menahq_api::{APIError, get_connection};
-use menahq_api::jwt::{get_keypair, JwtData};
 use jwt_simple::prelude::*;
 use log::info;
+use menahq_api::jwt::{get_keypair, JwtData};
+use menahq_api::models::User;
+use menahq_api::{get_connection, APIError};
 use reqwest::StatusCode;
 use sqlx::query_as;
-use menahq_api::models::User;
+use vercel_runtime::http::internal_server_error;
+use vercel_runtime::{run, Body, Error, Request, Response};
+#[tokio::main]
+async fn main() -> Result<(), Error> {
+    simple_logger::init_with_env().unwrap();
+    run(handler).await
+}
 
 fn can_view_extended_data(req: &Request) -> bool {
     let hdr = req.headers().get("X-HQ-Token");
@@ -41,7 +46,7 @@ fn can_view_extended_data(req: &Request) -> bool {
         }
     }
 
-    return true;
+    true
 }
 
 #[derive(Serialize)]
@@ -50,12 +55,12 @@ pub struct HomeUser {
     pub name_last: String,
     pub role: String,
     pub rating: String,
-    pub vacc: Option<String>
+    pub vacc: Option<String>,
 }
 
 #[derive(Serialize)]
 pub struct HomeRoster {
-    pub users: Vec<HomeUser>
+    pub users: Vec<HomeUser>,
 }
 
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
@@ -64,20 +69,31 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     let mut conn = match get_connection().await {
         Ok(c) => c,
         Err(e) => {
-            return internal_server_error(APIError { code: "pool_acquire_error".to_string(), message: format!("{}", e) })
+            return internal_server_error(APIError {
+                code: "pool_acquire_error".to_string(),
+                message: format!("{}", e),
+            })
         }
     };
 
-    let users = match query_as::<_, User>("SELECT * FROM users WHERE division_id = $1 AND controller_rating_short <> $2").bind("MENA").bind("SUS").fetch_all(conn.as_mut()).await {
+    let users = match query_as::<_, User>(
+        "SELECT * FROM users WHERE division_id = $1 AND controller_rating_short <> $2",
+    )
+    .bind("MENA")
+    .bind("SUS")
+    .fetch_all(conn.as_mut())
+    .await
+    {
         Ok(u) => u,
         Err(e) => {
-            return internal_server_error(APIError { code: "db_error".to_string(), message: format!("{}", e) })
+            return internal_server_error(APIError {
+                code: "db_error".to_string(),
+                message: format!("{}", e),
+            })
         }
     };
 
-    let mut roster = HomeRoster {
-        users: vec![]
-    };
+    let mut roster = HomeRoster { users: vec![] };
 
     for user in users {
         if can_view_extended_data {
@@ -86,7 +102,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
                 name_last: user.name_last,
                 role: user.role,
                 rating: user.controller_rating_short,
-                vacc: user.vacc
+                vacc: user.vacc,
             });
         } else {
             roster.users.push(HomeUser {
@@ -94,7 +110,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
                 name_last: format!("({})", user.id),
                 role: user.role,
                 rating: user.controller_rating_short,
-                vacc: user.vacc
+                vacc: user.vacc,
             })
         }
     }

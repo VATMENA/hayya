@@ -4,13 +4,13 @@ use std::time::{SystemTime, UNIX_EPOCH};
 #[derive(Debug)]
 pub enum Actor {
     System,
-    User(String)
+    User(String),
 }
 impl Display for Actor {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let str = match self {
             Self::System => "system".to_string(),
-            Self::User(id) => format!("user:{}", id)
+            Self::User(id) => format!("user:{}", id),
         };
         write!(f, "{}", str)
     }
@@ -21,7 +21,7 @@ pub enum ItemType {
     System,
     Role(String),
     Vacc(String),
-    User(String)
+    User(String),
 }
 impl Display for ItemType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -29,12 +29,15 @@ impl Display for ItemType {
             Self::System => "system".to_string(),
             Self::Role(id) => format!("role:{}", id),
             Self::Vacc(id) => format!("vacc:{}", id),
-            Self::User(id) => format!("user:{}", id)
+            Self::User(id) => format!("user:{}", id),
         };
         write!(f, "{}", str)
     }
 }
 
 pub fn now() -> i64 {
-    SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs() as i64
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs() as i64
 }
