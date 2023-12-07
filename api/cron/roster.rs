@@ -11,12 +11,6 @@ use menahq_api::members::MembersResponse;
 use menahq_api::models::{Model, User};
 use menahq_api::roles::{ROLE_CONTROLLER_ID, ROLE_MEMBER_ID};
 
-#[tokio::main]
-async fn main() -> Result<(), Error> {
-    simple_logger::init_with_env().unwrap();
-    run(handler).await
-}
-
 pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
     info!("Roster update task started...");
     let full_start_time = SystemTime::now();
@@ -75,13 +69,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
         ("MENA".to_string(), "Middle East and North Africa".to_string())
     ]);
 
-    let mut pool = match get_connection().await {
-        Ok(c) => c,
-        Err(e) => {
-            return internal_server_error(APIError { code: "pool_acquire_error".to_string(), message: format!("{}", e) })
-        }
-    };
-    let mut conn = match pool.acquire().await {
+    let mut conn = match get_connection().await {
         Ok(c) => c,
         Err(e) => {
             return internal_server_error(APIError { code: "conn_acquire_error".to_string(), message: format!("{}", e) })
@@ -91,7 +79,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
     info!("[RosterUpdate] loading existing users");
     conn.execute("BEGIN").await?;
     let mut existing_users_hashmap = HashMap::new();
-    let all_existing_members = match sqlx::query_as::<_, User>("SELECT * FROM users").fetch_all(&mut *conn).await {
+    let all_existing_members = match sqlx::query_as::<_, User>("SELECT * FROM users").fetch_all(conn.as_mut()).await {
         Ok(n) => n,
         Err(e) => {
             return internal_server_error(APIError { code: "find_users_error".to_string(), message: format!("{}", e) })

@@ -7,6 +7,7 @@ use menahq_api::id::id;
 use menahq_api::jwt::generate_token;
 use menahq_api::models::{AuditLogEntry, Model, Role, User};
 use menahq_api::roles::{ROLE_CONTROLLER_ID, ROLE_MEMBER_ID};
+use sqlx::Acquire;
 
 #[derive(Debug, Deserialize, Serialize)]
 struct ReqPayload {
@@ -67,12 +68,6 @@ struct TokenResponse {
     user: User,
     role: Role
 }
-
-#[tokio::main]
-async fn main() -> Result<(), Error> {
-    run(handler).await
-}
-
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     let payload = match req.payload::<ReqPayload>() {
         Err(..) => { return bad_request(APIError { code: "invalid_payload".to_string(), message: "Invalid payload".to_string() }) },
@@ -120,13 +115,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
 
     // we need to find them in the database, if they exist
     // and if they dont, create them if their division is MENA
-    let pool = match get_connection().await {
-        Ok(conn) => conn,
-        Err(e) => {
-            return internal_server_error(APIError { code: "database_error_get_pool".to_string(), message: format!("database error: {}", e) })
-        }
-    };
-    let mut conn = match pool.acquire().await {
+    let mut conn = match get_connection().await {
         Ok(conn) => conn,
         Err(e) => {
             return internal_server_error(APIError { code: "database_error_get_conn".to_string(), message: format!("database error: {}", e) })

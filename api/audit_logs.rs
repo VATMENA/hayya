@@ -3,12 +3,6 @@ use vercel_runtime::http::unauthorized;
 use menahq_api::APIError;
 use menahq_api::jwt::{get_keypair, JwtData};
 use jwt_simple::prelude::*;
-
-#[tokio::main]
-async fn main() -> Result<(), Error> {
-    run(handler).await
-}
-
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     let hdr = req.headers().get("X-HQ-Token");
     let token_data;

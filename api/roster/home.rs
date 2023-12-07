@@ -8,12 +8,6 @@ use reqwest::StatusCode;
 use sqlx::query_as;
 use menahq_api::models::User;
 
-#[tokio::main]
-async fn main() -> Result<(), Error> {
-    simple_logger::init_with_env().unwrap();
-    run(handler).await
-}
-
 fn can_view_extended_data(req: &Request) -> bool {
     let hdr = req.headers().get("X-HQ-Token");
     let token_data;
@@ -74,7 +68,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         }
     };
 
-    let users = match query_as::<_, User>("SELECT * FROM users WHERE division_id = $1 AND controller_rating_short <> $2").bind("MENA").bind("SUS").fetch_all(&conn).await {
+    let users = match query_as::<_, User>("SELECT * FROM users WHERE division_id = $1 AND controller_rating_short <> $2").bind("MENA").bind("SUS").fetch_all(conn.as_mut()).await {
         Ok(u) => u,
         Err(e) => {
             return internal_server_error(APIError { code: "db_error".to_string(), message: format!("{}", e) })
