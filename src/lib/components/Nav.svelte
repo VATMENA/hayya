@@ -58,7 +58,7 @@
 <header
 	class="sticky top-0 z-50 w-full border-b bg-background shadow-lg backdrop-blur rounded-md"
 >
-	<div class="flex px-8 h-14 items-center">
+	<div class="flex p-8 h-14 items-center">
 		<div class="mr-4 hidden md:flex">
 			<a class="mr-6 flex items-center space-x-2" href="/dashboard">
 				<span class="hidden font-bold sm:inline-block text-[15px] lg:text-base"
