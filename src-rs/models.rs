@@ -1,4 +1,5 @@
 use async_trait::async_trait;
+use log::warn;
 use serde::{Deserialize, Serialize};
 use sqlx::{Error, FromRow, PgConnection};
 
@@ -32,6 +33,18 @@ impl Model for Role {
             .bind(&self.permissions)
             .execute(&mut *conn).await?;
         Ok(())
+    }
+}
+
+impl Role {
+    pub fn can_assign(&self, other: &Role) -> bool {
+        for perm in &other.permissions {
+            if !self.permissions.contains(&perm) {
+                warn!("attempted role assignment missing permission {}", perm);
+                return false;
+            }
+        }
+        true
     }
 }
 

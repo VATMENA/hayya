@@ -6,6 +6,7 @@ export interface HomeRoster {
     users: RosterUser[]
 }
 export interface RosterUser {
+    cid: string,
     name_first: string,
     name_last: string,
     role: string,

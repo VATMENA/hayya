@@ -1,3 +1,5 @@
+mod assign_role;
+
 use jwt_simple::prelude::*;
 use log::info;
 use menahq_api::jwt::{get_keypair, JwtData};
@@ -51,6 +53,7 @@ fn can_view_extended_data(req: &Request) -> bool {
 
 #[derive(Serialize)]
 pub struct HomeUser {
+    pub cid: String,
     pub name_first: String,
     pub name_last: String,
     pub role: String,
@@ -98,6 +101,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     for user in users {
         if can_view_extended_data {
             roster.users.push(HomeUser {
+                cid: user.id.clone(),
                 name_first: user.name_first,
                 name_last: user.name_last,
                 role: user.role,
@@ -106,6 +110,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
             });
         } else {
             roster.users.push(HomeUser {
+                cid: user.id.clone(),
                 name_first: user.name_first,
                 name_last: format!("({})", user.id),
                 role: user.role,

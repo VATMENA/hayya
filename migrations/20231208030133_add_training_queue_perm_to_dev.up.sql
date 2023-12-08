@@ -1,0 +1,2 @@
+UPDATE roles SET permissions = array_append(permissions, 'controller.training.queue.join') WHERE id = '01HGR7FB0YK0D6YMHF4VW7JNFG';
+UPDATE roles SET permissions = array_append(permissions, 'controller.training.queue.leave') WHERE id = '01HGR7FB0YK0D6YMHF4VW7JNFG';

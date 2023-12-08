@@ -1,0 +1,1 @@
+<p class="fixed bottom-1 right-2 text-xs">Made with &lt;3 by the Hayya team - coredoesdev, sharif_, and liam</p>

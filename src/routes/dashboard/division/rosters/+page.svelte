@@ -3,6 +3,8 @@
 	import * as Card from "$lib/components/ui/card";
 	import * as Table from "$lib/components/ui/table";
 	import * as Alert from "$lib/components/ui/alert";
+	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+	import { Button } from "$lib/components/ui/button";
 	import { Skeleton } from "$lib/components/ui/skeleton";
 	import { Badge } from "$lib/components/ui/badge";
 	import { onMount } from "svelte";
@@ -12,11 +14,14 @@
 		ROLE_CONTROLLER_ID,
 		ROLE_DEVELOPER_ID,
 		ROLE_DIVISION_DIRECTOR_ID,
-		ROLE_DIVISION_STAFF_ID,
+		ROLE_DIVISION_STAFF_ID, ROLE_MEMBER_ID,
 		ROLE_MENTOR_ID,
 		ROLE_VACC_DIRECTOR_ID,
 		ROLE_VACC_STAFF_ID,
 	} from "$lib/roles";
+	import {can} from "$lib/perms";
+	import {fetchTimeout} from "$lib/api/fetch_timeout";
+	import {API_AUTH_TOKEN_ENDPOINT} from "$lib/api/auth/token";
 
 	let home_users: RosterUser[] = [];
 	let error: string | null = null;
@@ -29,6 +34,21 @@
 			console.error(e);
 		}
 	});
+
+	async function assignRole(user: string, id: string) {
+		let resp = await fetchTimeout("/api/roster/assign_role", {
+			method: 'POST',
+			headers: {
+				"Content-Type": "application/json",
+				"X-HQ-Token": window.localStorage.getItem("menahq-token")
+			},
+			body: JSON.stringify({user: user, role: id})
+		});
+		if (!resp.ok) {
+			throw new Error("server returned error response, see console for details");
+		}
+		window.location.reload();
+	}
 </script>
 
 <div class="flex items-center justify-between space-y-2">
@@ -76,6 +96,9 @@
 							<Table.Head>Name</Table.Head>
 							<Table.Head>Rating</Table.Head>
 							<Table.Head>vACC</Table.Head>
+							{#if can("division.role.assign")}
+								<Table.Head>Assign Role</Table.Head>
+							{/if}
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
@@ -114,6 +137,29 @@
 									<Table.Cell
 										>{user.vacc == null ? "N/A" : user.vacc}</Table.Cell
 									>
+									{#if can("division.role.assign")}
+										<Table.Cell>
+											<DropdownMenu.Root>
+												<DropdownMenu.Trigger>
+													Assign Role
+												</DropdownMenu.Trigger>
+												<DropdownMenu.Content>
+													<DropdownMenu.Group>
+														<DropdownMenu.Label>Assign Role</DropdownMenu.Label>
+														<DropdownMenu.Separator />
+														<DropdownMenu.Item on:click={() => {assignRole(user.cid, ROLE_DEVELOPER_ID)}}>Developer</DropdownMenu.Item>
+														<DropdownMenu.Item on:click={() => {assignRole(user.cid, ROLE_DIVISION_DIRECTOR_ID)}}>Division Director</DropdownMenu.Item>
+														<DropdownMenu.Item on:click={() => {assignRole(user.cid, ROLE_DIVISION_STAFF_ID)}}>Division Staff</DropdownMenu.Item>
+														<DropdownMenu.Item on:click={() => {assignRole(user.cid, ROLE_VACC_DIRECTOR_ID)}}>vACC Director</DropdownMenu.Item>
+														<DropdownMenu.Item on:click={() => {assignRole(user.cid, ROLE_VACC_STAFF_ID)}}>vACC Staff</DropdownMenu.Item>
+														<DropdownMenu.Item on:click={() => {assignRole(user.cid, ROLE_MENTOR_ID)}}>Mentor</DropdownMenu.Item>
+														<DropdownMenu.Item on:click={() => {assignRole(user.cid, ROLE_CONTROLLER_ID)}}>Controller</DropdownMenu.Item>
+														<DropdownMenu.Item on:click={() => {assignRole(user.cid, ROLE_MEMBER_ID)}}>VATSIM Member</DropdownMenu.Item>
+													</DropdownMenu.Group>
+												</DropdownMenu.Content>
+											</DropdownMenu.Root>
+										</Table.Cell>
+									{/if}
 								</Table.Row>
 							{/if}
 						{/each}
