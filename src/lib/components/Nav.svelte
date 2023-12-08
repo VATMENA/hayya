@@ -1,7 +1,11 @@
 <script lang="ts">
-	import { can } from "$lib/perms";
+	import {can, role, user} from "$lib/perms";
 	import { Button } from "$lib/components/ui/button";
 	import { page } from "$app/stores";
+	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+	import * as Avatar from "$lib/components/ui/avatar";
+	import {Github, LifeBuoy, LogOut, Cloud, Sun, Moon, SunMoon} from "lucide-svelte";
+	import { setMode, resetMode } from "mode-watcher";
 
 	type Page = {
 		[pageId: string]: {
@@ -53,6 +57,20 @@
 			visible: true,
 		},
 	};
+
+	function initials(name: string): string {
+		let inis = "";
+
+		for (let name_part of name.split(" ")) {
+			inis += name_part[0];
+		}
+
+		return inis;
+	}
+
+	function avatar(name: string): string {
+		return `https://avatar.vercel.sh/${name}`
+	}
 </script>
 
 <header
@@ -86,19 +104,73 @@
 		<div
 			class="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end"
 		>
-			<p class="mr-1 flex items-center space-x-2">
-				<span class="hidden font-bold sm:inline-block text-[15px] lg:text-base"
-					>Web Eight - Developer</span
-				>
-			</p>
-			<Button
-				on:click={() => {
-					window.localStorage.removeItem("mena-token");
-					window.localStorage.removeItem("mena-user");
-					window.localStorage.removeItem("mena-role");
-					window.location.href = "/";
-				}}>Log Out</Button
-			>
+
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger asChild let:builder>
+					<Button builders={[builder]} variant="outline" class="mr-1 flex items-center space-x-2">
+						{#if user() !== null && role() !== null}
+							<Avatar.Root class="mr-2 h-5 w-5">
+								<Avatar.Image src={avatar(user().name_full)}/>
+								<Avatar.Fallback>{initials(user().name_full)}</Avatar.Fallback>
+							</Avatar.Root>
+							<span class="hidden font-bold sm:inline-block text-[15px] lg:text-base">{user().name_full} - {role().name}</span>
+						{:else}
+							<span class="hidden font-bold sm:inline-block text-[15px] lg:text-base">User Info</span>
+						{/if}
+					</Button>
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content class="w-56">
+					<DropdownMenu.Label>{user().name_full}</DropdownMenu.Label>
+					<DropdownMenu.Label class="font-normal text-foreground/60">{role().name} - {user().vacc === null ? "No vACC" : user().vacc}</DropdownMenu.Label>
+
+					<DropdownMenu.Separator />
+
+					<DropdownMenu.Sub>
+						<DropdownMenu.SubTrigger>
+							<SunMoon class="mr-2 h-4 w-4" />
+							<span>Theme</span>
+						</DropdownMenu.SubTrigger>
+						<DropdownMenu.SubContent>
+							<DropdownMenu.Item on:click={() => {setMode("light");}}>
+								<Sun class="mr-2 h-4 w-4" />
+								<span>Light</span>
+							</DropdownMenu.Item>
+							<DropdownMenu.Item on:click={() => {setMode("dark");}}>
+								<Moon class="mr-2 h-4 w-4" />
+								<span>Dark</span>
+							</DropdownMenu.Item>
+							<DropdownMenu.Item on:click={() => {resetMode();}}>
+								<SunMoon class="mr-2 h-4 w-4" />
+								<span>System</span>
+							</DropdownMenu.Item>
+						</DropdownMenu.SubContent>
+					</DropdownMenu.Sub>
+
+					<DropdownMenu.Separator />
+
+					<DropdownMenu.Group>
+						<DropdownMenu.Item href="https://github.com/VATMENA/hayya">
+							<Github class="mr-2 h-4 w-4" />
+							<span>GitHub</span>
+						</DropdownMenu.Item>
+						<DropdownMenu.Item href="/dashboard/support">
+							<LifeBuoy class="mr-2 h-4 w-4" />
+							<span>Support</span>
+						</DropdownMenu.Item>
+						<DropdownMenu.Item href="/dashboard/api">
+							<Cloud class="mr-2 h-4 w-4" />
+							<span>API</span>
+						</DropdownMenu.Item>
+					</DropdownMenu.Group>
+
+					<DropdownMenu.Separator />
+
+					<DropdownMenu.Item href="/logout">
+						<LogOut class="mr-2 h-4 w-4" />
+						<span>Log out</span>
+					</DropdownMenu.Item>
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
 		</div>
 	</div>
 </header>
