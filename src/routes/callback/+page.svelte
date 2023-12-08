@@ -23,7 +23,7 @@
 			);
 			window.localStorage.setItem(
 				"menahq-role",
-				JSON.stringify(auth_resp.role),
+				JSON.stringify(auth_resp.roles),
 			);
 			window.location.href = "/dashboard";
 		} catch (e) {

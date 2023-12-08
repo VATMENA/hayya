@@ -9,7 +9,7 @@ export interface RosterUser {
     cid: string,
     name_first: string,
     name_last: string,
-    role: string,
+    roles: string[],
     rating: string,
     vacc: string | null
 }

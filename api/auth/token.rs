@@ -72,7 +72,7 @@ struct VatsimDetails {
 struct TokenResponse {
     token: String,
     user: User,
-    role: Role,
+    roles: Vec<Role>,
 }
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     let payload = match req.payload::<ReqPayload>() {
@@ -193,10 +193,10 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
                 division_name: user_info.data.vatsim.division.name.unwrap(),
                 subdivision_id: user_info.data.vatsim.subdivision.id,
                 subdivision_name: user_info.data.vatsim.subdivision.name,
-                role: if should_be_controller {
-                    ROLE_CONTROLLER_ID.to_string()
+                roles: if should_be_controller {
+                    vec![ROLE_CONTROLLER_ID.to_string()]
                 } else {
-                    ROLE_MEMBER_ID.to_string()
+                    vec![ROLE_MEMBER_ID.to_string()]
                 },
                 vacc: None,
             };
@@ -231,22 +231,30 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
             new_user.clone()
         }
     };
-    let role = match Role::find(&user.role, &mut conn).await {
-        Ok(Some(r)) => r,
-        Ok(None) => {
-            return internal_server_error(APIError {
-                code: "role_missing".to_string(),
-                message: "user role is missing".to_string(),
-            })
-        }
-        Err(e) => {
-            return internal_server_error(APIError {
-                code: "database_error_find_role".to_string(),
-                message: format!("database error: {}", e),
-            })
-        }
-    };
-    let token = generate_token(&user, &role);
+
+    let mut roles = vec![];
+
+    for role in &user.roles {
+        let role = match Role::find(role, &mut conn).await {
+            Ok(Some(r)) => r,
+            Ok(None) => {
+                return internal_server_error(APIError {
+                    code: "role_missing".to_string(),
+                    message: "user role is missing".to_string(),
+                })
+            }
+            Err(e) => {
+                return internal_server_error(APIError {
+                    code: "database_error_find_role".to_string(),
+                    message: format!("database error: {}", e),
+                })
+            }
+        };
+        roles.push(role);
+    }
+
+
+    let token = generate_token(&user, &roles);
     let audit_log = AuditLogEntry {
         id: id(),
         timestamp: now(),
@@ -267,7 +275,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         }
     };
 
-    let resp = TokenResponse { token, user, role };
+    let resp = TokenResponse { token, user, roles };
 
     Ok(Response::builder()
         .status(StatusCode::OK)

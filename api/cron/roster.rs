@@ -183,7 +183,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
                     .clone(),
                 subdivision_id: member.subdivision_id.clone(),
                 subdivision_name: None,
-                role: existing_member.role.clone(),
+                roles: existing_member.roles.clone(),
                 vacc: existing_member.vacc.clone(),
             };
             if user != *existing_member {
@@ -238,7 +238,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
                     .clone(),
                 subdivision_id: member.subdivision_id.clone(),
                 subdivision_name: None,
-                role: ROLE_CONTROLLER_ID.to_string(),
+                roles: vec![ROLE_CONTROLLER_ID.to_string()],
                 vacc: None,
             };
             info!(

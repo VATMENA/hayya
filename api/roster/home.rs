@@ -29,8 +29,8 @@ fn can_view_extended_data(req: &Request) -> bool {
         let key = get_keypair().public_key();
         let claims = match key.verify_token::<JwtData>(token, None) {
             Ok(claims) => claims,
-            Err(_) => {
-                info!("Roster view not extended: invalid token");
+            Err(e) => {
+                info!("Roster view not extended: invalid token: {}", e);
                 return false;
             }
         };
@@ -41,14 +41,16 @@ fn can_view_extended_data(req: &Request) -> bool {
     }
 
     let reqd_perms = ["division.roster.extended"];
+    let mut has_req_perm = false;
     for perm in reqd_perms {
-        if !token_data.role.permissions.contains(&perm.to_string()) {
-            info!("Roster view not extended: missing perm {}", perm);
-            return false;
+        for role in &token_data.roles {
+            if role.permissions.contains(&perm.to_string()) {
+                has_req_perm = true;
+            }
         }
     }
 
-    true
+    has_req_perm
 }
 
 #[derive(Serialize)]
@@ -56,7 +58,7 @@ pub struct HomeUser {
     pub cid: String,
     pub name_first: String,
     pub name_last: String,
-    pub role: String,
+    pub roles: Vec<String>,
     pub rating: String,
     pub vacc: Option<String>,
 }
@@ -104,7 +106,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
                 cid: user.id.clone(),
                 name_first: user.name_first,
                 name_last: user.name_last,
-                role: user.role,
+                roles: user.roles,
                 rating: user.controller_rating_short,
                 vacc: user.vacc,
             });
@@ -113,7 +115,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
                 cid: user.id.clone(),
                 name_first: user.name_first,
                 name_last: format!("({})", user.id),
-                role: user.role,
+                roles: user.roles,
                 rating: user.controller_rating_short,
                 vacc: user.vacc,
             })

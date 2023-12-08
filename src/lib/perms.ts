@@ -21,7 +21,7 @@ export function user(): User | null {
         return null;
     }
 }
-export function role(): Role | null {
+export function roles(): Role[] | null {
     if (browser) {
         if (window.localStorage.getItem("menahq-role") !== null) {
             return JSON.parse(window.localStorage.getItem("menahq-role")!);
@@ -40,9 +40,14 @@ export function can(permission: string): boolean {
     if (permission === "loggedin") {
         return true;
     }
-    if (role() !== null) {
-        // @ts-ignore
-        return role()?.permissions.includes(permission)!;
+    if (roles() !== null) {
+        let avail_roles = roles()!;
+        for (let role of avail_roles) {
+            // @ts-ignore
+            if (role.permissions.includes(permission)) {
+                return true;
+            }
+        }
     }
     return false;
 }

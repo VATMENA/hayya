@@ -19,13 +19,13 @@ async fn main() -> Result<(), Error> {
 #[derive(Debug, Deserialize, Serialize)]
 struct ReqPayload {
     user: String,
-    role: String
+    roles: Vec<String>
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 struct RespPayload {
     user: User,
-    new_role: Role
+    new_roles: Vec<Role>
 }
 
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
@@ -101,59 +101,66 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         }
     };
 
-    let target_role = match Role::find(&payload.role, &mut conn).await {
-        Ok(Some(u)) => u,
-        Ok(None) => {
-            return bad_request(APIError {
-                code: "role_missing".to_string(),
-                message: "role does not exist".to_string()
-            })
-        },
-        Err(e) => {
-            return internal_server_error(APIError {
-                code: "find_role_error".to_string(),
-                message: format!("{}", e),
-            })
+    let mut target_roles = vec![];
+
+    for role in &payload.roles {
+        let target_role = match Role::find(&role, &mut conn).await {
+            Ok(Some(u)) => u,
+            Ok(None) => {
+                return bad_request(APIError {
+                    code: "role_missing".to_string(),
+                    message: "role does not exist".to_string()
+                })
+            },
+            Err(e) => {
+                return internal_server_error(APIError {
+                    code: "find_role_error".to_string(),
+                    message: format!("{}", e),
+                })
+            }
+        };
+
+        let mut has_permission = false;
+
+        for role in &token_data.roles {
+            if role.permissions.contains(&"division.role.assign".to_string()) || (role.permissions.contains(&"vacc.role.assign".to_string()) && token_data.user.vacc == target_user.vacc) {
+                has_permission = true;
+                break;
+            }
         }
-    };
 
-    if target_user.role == target_role.id {
-        return bad_request(APIError {
-            code: "already_has_role".to_string(),
-            message: "user already has target role".to_string()
-        })
-    }
-
-    /*
-    if !token_data.role.permissions.contains(&perm.to_string()) {
+        if !has_permission {
             return unauthorized(APIError {
                 code: "unauthorized".to_string(),
                 message: "unauthorized (missing needed permission)".to_string(),
             });
         }
-     */
 
-    let has_permission = token_data.role.permissions.contains(&"division.role.assign".to_string()) || (token_data.role.permissions.contains(&"vacc.role.assign".to_string()) && token_data.user.vacc == target_user.vacc);
+        let mut can_assign = false;
 
-    if !has_permission {
-        return unauthorized(APIError {
-            code: "unauthorized".to_string(),
-            message: "unauthorized (missing needed permission)".to_string(),
-        });
-    }
+        for role in &token_data.roles {
+            if role.can_assign(&target_role) {
+                can_assign = true;
+                break;
+            }
+        }
 
-    if !token_data.role.can_assign(&target_role) {
-        return unauthorized(APIError {
-            code: "too_many_permissions".to_string(),
-            message: "cannot assign role with permissions that you do not have".to_string(),
-        });
+        if !can_assign {
+            return unauthorized(APIError {
+                code: "too_many_permissions".to_string(),
+                message: "cannot assign role with permissions that you do not have".to_string(),
+            });
+        }
+
+        target_roles.push(target_role);
     }
 
     // alright, everything is gud so update the user
 
+
     let before_target_user = target_user.clone();
 
-    target_user.role = target_role.id.clone();
+    target_user.roles = target_roles.iter().map(|u| u.id.clone()).collect();
 
     match target_user.upsert(&mut conn).await {
         Ok(_) => (),
@@ -173,7 +180,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         item: ItemType::User(target_user.id.clone()).to_string(),
         before: Some(serde_json::to_value(&before_target_user).unwrap()),
         after: Some(serde_json::to_value(&target_user).unwrap()),
-        message: format!("Updated role"),
+        message: format!("Updated roles"),
     };
 
     info!("[AUDIT] {} @ {}. {} acted upon {}. Before: {:?}. After: {:?}. Message: {}", audit_log_entry.id, audit_log_entry.timestamp, audit_log_entry.actor, audit_log_entry.item, audit_log_entry.before, audit_log_entry.actor, audit_log_entry.message);
@@ -190,7 +197,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
 
     let resp = RespPayload {
         user: target_user,
-        new_role: target_role,
+        new_roles: target_roles,
     };
 
     Ok(Response::builder()

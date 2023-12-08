@@ -97,7 +97,7 @@ pub struct User {
     pub subdivision_id: Option<String>,
     pub subdivision_name: Option<String>,
 
-    pub role: String,
+    pub roles: Vec<String>,
     pub vacc: Option<String>,
 }
 
@@ -113,7 +113,7 @@ impl Model for User {
             .await
     }
     async fn upsert(&self, conn: &mut PgConnection) -> Result<(), Error> {
-        sqlx::query("INSERT INTO users (id, name_first, name_last, name_full, controller_rating_id, controller_rating_short, controller_rating_long, pilot_rating_id, pilot_rating_short, pilot_rating_long, region_id, region_name, division_id, division_name, subdivision_id, subdivision_name, role, vacc) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) ON CONFLICT (id) DO UPDATE SET (id, name_first, name_last, name_full, controller_rating_id, controller_rating_short, controller_rating_long, pilot_rating_id, pilot_rating_short, pilot_rating_long, region_id, region_name, division_id, division_name, subdivision_id, subdivision_name, role, vacc) = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)")
+        sqlx::query("INSERT INTO users (id, name_first, name_last, name_full, controller_rating_id, controller_rating_short, controller_rating_long, pilot_rating_id, pilot_rating_short, pilot_rating_long, region_id, region_name, division_id, division_name, subdivision_id, subdivision_name, roles, vacc) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) ON CONFLICT (id) DO UPDATE SET (id, name_first, name_last, name_full, controller_rating_id, controller_rating_short, controller_rating_long, pilot_rating_id, pilot_rating_short, pilot_rating_long, region_id, region_name, division_id, division_name, subdivision_id, subdivision_name, roles, vacc) = ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)")
             .bind(&self.id)
             .bind(&self.name_first)
             .bind(&self.name_last)
@@ -130,7 +130,7 @@ impl Model for User {
             .bind(&self.division_name)
             .bind(&self.subdivision_id)
             .bind(&self.subdivision_name)
-            .bind(&self.role)
+            .bind(&self.roles)
             .bind(&self.vacc)
             .execute(&mut *conn).await?;
         Ok(())

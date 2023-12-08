@@ -6,7 +6,7 @@ export const API_AUTH_TOKEN_ENDPOINT = "/api/auth/token";
 export interface TokenResponse {
     token: string,
     user: User,
-    role: Role
+    roles: Role[]
 }
 
 export async function authWithVatsimCode(code: string): Promise<TokenResponse> {

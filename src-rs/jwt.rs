@@ -14,14 +14,14 @@ pub fn get_keypair() -> Ed25519KeyPair {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct JwtData {
     pub user: User,
-    pub role: Role,
+    pub roles: Vec<Role>,
 }
 
-pub fn generate_token(user: &User, role: &Role) -> String {
+pub fn generate_token(user: &User, roles: &[Role]) -> String {
     let claims = Claims::with_custom_claims(
         JwtData {
             user: user.clone(),
-            role: role.clone(),
+            roles: roles.to_vec(),
         },
         Duration::from_days(180),
     );
