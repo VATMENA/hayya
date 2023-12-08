@@ -1,0 +1,12 @@
+version: '3'
+services:
+  hayyadb:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=menahqhayya
+      - POSTGRES_USER=hayya
+      - POSTGRES_DB=hayya
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data
