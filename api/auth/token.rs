@@ -75,6 +75,7 @@ struct TokenResponse {
     roles: Vec<Role>,
 }
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
+    info!("debug: reading payload");
     let payload = match req.payload::<ReqPayload>() {
         Err(..) => {
             return bad_request(APIError {
@@ -90,7 +91,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         }
         Ok(Some(p)) => p,
     };
-
+    info!("debug: reading env vars");
     let endpoint = std::env::var("MENAHQ_API_VATSIM_OAUTH_ENDPOINT").unwrap();
     let client_id = std::env::var("MENAHQ_API_VATSIM_OAUTH_CLIENT_ID").unwrap();
     let client_secret = std::env::var("MENAHQ_API_VATSIM_OAUTH_CLIENT_SECRET").unwrap();
@@ -102,6 +103,8 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         redirect_uri: payload.redirect_uri,
         code: payload.code,
     };
+
+    info!("debug: oauth: code -> token");
 
     let client = reqwest::Client::builder()
         .pool_max_idle_per_host(0)
@@ -129,6 +132,8 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     }
     let response: VatsimTokenResponse = res.json().await.unwrap();
 
+    info!("debug: oauth: token -> userinfo");
+
     let res = match client
         .get(format!("{}/api/user", endpoint))
         .bearer_auth(response.access_token)
@@ -151,6 +156,9 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     }
     let user_info: VatsimInfoResponse = res.json().await.unwrap();
 
+    info!("debug: oauth exchange complete");
+    info!("debug: connecting to database");
+
     // we need to find them in the database, if they exist
     // and if they dont, create them if their division is MENA
     let mut conn = match get_connection().await {
@@ -162,6 +170,9 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
             })
         }
     };
+
+    info!("debug: User::find");
+
     let maybe_user = match User::find(&user_info.data.cid, &mut conn).await {
         Ok(conn) => conn,
         Err(e) => {
