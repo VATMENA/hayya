@@ -1,7 +1,7 @@
 use log::info;
 use menahq_api::datafeed::Datafeed;
 use menahq_api::members::MembersResponse;
-use menahq_api::models::{Model, User};
+use menahq_api::models::{Model, User, Vacc};
 use menahq_api::roles::ROLE_CONTROLLER_ID;
 use menahq_api::{get_connection, APIError};
 use serde_json::json;
@@ -10,6 +10,7 @@ use std::collections::HashMap;
 use std::time::SystemTime;
 use vercel_runtime::http::internal_server_error;
 use vercel_runtime::{run, Body, Error, Request, Response, StatusCode};
+
 #[tokio::main]
 async fn main() -> Result<(), Error> {
     simple_logger::init_with_env().unwrap();
@@ -38,7 +39,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
             return internal_server_error(APIError {
                 code: "vatsim_core_api_error".to_string(),
                 message: format!("VATSIM returned error: {}", e),
-            })
+            });
         }
     };
 
@@ -48,7 +49,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
             return internal_server_error(APIError {
                 code: "vatsim_core_api_invalid".to_string(),
                 message: format!("VATSIM response invalid: {}", e),
-            })
+            });
         }
     };
     let duration = SystemTime::now()
@@ -71,7 +72,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
             return internal_server_error(APIError {
                 code: "vatsim_data_api_error".to_string(),
                 message: format!("VATSIM returned error: {}", e),
-            })
+            });
         }
     };
 
@@ -81,7 +82,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
             return internal_server_error(APIError {
                 code: "vatsim_data_api_invalid".to_string(),
                 message: format!("VATSIM response invalid: {}", e),
-            })
+            });
         }
     };
     let duration = SystemTime::now()
@@ -114,12 +115,11 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
             return internal_server_error(APIError {
                 code: "conn_acquire_error".to_string(),
                 message: format!("{}", e),
-            })
+            });
         }
     };
 
     info!("[RosterUpdate] loading existing users");
-    conn.execute("BEGIN").await?;
     let mut existing_users_hashmap = HashMap::new();
     let all_existing_members = match sqlx::query_as::<_, User>("SELECT * FROM users")
         .fetch_all(conn.as_mut())
@@ -130,13 +130,30 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
             return internal_server_error(APIError {
                 code: "find_users_error".to_string(),
                 message: format!("{}", e),
-            })
+            });
         }
     };
     for user in all_existing_members {
         existing_users_hashmap.insert(user.id.clone(), user);
     }
-    conn.execute("COMMIT").await?;
+
+    info!("[RosterUpdate] loading available vACCs");
+    let mut valid_vaccs = vec![];
+    let all_existing_vaccs = match sqlx::query_as::<_, Vacc>("SELECT * FROM vaccs")
+        .fetch_all(conn.as_mut())
+        .await
+    {
+        Ok(n) => n,
+        Err(e) => {
+            return internal_server_error(APIError {
+                code: "find_vaccs_error".to_string(),
+                message: format!("{}", e),
+            });
+        }
+    };
+    for vacc in all_existing_vaccs {
+        valid_vaccs.push(vacc.id);
+    }
 
     let mut updated = 0;
 
@@ -151,6 +168,16 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
 
         let user;
         if let Some(existing_member) = existing_users_hashmap.get(member.id.to_string().as_str()) {
+            let vacc = match member.subdivision_id.as_ref() {
+                Some(id) => {
+                    if valid_vaccs.contains(id) {
+                        Some(id.clone())
+                    } else {
+                        None
+                    }
+                },
+                None => None
+            };
             user = User {
                 id: member.id.to_string(),
                 name_first: member.name_first.clone().unwrap(),
@@ -177,27 +204,24 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
                 region_id: member.region_id.clone(),
                 region_name: regions.get(&member.region_id).unwrap().clone(),
                 division_id: member.division_id.clone(),
-                division_name: regions
-                    .get(&member.division_id)
-                    .unwrap_or(&member.division_id.to_string())
-                    .clone(),
+                division_name: "".to_string(),
                 subdivision_id: member.subdivision_id.clone(),
                 subdivision_name: None,
                 roles: existing_member.roles.clone(),
-                vacc: existing_member.vacc.clone(),
+                vacc,
             };
             if user != *existing_member {
                 info!(
-                    "updating {} #{}/{} {:?} {:?}",
-                    member.id, no, division_home_roster.count, member.name_first, member.name_last
-                );
+                "updating {} #{}/{} {:?} {:?} {:?} {:?}",
+                member.id, no, division_home_roster.count, member.name_first, member.name_last, member.division_id.clone(), member.subdivision_id.clone()
+            );
                 match user.upsert(&mut conn).await {
                     Ok(u) => u,
                     Err(e) => {
                         return internal_server_error(APIError {
                             code: "user_upsert_error".to_string(),
                             message: format!("{}", e),
-                        })
+                        });
                     }
                 };
                 updated += 1;
@@ -206,6 +230,16 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
             if member.division_id != "MENA" {
                 continue;
             }
+            let vacc = match member.subdivision_id.as_ref() {
+                Some(id) => {
+                    if valid_vaccs.contains(id) {
+                        Some(id.clone())
+                    } else {
+                        None
+                    }
+                },
+                None => None
+            };
             user = User {
                 id: member.id.to_string(),
                 name_first: member.name_first.clone().unwrap(),
@@ -239,11 +273,11 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
                 subdivision_id: member.subdivision_id.clone(),
                 subdivision_name: None,
                 roles: vec![ROLE_CONTROLLER_ID.to_string()],
-                vacc: None,
+                vacc,
             };
             info!(
-                "updating {} #{}/{} {:?} {:?}",
-                member.id, no, division_home_roster.count, member.name_first, member.name_last
+                "updating {} #{}/{} {:?} {:?} {:?} {:?}",
+                member.id, no, division_home_roster.count, member.name_first, member.name_last, member.division_id.clone(), member.subdivision_id.clone()
             );
             match user.upsert(&mut conn).await {
                 Ok(u) => u,
@@ -251,7 +285,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
                     return internal_server_error(APIError {
                         code: "user_upsert_error".to_string(),
                         message: format!("{}", e),
-                    })
+                    });
                 }
             };
             updated += 1;

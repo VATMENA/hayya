@@ -1,16 +1,16 @@
 use jwt_simple::algorithms::EdDSAPublicKeyLike;
-use log::{error, info};
+use log::{info};
 use menahq_api::audit_log::{now, Actor, ItemType};
 use menahq_api::id::id;
-use menahq_api::jwt::{generate_token, get_keypair, JwtData};
+use menahq_api::jwt::{get_keypair, JwtData};
 use menahq_api::models::{AuditLogEntry, Model, Role, User};
-use menahq_api::roles::{ROLE_CONTROLLER_ID, ROLE_MEMBER_ID};
 use menahq_api::{get_connection, APIError};
 use serde::{Deserialize, Serialize};
 use vercel_runtime::http::{bad_request, internal_server_error, unauthorized};
 use vercel_runtime::{run, Body, Error, Request, RequestPayloadExt, Response, StatusCode};
 
 #[tokio::main]
+#[allow(dead_code)] // ? not sure why this is triggered on these
 async fn main() -> Result<(), Error> {
     simple_logger::init_with_env().unwrap();
     run(handler).await
@@ -28,6 +28,7 @@ struct RespPayload {
     new_roles: Vec<Role>
 }
 
+#[allow(dead_code)] // ? not sure why this is triggered on these
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     let payload = match req.payload::<ReqPayload>() {
         Err(e) => {
@@ -104,7 +105,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     let mut target_roles = vec![];
 
     for role in &payload.roles {
-        let target_role = match Role::find(&role, &mut conn).await {
+        let target_role = match Role::find(role, &mut conn).await {
             Ok(Some(u)) => u,
             Ok(None) => {
                 return bad_request(APIError {
@@ -180,7 +181,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         item: ItemType::User(target_user.id.clone()).to_string(),
         before: Some(serde_json::to_value(&before_target_user).unwrap()),
         after: Some(serde_json::to_value(&target_user).unwrap()),
-        message: format!("Updated roles"),
+        message: "Updated roles".to_string(),
     };
 
     info!("[AUDIT] {} @ {}. {} acted upon {}. Before: {:?}. After: {:?}. Message: {}", audit_log_entry.id, audit_log_entry.timestamp, audit_log_entry.actor, audit_log_entry.item, audit_log_entry.before, audit_log_entry.actor, audit_log_entry.message);

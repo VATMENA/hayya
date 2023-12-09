@@ -33,9 +33,6 @@ path = "api/cron/roster.rs"
 name = "menahq_api_roster_home"
 path = "api/roster/home.rs"
 [[bin]]
-name = "menahq_api_audit_logs"
-path = "api/audit_logs.rs"
-[[bin]]
 name = "menahq_api_roster_assign_role"
 path = "api/roster/assign_role.rs"
 

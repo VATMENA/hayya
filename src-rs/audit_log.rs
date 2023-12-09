@@ -10,9 +10,9 @@ impl Display for Actor {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let str = match self {
             Self::System => "system".to_string(),
-            Self::User(id) => format!("user:{}", id),
+            Self::User(id) => format!("user:{id}"),
         };
-        write!(f, "{}", str)
+        write!(f, "{str}")
     }
 }
 
@@ -27,17 +27,20 @@ impl Display for ItemType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let str = match self {
             Self::System => "system".to_string(),
-            Self::Role(id) => format!("role:{}", id),
-            Self::Vacc(id) => format!("vacc:{}", id),
-            Self::User(id) => format!("user:{}", id),
+            Self::Role(id) => format!("role:{id}"),
+            Self::Vacc(id) => format!("vacc:{id}"),
+            Self::User(id) => format!("user:{id}"),
         };
-        write!(f, "{}", str)
+        write!(f, "{str}")
     }
 }
 
+#[must_use]
+#[allow(clippy::cast_possible_wrap)] // its bad practice but fine here, the i64 range will hold for 292 billion years
+#[allow(clippy::expect_used)] // if the .expect() is hit, something has gone seriously wrong with AWS' server's clocks
 pub fn now() -> i64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
-        .unwrap()
+        .expect("time went backwards")
         .as_secs() as i64
 }
