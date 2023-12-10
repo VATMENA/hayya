@@ -38,6 +38,9 @@ path = "api/roster/assign_role.rs"
 [[bin]]
 name = "menahq_api_vacc_list"
 path = "api/vacc/list.rs"
+[[bin]]
+name = "menahq_api_auth_whoami"
+path = "api/auth/whoami.rs"
 
 [[bin]]
 name = "menahq_generate_keypair"

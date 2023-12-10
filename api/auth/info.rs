@@ -11,6 +11,7 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
     Ok(Response::builder()
         .status(StatusCode::OK)
         .header("Content-Type", "application/json")
+        .header("Access-Control-Allow-Origin", "*")
         .body(
             json!({
               "vatsim_endpoint": std::env::var("MENAHQ_API_VATSIM_OAUTH_ENDPOINT").unwrap(),

@@ -1,13 +1,38 @@
-# VATMENA HQ
+# create-svelte
 
-All-in-one division management system built with Vercel, Rust and Svelte for VATSIM Middle East and North Africa.
+Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
 
-## Running
+## Creating a project
 
-You'll need a Vercel account and the following environment variables set:
+If you're seeing this, you've probably already done this step. Congrats!
 
-- `MENAHQ_API_POSTGRES_URL` set to your postgres connection url
-- `MENAHQ_API_ED25519_KEYPAIR` set to your Ed25519 keypair (generate with `cargo run --bin generate_keypair` and copy the output)
-- `MENAHQ_API_VATSIM_OAUTH_CLIENT_SECRET` set to your VATSIM Connect client secret
-- `MENAHQ_API_VATSIM_OAUTH_CLIENT_ID` set to your VATSIM Connect client ID
-- `MENAHQ_API_VATSIM_OAUTH_ENDPOINT` set to the VATSIM connect base lol yeahurl (https://auth.vatsim.net or https://auth-dev.vatsim.net)
+```bash
+# create a new project in the current directory
+npm create svelte@latest
+
+# create a new project in my-app
+npm create svelte@latest my-app
+```
+
+## Developing
+
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```bash
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+## Building
+
+To create a production version of your app:
+
+```bash
+npm run build
+```
+
+You can preview the production build with `npm run preview`.
+
+> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.

@@ -4,7 +4,7 @@ use jwt_simple::prelude::*;
 use log::info;
 use menahq_api::jwt::{get_keypair, JwtData};
 use menahq_api::models::User;
-use menahq_api::{get_connection, APIError};
+use menahq_api::{get_connection, APIError, can, user};
 use reqwest::StatusCode;
 use sqlx::query_as;
 use vercel_runtime::http::internal_server_error;
@@ -13,44 +13,6 @@ use vercel_runtime::{run, Body, Error, Request, Response};
 async fn main() -> Result<(), Error> {
     simple_logger::init_with_env().unwrap();
     run(handler).await
-}
-
-fn can_view_extended_data(req: &Request) -> bool {
-    let hdr = req.headers().get("X-HQ-Token");
-    let token_data;
-    if let Some(tkn) = hdr {
-        let token = match tkn.to_str() {
-            Ok(tok) => tok,
-            Err(_) => {
-                info!("Roster view not extended: invalid header");
-                return false;
-            }
-        };
-        let key = get_keypair().public_key();
-        let claims = match key.verify_token::<JwtData>(token, None) {
-            Ok(claims) => claims,
-            Err(e) => {
-                info!("Roster view not extended: invalid token: {}", e);
-                return false;
-            }
-        };
-        token_data = claims.custom;
-    } else {
-        info!("Roster view not extended: header missing");
-        return false;
-    }
-
-    let reqd_perms = ["division.roster.extended"];
-    let mut has_req_perm = false;
-    for perm in reqd_perms {
-        for role in &token_data.roles {
-            if role.permissions.contains(&perm.to_string()) {
-                has_req_perm = true;
-            }
-        }
-    }
-
-    has_req_perm
 }
 
 #[derive(Serialize)]
@@ -69,7 +31,9 @@ pub struct HomeRoster {
 }
 
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
-    let can_view_extended_data = can_view_extended_data(&req);
+    let has_divisionwide = can!(&req, &["division.roster.extended"]);
+    let has_vaccwide = can!(&req, &["vacc.roster.extended"]);
+    let actor = user!(&req);
 
     let mut conn = match get_connection().await {
         Ok(c) => c,
@@ -101,7 +65,8 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     let mut roster = HomeRoster { users: vec![] };
 
     for user in users {
-        if can_view_extended_data {
+        let extended_for_this_user = has_divisionwide || (has_vaccwide && user.vacc == actor.vacc);
+        if extended_for_this_user {
             roster.users.push(HomeUser {
                 cid: user.id.clone(),
                 name_first: user.name_first,

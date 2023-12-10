@@ -35,7 +35,7 @@
 <Card.Root class="w-[20em] justify-center content-center text-center pt-5">
 	<Card.Header class="space-y-0 pb-0 pt-0">
 		<img
-			src="/logos/horiz/transparent/website_discord.png"
+			src="/src/lib/assets/logos/horiz/transparent/website_discord.png"
 			alt="VATMENA logo"
 			class="logo_image"
 		/>

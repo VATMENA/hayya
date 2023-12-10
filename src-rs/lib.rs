@@ -12,6 +12,9 @@ pub mod jwt;
 pub mod members;
 pub mod models;
 pub mod roles;
+pub mod auth;
+#[macro_use]
+pub mod macros;
 
 use serde::Serialize;
 use sqlx::pool::PoolConnection;

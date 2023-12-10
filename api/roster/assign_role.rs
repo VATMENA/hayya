@@ -4,10 +4,11 @@ use menahq_api::audit_log::{now, Actor, ItemType};
 use menahq_api::id::id;
 use menahq_api::jwt::{get_keypair, JwtData};
 use menahq_api::models::{AuditLogEntry, Model, Role, User};
-use menahq_api::{get_connection, APIError};
+use menahq_api::{get_connection, APIError, can, user, roles};
 use serde::{Deserialize, Serialize};
 use vercel_runtime::http::{bad_request, internal_server_error, unauthorized};
 use vercel_runtime::{run, Body, Error, Request, RequestPayloadExt, Response, StatusCode};
+use menahq_api::auth::{can, user};
 
 #[tokio::main]
 #[allow(dead_code)] // ? not sure why this is triggered on these
@@ -46,36 +47,6 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         Ok(Some(p)) => p,
     };
 
-    let hdr = req.headers().get("X-HQ-Token");
-    let token_data;
-    if let Some(tkn) = hdr {
-        let token = match tkn.to_str() {
-            Ok(tok) => tok,
-            Err(_) => {
-                return unauthorized(APIError {
-                    code: "unauthorized".to_string(),
-                    message: "unauthorized (invalid X-HQ-Token)".to_string(),
-                });
-            }
-        };
-        let key = get_keypair().public_key();
-        let claims = match key.verify_token::<JwtData>(token, None) {
-            Ok(claims) => claims,
-            Err(_) => {
-                return unauthorized(APIError {
-                    code: "unauthorized".to_string(),
-                    message: "unauthorized (invalid X-HQ-Token)".to_string(),
-                });
-            }
-        };
-        token_data = claims.custom;
-    } else {
-        return unauthorized(APIError {
-            code: "unauthorized".to_string(),
-            message: "unauthorized (missing X-HQ-Token)".to_string(),
-        });
-    }
-
     let mut conn = match get_connection().await {
         Ok(c) => c,
         Err(e) => {
@@ -104,6 +75,11 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
 
     let mut target_roles = vec![];
 
+    let has_divisionwide = can!(&req, &["division.role.assign"]);
+    let has_vaccwide = can!(&req, &["vacc.role.assign"]);
+    let user = user!(&req);
+    let roles = roles!(&req);
+
     for role in &payload.roles {
         let target_role = match Role::find(role, &mut conn).await {
             Ok(Some(u)) => u,
@@ -121,14 +97,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
             }
         };
 
-        let mut has_permission = false;
-
-        for role in &token_data.roles {
-            if role.permissions.contains(&"division.role.assign".to_string()) || (role.permissions.contains(&"vacc.role.assign".to_string()) && token_data.user.vacc == target_user.vacc) {
-                has_permission = true;
-                break;
-            }
-        }
+        let has_permission = has_divisionwide || (has_vaccwide && user.vacc == target_user.vacc);
 
         if !has_permission {
             return unauthorized(APIError {
@@ -139,7 +108,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
 
         let mut can_assign = false;
 
-        for role in &token_data.roles {
+        for role in &roles {
             if role.can_assign(&target_role) {
                 can_assign = true;
                 break;
@@ -157,8 +126,6 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     }
 
     // alright, everything is gud so update the user
-
-
     let before_target_user = target_user.clone();
 
     target_user.roles = target_roles.iter().map(|u| u.id.clone()).collect();
@@ -177,7 +144,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     let audit_log_entry = AuditLogEntry {
         id: id(),
         timestamp: now(),
-        actor: Actor::User(token_data.user.id.clone()).to_string(),
+        actor: Actor::User(user.id.clone()).to_string(),
         item: ItemType::User(target_user.id.clone()).to_string(),
         before: Some(serde_json::to_value(&before_target_user).unwrap()),
         after: Some(serde_json::to_value(&target_user).unwrap()),

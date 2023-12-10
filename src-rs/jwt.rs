@@ -15,17 +15,15 @@ pub fn get_keypair() -> Ed25519KeyPair {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct JwtData {
-    pub user: User,
-    pub roles: Vec<Role>,
+    pub user: User
 }
 
 #[must_use]
 #[allow(clippy::expect_used)] // again, unrecoverable. panics ok
-pub fn generate_token(user: &User, roles: &[Role]) -> String {
+pub fn generate_token(user: &User) -> String {
     let claims = Claims::with_custom_claims(
         JwtData {
-            user: user.clone(),
-            roles: roles.to_vec(),
+            user: user.clone()
         },
         Duration::from_days(180),
     );

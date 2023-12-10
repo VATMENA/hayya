@@ -72,7 +72,6 @@ struct VatsimDetails {
 struct TokenResponse {
     token: String,
     user: User,
-    roles: Vec<Role>,
 }
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     info!("debug: reading payload");
@@ -243,29 +242,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         }
     };
 
-    let mut roles = vec![];
-
-    for role in &user.roles {
-        let role = match Role::find(role, &mut conn).await {
-            Ok(Some(r)) => r,
-            Ok(None) => {
-                return internal_server_error(APIError {
-                    code: "role_missing".to_string(),
-                    message: "user role is missing".to_string(),
-                })
-            }
-            Err(e) => {
-                return internal_server_error(APIError {
-                    code: "database_error_find_role".to_string(),
-                    message: format!("database error: {}", e),
-                })
-            }
-        };
-        roles.push(role);
-    }
-
-
-    let token = generate_token(&user, &roles);
+    let token = generate_token(&user);
     let audit_log = AuditLogEntry {
         id: id(),
         timestamp: now(),
@@ -286,7 +263,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         }
     };
 
-    let resp = TokenResponse { token, user, roles };
+    let resp = TokenResponse { token, user };
 
     Ok(Response::builder()
         .status(StatusCode::OK)
