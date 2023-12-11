@@ -1,59 +1,46 @@
 <script lang="ts">
-    import * as Tabs from "$lib/components/ui/tabs";
-    import * as Card from "$lib/components/ui/card";
-    import * as Table from "$lib/components/ui/table";
-    import * as Alert from "$lib/components/ui/alert";
-    import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-    import {Button} from "$lib/components/ui/button";
+    import type {PageData} from "../../../../../.svelte-kit/types/src/routes";
+    import {can} from "$lib/perms";
     import {Skeleton} from "$lib/components/ui/skeleton";
-    import {Badge} from "$lib/components/ui/badge";
-    import {onMount} from "svelte";
-    import {getHomeRoster} from "$lib/api/roster/home";
-    import type {RosterUser} from "$lib/api/roster/home";
     import {
         ROLE_CONTROLLER_ID,
         ROLE_DEVELOPER_ID,
         ROLE_DIVISION_DIRECTOR_ID,
-        ROLE_DIVISION_STAFF_ID, ROLE_MEMBER_ID,
-        ROLE_MENTOR_ID,
-        ROLE_VACC_DIRECTOR_ID,
-        ROLE_VACC_STAFF_ID,
+        ROLE_DIVISION_STAFF_ID, ROLE_MEMBER_ID, ROLE_MENTOR_ID,
+        ROLE_VACC_DIRECTOR_ID, ROLE_VACC_STAFF_ID
     } from "$lib/roles";
-    import {can} from "$lib/perms";
-    import {fetchTimeout} from "$lib/api/fetch_timeout";
-    import {API_AUTH_TOKEN_ENDPOINT} from "$lib/api/auth/token";
+    import {Badge} from "$lib/components/ui/badge";
+    import {Button} from "$lib/components/ui/button";
+    import * as Alert from "$lib/components/ui/alert";
+    import * as Tabs from "$lib/components/ui/tabs";
+    import * as Card from "$lib/components/ui/card";
+    import * as Table from "$lib/components/ui/table";
+    import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+    import {getCookie} from "$lib/cookie";
 
-    let home_users: RosterUser[] = [];
+    export let data: PageData;
+
     let error: string | null = null;
 
-    onMount(async () => {
-        try {
-            home_users = (await getHomeRoster()).users;
-        } catch (e) {
-            error = `The server returned an error (${e})`;
-            console.error(e);
-        }
-    });
-
-    async function toggleRole(user: string, current_roles: string[], id: string) {
+    async function toggleRole(cid: string, existing_roles: string[], new_role: string) {
         let new_roles = [];
-        if (current_roles.includes(id)) {
-            for (let item of current_roles) {
-                if (item != id) {
+        if (existing_roles.includes(new_role)) {
+            for (let item of existing_roles) {
+                if (item != new_role) {
                     new_roles.push(item);
                 }
             }
         } else {
-            new_roles = current_roles;
-            new_roles.push(id);
+            new_roles = existing_roles;
+            new_roles.push(new_role);
         }
-        let resp = await fetchTimeout("/api/roster/assign_role", {
+        let resp = await fetch("/api/roster/assign_role", {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
-                "X-HQ-Token": window.localStorage.getItem("menahq-token")
+                "X-HQ-Token": getCookie("hqt")
             },
-            body: JSON.stringify({user: user, roles: new_roles})
+            body: JSON.stringify({user: cid, roles: new_roles})
         });
         if (!resp.ok) {
             throw new Error("server returned error response, see console for details");
@@ -107,13 +94,13 @@
                             <Table.Head>Name</Table.Head>
                             <Table.Head>Rating</Table.Head>
                             <Table.Head>vACC</Table.Head>
-                            {#if can("division.role.assign")}
-                                <Table.Head>Toggle Role</Table.Head>
+                            {#if can(data.roles, ["division.role.assign"]) || can(data.roles, ["vacc.role.assign"])}
+                                <Table.Head>Actions</Table.Head>
                             {/if}
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {#if home_users.length === 0}
+                        {#if data.home_users.length === 0}
                             <Table.Row>
                                 <Table.Cell>
                                     <Skeleton class="h-4"></Skeleton>
@@ -126,7 +113,7 @@
                                 </Table.Cell>
                             </Table.Row>
                         {/if}
-                        {#each home_users as user}
+                        {#each data.home_users as user}
                             {#if user.roles.length === 1 && user.roles[0] === ROLE_CONTROLLER_ID && user.vacc == null && user.rating === "OBS"}
                                 <!-- skip -->
                             {:else}
@@ -154,7 +141,7 @@
                                     <Table.Cell
                                     >{user.vacc == null ? "N/A" : user.vacc}</Table.Cell
                                     >
-                                    {#if can("division.role.assign")}
+                                    {#if can(data.roles, ["division.role.assign"]) || (can(data.roles, ["vacc.role.assign"]) && user.vacc === data.user.vacc)}
                                         <Table.Cell>
                                             <DropdownMenu.Root>
                                                 <DropdownMenu.Trigger asChild let:builder>
