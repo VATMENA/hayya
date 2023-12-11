@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type {PageData} from "../../../../../.svelte-kit/types/src/routes";
+    import type {PageData} from "./$types";
     import {can} from "$lib/perms";
     import {Skeleton} from "$lib/components/ui/skeleton";
     import {
@@ -217,7 +217,11 @@
                 </Card.Description>
             </Card.Header>
 
-            <Card.Content class="space-y-2"></Card.Content>
+            <Card.Content class="space-y-2">
+                {#each data.vaccs as vacc}
+                    <Button href="/vaccs/{vacc.id}/roster">{vacc.name}</Button><br>
+                {/each}
+            </Card.Content>
         </Card.Root>
     </Tabs.Content>
 </Tabs.Root>

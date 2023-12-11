@@ -16,14 +16,32 @@ export const load: PageServerLoad = async ({fetch, cookies}) => {
     if (!res.ok) {
         return {
             load_error: true,
-            home_users: []
+            home_users: [],
+            vaccs: []
         }
     }
 
     let json = await res.json();
 
+    let vacc_res = await fetch(endpoint("/api/vacc/list"), {
+        headers: {
+            "X-HQ-Token": cookies.get("hqt")!
+        }
+    });
+
+    if (!vacc_res.ok) {
+        return {
+            load_error: true,
+            home_users: [],
+            vaccs: []
+        }
+    }
+
+    let vaccs_json = await vacc_res.json();
+
     return {
         load_error: false,
-        home_users: json.users
+        home_users: json.users,
+        vaccs: vaccs_json.vaccs
     };
 };

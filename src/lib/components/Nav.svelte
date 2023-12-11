@@ -37,9 +37,9 @@
             visible: can($page.data.roles, ["division.details.edit", "division.vacc.create", "division.vacc.delete"]),
         },
         vacc: {
-            name: "vACC Management",
-            link: "/dashboard/vacc/manage",
-            visible: can($page.data.roles, "vacc.details.edit"),
+            name: "vACCs",
+            link: "/dashboard/vaccs",
+            visible: true,
         },
         rosters: {
             name: "Rosters",
