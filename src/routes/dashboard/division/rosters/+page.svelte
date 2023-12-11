@@ -219,7 +219,7 @@
 
             <Card.Content class="space-y-2">
                 {#each data.vaccs as vacc}
-                    <Button href="/vaccs/{vacc.id}/roster">{vacc.name}</Button><br>
+                    <Button href="/dashboard/vaccs/{vacc.id}/roster">{vacc.name}</Button><br>
                 {/each}
             </Card.Content>
         </Card.Root>

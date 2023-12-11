@@ -1,14 +1,14 @@
 use jwt_simple::algorithms::EdDSAPublicKeyLike;
-use log::{info};
+use log::info;
 use menahq_api::audit_log::{now, Actor, ItemType};
+use menahq_api::auth::{can, user};
 use menahq_api::id::id;
 use menahq_api::jwt::{get_keypair, JwtData};
 use menahq_api::models::{AuditLogEntry, Model, Role, User};
-use menahq_api::{get_connection, APIError, can, user, roles};
+use menahq_api::{can, get_connection, roles, user, APIError};
 use serde::{Deserialize, Serialize};
 use vercel_runtime::http::{bad_request, internal_server_error, unauthorized};
 use vercel_runtime::{run, Body, Error, Request, RequestPayloadExt, Response, StatusCode};
-use menahq_api::auth::{can, user};
 
 #[tokio::main]
 #[allow(dead_code)] // ? not sure why this is triggered on these
@@ -20,13 +20,13 @@ async fn main() -> Result<(), Error> {
 #[derive(Debug, Deserialize, Serialize)]
 struct ReqPayload {
     user: String,
-    roles: Vec<String>
+    roles: Vec<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 struct RespPayload {
     user: User,
-    new_roles: Vec<Role>
+    new_roles: Vec<Role>,
 }
 
 #[allow(dead_code)] // ? not sure why this is triggered on these
@@ -62,9 +62,9 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         Ok(None) => {
             return bad_request(APIError {
                 code: "user_missing".to_string(),
-                message: "user does not exist".to_string()
+                message: "user does not exist".to_string(),
             })
-        },
+        }
         Err(e) => {
             return internal_server_error(APIError {
                 code: "find_user_error".to_string(),
@@ -86,9 +86,9 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
             Ok(None) => {
                 return bad_request(APIError {
                     code: "role_missing".to_string(),
-                    message: "role does not exist".to_string()
+                    message: "role does not exist".to_string(),
                 })
-            },
+            }
             Err(e) => {
                 return internal_server_error(APIError {
                     code: "find_role_error".to_string(),
@@ -151,7 +151,16 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         message: "Updated roles".to_string(),
     };
 
-    info!("[AUDIT] {} @ {}. {} acted upon {}. Before: {:?}. After: {:?}. Message: {}", audit_log_entry.id, audit_log_entry.timestamp, audit_log_entry.actor, audit_log_entry.item, audit_log_entry.before, audit_log_entry.actor, audit_log_entry.message);
+    info!(
+        "[AUDIT] {} @ {}. {} acted upon {}. Before: {:?}. After: {:?}. Message: {}",
+        audit_log_entry.id,
+        audit_log_entry.timestamp,
+        audit_log_entry.actor,
+        audit_log_entry.item,
+        audit_log_entry.before,
+        audit_log_entry.actor,
+        audit_log_entry.message
+    );
 
     match audit_log_entry.upsert(&mut conn).await {
         Ok(_) => (),

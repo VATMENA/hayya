@@ -175,8 +175,8 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
                     } else {
                         None
                     }
-                },
-                None => None
+                }
+                None => None,
             };
             user = User {
                 id: member.id.to_string(),
@@ -212,9 +212,15 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
             };
             if user != *existing_member {
                 info!(
-                "updating {} #{}/{} {:?} {:?} {:?} {:?}",
-                member.id, no, division_home_roster.count, member.name_first, member.name_last, member.division_id.clone(), member.subdivision_id.clone()
-            );
+                    "updating {} #{}/{} {:?} {:?} {:?} {:?}",
+                    member.id,
+                    no,
+                    division_home_roster.count,
+                    member.name_first,
+                    member.name_last,
+                    member.division_id.clone(),
+                    member.subdivision_id.clone()
+                );
                 match user.upsert(&mut conn).await {
                     Ok(u) => u,
                     Err(e) => {
@@ -237,8 +243,8 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
                     } else {
                         None
                     }
-                },
-                None => None
+                }
+                None => None,
             };
             user = User {
                 id: member.id.to_string(),
@@ -277,7 +283,13 @@ pub async fn handler(_req: Request) -> Result<Response<Body>, Error> {
             };
             info!(
                 "updating {} #{}/{} {:?} {:?} {:?} {:?}",
-                member.id, no, division_home_roster.count, member.name_first, member.name_last, member.division_id.clone(), member.subdivision_id.clone()
+                member.id,
+                no,
+                division_home_roster.count,
+                member.name_first,
+                member.name_last,
+                member.division_id.clone(),
+                member.subdivision_id.clone()
             );
             match user.upsert(&mut conn).await {
                 Ok(u) => u,

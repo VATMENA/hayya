@@ -37,7 +37,8 @@ impl Model for Role {
 }
 
 impl Role {
-    #[must_use] pub fn can_assign(&self, other: &Role) -> bool {
+    #[must_use]
+    pub fn can_assign(&self, other: &Role) -> bool {
         for perm in &other.permissions {
             if !self.permissions.contains(perm) {
                 warn!("attempted role assignment missing permission {}", perm);

@@ -6,13 +6,13 @@
 #![allow(clippy::module_name_repetitions)] // annoying
 
 pub mod audit_log;
+pub mod auth;
 pub mod datafeed;
 pub mod id;
 pub mod jwt;
 pub mod members;
 pub mod models;
 pub mod roles;
-pub mod auth;
 #[macro_use]
 pub mod macros;
 
@@ -38,7 +38,10 @@ pub async fn get_connection() -> Result<PoolConnection<Postgres>, sqlx::Error> {
     } else {
         let pool = PgPoolOptions::new()
             .max_connections(10)
-            .connect(&std::env::var("MENAHQ_API_POSTGRES_URL").expect("required env MENAHQ_API_POSTGRES_URL is not set"))
+            .connect(
+                &std::env::var("MENAHQ_API_POSTGRES_URL")
+                    .expect("required env MENAHQ_API_POSTGRES_URL is not set"),
+            )
             .await?;
         sqlx::migrate!().run(&pool).await?;
         CELL.set(pool).expect("unreachable");

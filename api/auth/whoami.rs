@@ -1,7 +1,7 @@
-use serde::Serialize;
-use vercel_runtime::{Body, Error, Request, Response, run, StatusCode};
-use menahq_api::{roles, user};
 use menahq_api::models::{Role, User};
+use menahq_api::{roles, user};
+use serde::Serialize;
+use vercel_runtime::{run, Body, Error, Request, Response, StatusCode};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -12,7 +12,7 @@ async fn main() -> Result<(), Error> {
 #[derive(Serialize)]
 struct WhoamiResponse {
     user: User,
-    roles: Vec<Role>
+    roles: Vec<Role>,
 }
 
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {

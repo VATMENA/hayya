@@ -1,11 +1,11 @@
 use jwt_simple::algorithms::EdDSAPublicKeyLike;
-use serde::Serialize;
-use sqlx::query_as;
-use vercel_runtime::{Body, Error, Request, Response, run, StatusCode};
-use vercel_runtime::http::{internal_server_error, unauthorized};
-use menahq_api::{APIError, get_connection};
 use menahq_api::jwt::{get_keypair, JwtData};
 use menahq_api::models::Vacc;
+use menahq_api::{get_connection, APIError};
+use serde::Serialize;
+use sqlx::query_as;
+use vercel_runtime::http::{internal_server_error, unauthorized};
+use vercel_runtime::{run, Body, Error, Request, Response, StatusCode};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -15,7 +15,7 @@ async fn main() -> Result<(), Error> {
 
 #[derive(Serialize)]
 struct RespPayload {
-    vaccs: Vec<Vacc>
+    vaccs: Vec<Vacc>,
 }
 
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
@@ -27,7 +27,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
             Err(_) => {
                 return unauthorized(APIError {
                     code: "unauthorized".to_string(),
-                    message: "unauthorized".to_string()
+                    message: "unauthorized".to_string(),
                 });
             }
         };
@@ -37,7 +37,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
             Err(e) => {
                 return unauthorized(APIError {
                     code: "unauthorized".to_string(),
-                    message: "unauthorized".to_string()
+                    message: "unauthorized".to_string(),
                 });
             }
         };
@@ -45,7 +45,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     } else {
         return unauthorized(APIError {
             code: "unauthorized".to_string(),
-            message: "unauthorized".to_string()
+            message: "unauthorized".to_string(),
         });
     }
 
@@ -59,7 +59,10 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         }
     };
 
-    let vaccs = match query_as::<_, Vacc>("SELECT * FROM vaccs").fetch_all(conn.as_mut()).await {
+    let vaccs = match query_as::<_, Vacc>("SELECT * FROM vaccs")
+        .fetch_all(conn.as_mut())
+        .await
+    {
         Ok(u) => u,
         Err(e) => {
             return internal_server_error(APIError {

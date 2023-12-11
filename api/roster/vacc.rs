@@ -3,9 +3,10 @@ use log::info;
 use menahq_api::jwt::{get_keypair, JwtData};
 use menahq_api::models::User;
 use menahq_api::{can, get_connection, user, APIError};
-use reqwest::StatusCode;
+use reqwest::{StatusCode, Url};
 use sqlx::query_as;
-use vercel_runtime::http::internal_server_error;
+use std::collections::HashMap;
+use vercel_runtime::http::{bad_request, internal_server_error};
 use vercel_runtime::{run, Body, Error, Request, Response};
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -14,7 +15,7 @@ async fn main() -> Result<(), Error> {
 }
 
 #[derive(Serialize)]
-pub struct HomeUser {
+pub struct VaccHomeUser {
     pub cid: String,
     pub name_first: String,
     pub name_last: String,
@@ -25,10 +26,24 @@ pub struct HomeUser {
 
 #[derive(Serialize)]
 pub struct HomeRoster {
-    pub users: Vec<HomeUser>,
+    pub users: Vec<VaccHomeUser>,
 }
 
 pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
+    let parsed_url = Url::parse(&req.uri().to_string()).unwrap();
+    let hash_query: HashMap<String, String> = parsed_url.query_pairs().into_owned().collect();
+    let id_key = hash_query.get("id");
+
+    let vacc_id = match id_key {
+        Some(i) => i,
+        None => {
+            return bad_request(APIError {
+                message: "Query string is invalid".to_string(),
+                code: "query_string_invalid".to_string(),
+            });
+        }
+    };
+
     let has_divisionwide = can!(&req, &["division.roster.extended"]);
     let has_vaccwide = can!(&req, &["vacc.roster.extended"]);
     let actor = user!(&req);
@@ -44,10 +59,11 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     };
 
     let users = match query_as::<_, User>(
-        "SELECT * FROM users WHERE division_id = $1 AND controller_rating_short <> $2",
+        "SELECT * FROM users WHERE division_id = $1 AND controller_rating_short <> $2 AND vacc = $3",
     )
     .bind("MENA")
     .bind("SUS")
+    .bind(vacc_id)
     .fetch_all(conn.as_mut())
     .await
     {
@@ -65,7 +81,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
     for user in users {
         let extended_for_this_user = has_divisionwide || (has_vaccwide && user.vacc == actor.vacc);
         if extended_for_this_user {
-            roster.users.push(HomeUser {
+            roster.users.push(VaccHomeUser {
                 cid: user.id.clone(),
                 name_first: user.name_first,
                 name_last: user.name_last,
@@ -74,7 +90,7 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
                 vacc: user.vacc,
             });
         } else {
-            roster.users.push(HomeUser {
+            roster.users.push(VaccHomeUser {
                 cid: user.id.clone(),
                 name_first: user.name_first,
                 name_last: format!("({})", user.id),

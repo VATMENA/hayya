@@ -228,7 +228,16 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
                 after: Some(serde_json::to_value(&new_user).unwrap()),
                 message: "Created new user".to_string(),
             };
-            info!("[AUDIT] {} @ {}. {} acted upon {}. Before: {:?}. After: {:?}. Message: {}", audit_log.id, audit_log.timestamp, audit_log.actor, audit_log.item, audit_log.before, audit_log.actor, audit_log.message);
+            info!(
+                "[AUDIT] {} @ {}. {} acted upon {}. Before: {:?}. After: {:?}. Message: {}",
+                audit_log.id,
+                audit_log.timestamp,
+                audit_log.actor,
+                audit_log.item,
+                audit_log.before,
+                audit_log.actor,
+                audit_log.message
+            );
             match audit_log.upsert(&mut conn).await {
                 Ok(_) => (),
                 Err(e) => {
@@ -252,7 +261,16 @@ pub async fn handler(req: Request) -> Result<Response<Body>, Error> {
         after: None,
         message: "Logged in on new session".to_string(),
     };
-    info!("[AUDIT] {} @ {}. {} acted upon {}. Before: {:?}. After: {:?}. Message: {}", audit_log.id, audit_log.timestamp, audit_log.actor, audit_log.item, audit_log.before, audit_log.actor, audit_log.message);
+    info!(
+        "[AUDIT] {} @ {}. {} acted upon {}. Before: {:?}. After: {:?}. Message: {}",
+        audit_log.id,
+        audit_log.timestamp,
+        audit_log.actor,
+        audit_log.item,
+        audit_log.before,
+        audit_log.actor,
+        audit_log.message
+    );
     match audit_log.upsert(&mut conn).await {
         Ok(_) => (),
         Err(e) => {
