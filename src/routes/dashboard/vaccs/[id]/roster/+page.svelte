@@ -17,6 +17,7 @@
     import * as Table from "$lib/components/ui/table";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import {getCookie} from "$lib/cookie";
+    import {page} from "$app/stores";
 
     export let data: PageData;
 
@@ -50,7 +51,7 @@
 </script>
 
 <div class="flex items-center justify-between space-y-2">
-    <h2 class="text-3xl font-bold tracking-tight">Division Roster</h2>
+    <h2 class="text-3xl font-bold tracking-tight">vACC Roster - {$page.params.id}</h2>
 </div>
 
 <Alert.Root>
