@@ -2,7 +2,6 @@ import type {Actions, PageServerLoad} from "./$types";
 import { superValidate } from "sveltekit-superforms/server";
 import { formSchema } from "./schema";
 import { fail } from "@sveltejs/kit";
-import {endpoint} from "$lib/api";
 
 export const load: PageServerLoad = () => {
     return {
@@ -21,7 +20,7 @@ export const actions: Actions = {
                 response: null
             });
         }
-
+/*
         let res = await fetch(endpoint(`/vacc/edit?id=${event.params.id}`), {
             method: 'PUT',
             headers: {
@@ -33,6 +32,11 @@ export const actions: Actions = {
                 contact_email: form.data.contact_email
             })
         });
+
+ */
+        let res = {
+            ok: false
+        }
 
         if (!res.ok) {
             return {

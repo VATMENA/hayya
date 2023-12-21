@@ -1,5 +1,4 @@
 import type { LayoutServerLoad } from "./$types";
-import {endpoint} from "$lib/api";
 import {verifyToken} from "$lib/auth";
 import prisma from "$lib/prisma";
 

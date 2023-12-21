@@ -1,5 +1,4 @@
 import type { PageServerLoad } from "./$types";
-import {endpoint} from "$lib/api";
 import {redirect} from "@sveltejs/kit";
 import {verifyToken} from "$lib/auth";
 import prisma from "$lib/prisma";
