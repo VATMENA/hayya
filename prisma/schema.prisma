@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id          String   @id
+  name        String   @unique
+  permissions String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Vacc {
+  id           String @id
+  name         String @unique
+  website      String
+  contactEmail String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User[]
+}
+
+model User {
+  id          String @id
+  name        String
+  ratingId    Int
+  ratingShort String
+  ratingLong  String
+  region      String
+  division    String
+
+  roleIds String[]
+
+  vacc   Vacc?   @relation(fields: [vaccId], references: [id])
+  vaccId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLogEntry {
+  id        String   @id
+  timestamp DateTime @default(now())
+  actor     String
+  item      String
+  before    Json
+  after     Json
+  message   String
+}

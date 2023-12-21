@@ -7,6 +7,9 @@
 
     onMount(() => {
         if (!data.loggedin) {
+            console.log("redirecting to /.");
+            console.log(data);
+            console.log(data.loggedin);
             window.location.href = "/";
         }
     })

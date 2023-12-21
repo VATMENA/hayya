@@ -1,8 +1,10 @@
 import type { LayoutServerLoad } from "./$types";
 import {endpoint} from "$lib/api";
+import {verifyToken} from "$lib/auth";
+import prisma from "$lib/prisma";
 
 export const load: LayoutServerLoad = async ({fetch, cookies}) => {
-    if (!cookies.get("hqt")) {
+    if (!cookies.get("hq_token")) {
         return {
             loggedin: false,
             user: null,
@@ -10,25 +12,34 @@ export const load: LayoutServerLoad = async ({fetch, cookies}) => {
         }
     }
 
-    let res = await fetch(endpoint("/api/auth/whoami"), {
-        headers: {
-            "X-HQ-Token": cookies.get("hqt")!
+    let token = cookies.get("hq_token")!;
+    let maybe_cid = verifyToken(token);
+
+    if (maybe_cid === null) {
+        return {
+            loggedin: false,
+            user: null,
+            roles: null
         }
+    }
+
+    let cid = maybe_cid!;
+
+    let user = await prisma.user.findUnique({
+        where: { id: cid }
     });
 
-    if (!res.ok) {
-        return {
-            loggedin: false,
-            user: null,
-            roles: null
-        }
-    }
+    let roles = [];
 
-    let json = await res.json();
+    for (let roleId of user.roleIds) {
+        roles.push(await prisma.role.findUnique({
+            where: { id: roleId }
+        }))
+    }
 
     return {
         loggedin: true,
-        user: json.user,
-        roles: json.roles
+        user: user,
+        roles: roles
     };
 };

@@ -100,19 +100,19 @@
                     <Button builders={[builder]} variant="outline" class="mr-1 flex items-center space-x-2">
                         {#if $page.data.user !== null && $page.data.roles !== null}
                             <Avatar.Root class="mr-2 h-5 w-5">
-                                <Avatar.Image src={avatar($page.data.user.name_full)}/>
-                                <Avatar.Fallback>{initials($page.data.user.name_full)}</Avatar.Fallback>
+                                <Avatar.Image src={avatar($page.data.user.name)}/>
+                                <Avatar.Fallback>{initials($page.data.user.name)}</Avatar.Fallback>
                             </Avatar.Root>
-                            <span class="hidden font-bold sm:inline-block text-[15px] lg:text-base">{$page.data.user.name_full}</span>
+                            <span class="hidden font-bold sm:inline-block text-[15px] lg:text-base">{$page.data.user.name}</span>
                         {:else}
                             <span class="hidden font-bold sm:inline-block text-[15px] lg:text-base">User Info</span>
                         {/if}
                     </Button>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content class="w-56">
-                    <DropdownMenu.Label>{$page.data.user.name_full}</DropdownMenu.Label>
+                    <DropdownMenu.Label>{$page.data.user.name}</DropdownMenu.Label>
                     <DropdownMenu.Label
-                            class="font-normal text-foreground/60">{$page.data.user.vacc === null ? "No vACC" : $page.data.user.vacc}</DropdownMenu.Label>
+                            class="font-normal text-foreground/60">{$page.data.user.vaccId === null ? "No vACC" : $page.data.user.vaccId}</DropdownMenu.Label>
                     {#if $page.data.roles !== null}
                         {#each $page.data.roles as role}
                             <DropdownMenu.Label class="font-normal text-foreground/60">{role.name}</DropdownMenu.Label>

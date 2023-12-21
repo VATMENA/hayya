@@ -1,3 +1,0 @@
-ALTER TABLE users ALTER COLUMN roles TYPE varchar USING coalesce(roles[1], '01HGRHMZ0JKRAGWG2DG0QH5Q16');
-ALTER TABLE users RENAME COLUMN roles TO role;
-ALTER TABLE users ADD CONSTRAINT users_role_fk FOREIGN KEY (role) REFERENCES roles (id);

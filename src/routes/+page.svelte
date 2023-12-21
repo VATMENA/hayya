@@ -1,16 +1,16 @@
 <script lang="ts">
+    import {Button} from "$lib/components/ui/button";
     import * as Card from "$lib/components/ui/card";
-    import { Button } from "$lib/components/ui/button";
-
     import logo from "$lib/assets/logos/horiz/transparent/website_discord.png";
-    import type { PageData } from "./$types";
+    import type {PageData} from "./$types";
     import {onMount} from "svelte";
+    import {PUBLIC_VATSIM_OAUTH_ENDPOINT, PUBLIC_VATSIM_OAUTH_CLIENT_ID} from "$env/static/public";
 
     export let data: PageData;
 
     async function login() {
         let location = window.location.origin + "/callback";
-        window.location = `${data.json.vatsim_endpoint}/oauth/authorize?response_type=code&client_id=${data.json.client_id}&redirect_uri=${location}&scope=full_name+vatsim_details`;
+        window.location = `${PUBLIC_VATSIM_OAUTH_ENDPOINT}/oauth/authorize?response_type=code&client_id=${PUBLIC_VATSIM_OAUTH_CLIENT_ID}&redirect_uri=${location}&scope=full_name+vatsim_details`;
     }
 
     onMount(() => {

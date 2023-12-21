@@ -23,9 +23,9 @@
                 <Table.Cell>{vacc.id}</Table.Cell>
                 <Table.Cell>{vacc.name}</Table.Cell>
                 <Table.Cell>{vacc.website}</Table.Cell>
-                <Table.Cell>{vacc.contact_email}</Table.Cell>
+                <Table.Cell>{vacc.contactEmail}</Table.Cell>
                 <Table.Cell>
-                    <Button href="/dashboard/vaccs/{vacc.id}/roster">Roster</Button>
+                    <Button href="/dashboard/vaccs/{vacc.id}/roster">View Roster</Button>
                     {#if can(data.roles, ["vacc.details.edit"])}
                         <Button href="/dashboard/vaccs/{vacc.id}/edit">Edit Details</Button>
                     {/if}

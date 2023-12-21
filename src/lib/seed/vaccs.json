@@ -1,0 +1,39 @@
+{
+  "vaccs": {
+    "ARB": {
+      "name": "Arabian vACC",
+      "website": "https://arabian-vacc.com/",
+      "contact_email": "todo@vatsim.me"
+    },
+    "JOR": {
+      "name": "Jordan vACC",
+      "website": "https://jordan.vatsim.me",
+      "contact_email": "todo@vatsim.me"
+    },
+    "MAG": {
+      "name": "Maghreb vACC",
+      "website": "https://www.vatsim.ma",
+      "contact_email": "todo@vatsim.me"
+    },
+    "SAU": {
+      "name": "Saudi Arabia vACC",
+      "website": "https://vatsimsa.net/en",
+      "contact_email": "todo@vatsim.me"
+    },
+    "EGYPT": {
+      "name": "Egyptian vACC",
+      "website": "https://vateg.net",
+      "contact_email": "todo@vatsim.me"
+    },
+    "IRN": {
+      "name": "Iranian vACC",
+      "website": "https://www.vatir.ir",
+      "contact_email": "todo@vatsim.me"
+    },
+    "NEA": {
+      "name": "North East Africa vACC",
+      "website": "https://www.vatsim-nea.com/en/",
+      "contact_email": "todo@vatsim.me"
+    }
+  }
+}

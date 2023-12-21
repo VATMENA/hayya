@@ -1,47 +1,63 @@
 import type { PageServerLoad } from "./$types";
 import {endpoint} from "$lib/api";
 import {redirect} from "@sveltejs/kit";
+import {verifyToken} from "$lib/auth";
+import prisma from "$lib/prisma";
+import type {User} from "@prisma/client";
+import {can, getUserRoles} from "$lib/perms";
 
 export const load: PageServerLoad = async ({fetch, cookies}) => {
-    if (!cookies.get("hqt")) {
-        throw redirect(301, "/");
+    if (!cookies.get("hq_token")) {
+        redirect(301, "/");
     }
 
-    let res = await fetch(endpoint("/api/roster/home"), {
-        headers: {
-            "X-HQ-Token": cookies.get("hqt")!
+
+    if (!cookies.get("hq_token")) {
+        redirect(301, "/");
+    }
+    let token = cookies.get("hq_token")!;
+    let maybe_cid = verifyToken(token);
+    if (maybe_cid === null) {
+        redirect(301, "/");
+    }
+    let user = await prisma.user.findUnique({
+        where: {
+            id: maybe_cid!,
         }
     });
 
-    if (!res.ok) {
-        return {
-            load_error: true,
-            home_users: [],
-            vaccs: []
-        }
-    }
+    // Privacy stuff
 
-    let json = await res.json();
-
-    let vacc_res = await fetch(endpoint("/api/vacc/list"), {
-        headers: {
-            "X-HQ-Token": cookies.get("hqt")!
+    let division_roster: User[] = await prisma.user.findMany({
+        where: {
+            NOT: {
+                ratingShort: "SUS"
+            },
+            division: "MENA"
         }
     });
 
-    if (!vacc_res.ok) {
-        return {
-            load_error: true,
-            home_users: [],
-            vaccs: []
+    let user_roles = await getUserRoles(user.id);
+
+    let has_divisionwide = can(user_roles, ["division.roster.extended"]);
+    let has_vaccwide = can(user_roles, ["vacc.roster.extended"]);
+
+    let altered_roster = [];
+
+    for (let roster_user of division_roster) {
+        if (has_divisionwide || (has_vaccwide && roster_user.vacc == user.vacc)) {
+            // extended. leave as-is
+        } else {
+            roster_user.name = roster_user.name.split(" ")[0] + " (" + roster_user.id + ")";
+            altered_roster.push(roster_user);
         }
     }
 
-    let vaccs_json = await vacc_res.json();
+    let vaccs = await prisma.vacc.findMany();
 
     return {
         load_error: false,
-        home_users: json.users,
-        vaccs: vaccs_json.vaccs
+        home_users: altered_roster,
+        vaccs: vaccs
     };
 };

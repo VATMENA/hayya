@@ -1,7 +1,0 @@
-DELETE FROM vaccs WHERE id = 'ARB';
-DELETE FROM vaccs WHERE id = 'JOR';
-DELETE FROM vaccs WHERE id = 'MAG';
-DELETE FROM vaccs WHERE id = 'SAU';
-DELETE FROM vaccs WHERE id = 'EGYPT';
-DELETE FROM vaccs WHERE id = 'IRN';
-DELETE FROM vaccs WHERE id = 'NEA';

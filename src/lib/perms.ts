@@ -1,5 +1,21 @@
-export interface Role {
-    permissions: string[]
+import prisma from "$lib/prisma";
+import type {Role} from "@prisma/client";
+
+export async function getUserRoles(cid: string): Promise<Role[]> {
+    let user = await prisma.user.findUnique({
+        where: {
+            id: cid
+        }
+    });
+    let roles: Role[] = [];
+    for (let roleId of user.roleIds) {
+        roles.push(await prisma.role.findUnique({
+            where: {
+                id: roleId
+            }
+        }));
+    }
+    return roles;
 }
 
 export function can(roles: Role[], perms: string[]): boolean {
