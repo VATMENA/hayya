@@ -16,6 +16,7 @@
     import * as Card from "$lib/components/ui/card";
     import * as Table from "$lib/components/ui/table";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+    import {goto, invalidate} from "$app/navigation";
 
     export let data: PageData;
 
@@ -33,13 +34,16 @@
             new_roles = existing_roles;
             new_roles.push(new_role);
         }
-        let resp = await fetch("/api/roster/assign_role", {
+        let data = new URLSearchParams();
+        data.set("user", cid);
+        data.set("roles", new_roles.join(","));
+
+        let resp = await fetch("?/set_roles", {
             method: 'POST',
             headers: {
-                "Content-Type": "application/json",
-                "X-HQ-Token": getCookie("hqt")
+                "Content-Type": "application/x-www-form-urlencoded"
             },
-            body: JSON.stringify({user: cid, roles: new_roles})
+            body: data.toString()
         });
         if (!resp.ok) {
             throw new Error("server returned error response, see console for details");
@@ -137,9 +141,9 @@
                                     </Table.Cell>
                                     <Table.Cell>{user.ratingShort}</Table.Cell>
                                     <Table.Cell
-                                    >{user.vacc == null ? "N/A" : user.vacc}</Table.Cell
+                                    >{user.vaccId == null ? "N/A" : user.vaccId}</Table.Cell
                                     >
-                                    {#if can(data.roles, ["division.role.assign"]) || (can(data.roles, ["vacc.role.assign"]) && user.vacc === data.user.vacc)}
+                                    {#if can(data.roles, ["division.role.assign"]) || (can(data.roles, ["vacc.role.assign"]) && user.vaccId === data.user.vaccId)}
                                         <Table.Cell>
                                             <DropdownMenu.Root>
                                                 <DropdownMenu.Trigger asChild let:builder>
@@ -150,35 +154,35 @@
                                                         <DropdownMenu.Label>Toggle Role</DropdownMenu.Label>
                                                         <DropdownMenu.Separator/>
                                                         <DropdownMenu.Item
-                                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_DEVELOPER_ID)}}>
+                                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_DEVELOPER_ID)}}>
                                                             Developer
                                                         </DropdownMenu.Item>
                                                         <DropdownMenu.Item
-                                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_DIVISION_DIRECTOR_ID)}}>
+                                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_DIVISION_DIRECTOR_ID)}}>
                                                             Division Director
                                                         </DropdownMenu.Item>
                                                         <DropdownMenu.Item
-                                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_DIVISION_STAFF_ID)}}>
+                                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_DIVISION_STAFF_ID)}}>
                                                             Division Staff
                                                         </DropdownMenu.Item>
                                                         <DropdownMenu.Item
-                                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_VACC_DIRECTOR_ID)}}>
+                                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_VACC_DIRECTOR_ID)}}>
                                                             vACC Director
                                                         </DropdownMenu.Item>
                                                         <DropdownMenu.Item
-                                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_VACC_STAFF_ID)}}>
+                                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_VACC_STAFF_ID)}}>
                                                             vACC Staff
                                                         </DropdownMenu.Item>
                                                         <DropdownMenu.Item
-                                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_MENTOR_ID)}}>
+                                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_MENTOR_ID)}}>
                                                             Mentor
                                                         </DropdownMenu.Item>
                                                         <DropdownMenu.Item
-                                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_CONTROLLER_ID)}}>
+                                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_CONTROLLER_ID)}}>
                                                             Controller
                                                         </DropdownMenu.Item>
                                                         <DropdownMenu.Item
-                                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_MEMBER_ID)}}>
+                                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_MEMBER_ID)}}>
                                                             VATSIM Member
                                                         </DropdownMenu.Item>
                                                     </DropdownMenu.Group>

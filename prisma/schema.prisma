@@ -28,6 +28,8 @@ model Vacc {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   User      User[]
+
+  trainingQueues TrainingQueue[] @relation
 }
 
 model User {
@@ -44,6 +46,8 @@ model User {
   vacc   Vacc?   @relation(fields: [vaccId], references: [id])
   vaccId String?
 
+  trainingQueues TrainingQueueMembership[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -56,4 +60,32 @@ model AuditLogEntry {
   before    Json
   after     Json
   message   String
+}
+
+model TrainingQueue {
+  id String @id
+
+  vacc   Vacc   @relation(fields: [vaccId], references: [id])
+  vaccId String
+
+  name              String
+  description       String
+  joinableByDefault Boolean
+
+  members TrainingQueueMembership[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TrainingQueueMembership {
+  user    User          @relation(fields: [userId], references: [id])
+  userId  String
+
+  queue   TrainingQueue @relation(fields: [queueId], references: [id])
+  queueId String
+
+  joinedAt DateTime @default(now())
+
+  @@id([userId, queueId])
 }

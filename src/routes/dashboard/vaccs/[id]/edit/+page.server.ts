@@ -42,7 +42,7 @@ export const actions: Actions = {
             return {
                 form,
                 ok: false,
-                response: await res.json()
+                response: res
             }
         } else {
             return {

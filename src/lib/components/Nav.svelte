@@ -15,7 +15,7 @@
         };
     };
 
-    const pages: Page = {
+    const global_pages: Page = {
         dashboard: {
             name: "Dashboard",
             link: "/dashboard",
@@ -48,6 +48,14 @@
         },
     };
 
+    const vacc_pages: Page = {
+        vacc_dashboard: {
+            name: "vACC Dashboard",
+            link: `/dashboard/vaccs/${$page.data.vacc_id}`,
+            visible: true
+        }
+    };
+
     function initials(name: string): string {
         let inis = "";
 
@@ -61,6 +69,13 @@
     function avatar(name: string): string {
         return `https://avatar.vercel.sh/${name}`
     }
+
+    let pages: Page;
+    if ($page.data.nav_vacc) {
+        pages = vacc_pages;
+    } else {
+        pages = global_pages;
+    }
 </script>
 
 <header
@@ -70,7 +85,7 @@
         <div class="mr-4 hidden md:flex">
             <a class="mr-6 flex items-center space-x-2" href="/dashboard">
 				<span class="hidden font-bold sm:inline-block text-[15px] lg:text-base"
-                >MENA HQ</span
+                >{$page.data.nav_title === undefined ? "MENA" : $page.data.nav_title} HQ</span
                 >
             </a>
             <nav class="flex items-center space-x-6 text-sm font-medium">

@@ -57,7 +57,9 @@
         "division.role.assign",
         "vacc.role.assign",
         "controller.training.queue.join",
-        "controller.training.queue.leave"
+        "controller.training.queue.leave",
+        "vacc.training.queue.manage",
+        "mentor.training.queue.pop"
       ]
     },
     "01HGRGYFZ7B56PPHK7XWXSMFAC": {
@@ -112,7 +114,9 @@
         "division.roster.extended",
         "vacc.roster.extended",
         "division.role.assign",
-        "vacc.role.assign"
+        "vacc.role.assign",
+        "vacc.training.queue.manage",
+        "mentor.training.queue.pop"
       ]
     },
     "01HGRH84ZKZSQR1NTG3HJTGKRC": {
@@ -160,7 +164,9 @@
         "controller.training.queue.join",
         "controller.training.queue.leave",
         "division.roster.extended",
-        "vacc.roster.extended"
+        "vacc.roster.extended",
+        "vacc.training.queue.manage",
+        "mentor.training.queue.pop"
       ]
     },
     "01HGRHDEHDBWBTB9JZ8K0Z03WT": {
@@ -198,7 +204,9 @@
         "controller.training.queue.join",
         "controller.training.queue.leave",
         "vacc.roster.extended",
-        "vacc.role.assign"
+        "vacc.role.assign",
+        "vacc.training.queue.manage",
+        "mentor.training.queue.pop"
       ]
     },
     "01HGRHG38Y0NASG4A3GFS10X0T": {
@@ -234,7 +242,9 @@
         "controller.availability.delete",
         "controller.training.queue.join",
         "controller.training.queue.leave",
-        "vacc.roster.extended"
+        "vacc.roster.extended",
+        "vacc.training.queue.manage",
+        "mentor.training.queue.pop"
       ]
     },
     "01HGRHK6HRV2JPY3J414GXH50Q": {
