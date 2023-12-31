@@ -13,7 +13,7 @@
     export let form: SuperValidated<FormSchema>;
 
     onMount(() => {
-        if (!can(data.roles, ["vacc.details.edit"])) {
+        if (!can(data.roles, ["|vacc.details.edit"])) {
             goto("/dashboard");
             return;
         }

@@ -33,8 +33,8 @@ export const load: PageServerLoad = async ({fetch, cookies}) => {
 
     let user_roles = await getUserRoles(user.id);
 
-    let has_divisionwide = can(user_roles, ["division.roster.extended"]);
-    let has_vaccwide = can(user_roles, ["vacc.roster.extended"]);
+    let has_divisionwide = can(user_roles, ["|division.roster.extended"]);
+    let has_vaccwide = can(user_roles, ["|vacc.roster.extended"]);
 
     let altered_roster = [];
 
@@ -89,8 +89,8 @@ export const actions = {
             }
         })!;
 
-        let has_divisionwide = can(user_roles, ["division.role.assign"]);
-        let has_vaccwide = can(user_roles, ["vacc.role.assign"]);
+        let has_divisionwide = can(user_roles, ["|division.role.assign"]);
+        let has_vaccwide = can(user_roles, ["|vacc.role.assign"]);
 
         let has_permission = has_divisionwide || (has_vaccwide && target_user.vaccId == user.vaccId);
 

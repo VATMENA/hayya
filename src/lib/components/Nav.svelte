@@ -3,9 +3,16 @@
     import {page} from "$app/stores";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import * as Avatar from "$lib/components/ui/avatar";
-    import {Github, LifeBuoy, LogOut, Cloud, Sun, Moon, SunMoon} from "lucide-svelte";
+    import {Github, LifeBuoy, LogOut, Cloud, Sun, Moon, SunMoon, ServerCog} from "lucide-svelte";
     import {setMode, resetMode} from "mode-watcher";
     import {can} from "$lib/perms";
+    import {
+        ROLE_DEVELOPER_ID,
+        ROLE_DIVISION_DIRECTOR_ID,
+        ROLE_DIVISION_STAFF_ID, ROLE_MENTOR_ID,
+        ROLE_VACC_DIRECTOR_ID, ROLE_VACC_STAFF_ID
+    } from "$lib/roles";
+    import {Badge} from "$lib/components/ui/badge";
 
     type Page = {
         [pageId: string]: {
@@ -15,26 +22,11 @@
         };
     };
 
-    const global_pages: Page = {
+    const division_pages: Page = {
         dashboard: {
-            name: "Dashboard",
-            link: "/dashboard",
+            name: "Division Dashboard",
+            link: "/dashboard/division",
             visible: true,
-        },
-        role_editor: {
-            name: "Role Editor",
-            link: "/dashboard/role_editor",
-            visible: can($page.data.roles, ["system.role.create", "system.role.edit", "system.role.delete"])
-        },
-        system: {
-            name: "System Management",
-            link: "/dashboard/system",
-            visible: can($page.data.roles, ["system.feedback.view", "system.log.view", "system.blacklist.add", "system.blacklist.remove"])
-        },
-        division: {
-            name: "Division Management",
-            link: "/dashboard/division/manage",
-            visible: can($page.data.roles, ["division.details.edit", "division.vacc.create", "division.vacc.delete"]),
         },
         vacc: {
             name: "vACCs",
@@ -53,7 +45,27 @@
             name: "vACC Dashboard",
             link: `/dashboard/vaccs/${$page.data.vacc_id}`,
             visible: true
-        }
+        },
+        training: {
+            name: "Training",
+            link: `/dashboard/vaccs/${$page.data.vacc_id}/training`,
+            visible: $page.data.user.vaccId == $page.data.vacc_id
+        },
+        events: {
+            name: "Events",
+            link: `/dashboard/vaccs/${$page.data.vacc_id}/events`,
+            visible: true
+        },
+        roster: {
+            name: "Roster",
+            link: `/dashboard/vaccs/${$page.data.vacc_id}/roster`,
+            visible: true
+        },
+        manage: {
+            name: "Manage vACC",
+            link: `/dashboard/vaccs/${$page.data.vacc_id}/manage`,
+            visible: (can($page.data.roles, ["|vacc.details.edit"])) && $page.data.user.vaccId == $page.data.vacc_id
+        },
     };
 
     function initials(name: string): string {
@@ -74,7 +86,7 @@
     if ($page.data.nav_vacc) {
         pages = vacc_pages;
     } else {
-        pages = global_pages;
+        pages = division_pages;
     }
 </script>
 
@@ -118,21 +130,37 @@
                                 <Avatar.Image src={avatar($page.data.user.name)}/>
                                 <Avatar.Fallback>{initials($page.data.user.name)}</Avatar.Fallback>
                             </Avatar.Root>
-                            <span class="hidden font-bold sm:inline-block text-[15px] lg:text-base">{$page.data.user.name}</span>
+                            <span class="hidden font-bold sm:inline-block text-[15px] lg:text-base">
+                                {$page.data.user.name}
+                            </span>
                         {:else}
                             <span class="hidden font-bold sm:inline-block text-[15px] lg:text-base">User Info</span>
                         {/if}
                     </Button>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content class="w-56">
-                    <DropdownMenu.Label>{$page.data.user.name}</DropdownMenu.Label>
+                    <DropdownMenu.Label>
+                        {$page.data.user.name}
+                        {#if $page.data.roles !== null}
+                            {#each $page.data.roles as role}
+                                {#if role.id === ROLE_DEVELOPER_ID}
+                                    <Badge class="bg-fuchsia-500">Developer</Badge>
+                                {:else if role.id === ROLE_DIVISION_DIRECTOR_ID}
+                                    <Badge class="bg-red-500">Division Director</Badge>
+                                {:else if role.id === ROLE_DIVISION_STAFF_ID}
+                                    <Badge class="bg-orange-500">Division Staff</Badge>
+                                {:else if role.id === ROLE_VACC_DIRECTOR_ID}
+                                    <Badge class="bg-emerald-500">vACC Director</Badge>
+                                {:else if role.id === ROLE_VACC_STAFF_ID}
+                                    <Badge class="bg-green-500">vACC Staff</Badge>
+                                {:else if role.id === ROLE_MENTOR_ID}
+                                    <Badge class="bg-sky-500">Mentor</Badge>
+                                {/if}
+                            {/each}
+                        {/if}
+                    </DropdownMenu.Label>
                     <DropdownMenu.Label
                             class="font-normal text-foreground/60">{$page.data.user.vaccId === null ? "No vACC" : $page.data.user.vaccId}</DropdownMenu.Label>
-                    {#if $page.data.roles !== null}
-                        {#each $page.data.roles as role}
-                            <DropdownMenu.Label class="font-normal text-foreground/60">{role.name}</DropdownMenu.Label>
-                        {/each}
-                    {/if}
 
                     <DropdownMenu.Separator/>
 
@@ -156,6 +184,15 @@
                             </DropdownMenu.Item>
                         </DropdownMenu.SubContent>
                     </DropdownMenu.Sub>
+
+                    <DropdownMenu.Separator/>
+
+                    <DropdownMenu.Group>
+                        <DropdownMenu.Item href="/switch_hq">
+                            <ServerCog class="mr-2 h-4 w-4"/>
+                            <span>Change HQ</span>
+                        </DropdownMenu.Item>
+                    </DropdownMenu.Group>
 
                     <DropdownMenu.Separator/>
 

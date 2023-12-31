@@ -75,13 +75,26 @@
             <Table.Head>Name</Table.Head>
             <Table.Head>Rating</Table.Head>
             <Table.Head>vACC</Table.Head>
-            {#if can(data.roles, ["division.role.assign"]) || can(data.roles, ["vacc.role.assign"])}
+            {#if can(data.roles, ["|division.role.assign", "|vacc.role.assign"])}
                 <Table.Head>Actions</Table.Head>
             {/if}
         </Table.Row>
     </Table.Header>
     <Table.Body>
-        {#each data.vacc_users as user}
+        {#if data.home_users.length === 0}
+            <Table.Row>
+                <Table.Cell>
+                    <Skeleton class="h-4"></Skeleton>
+                </Table.Cell>
+                <Table.Cell>
+                    <Skeleton class="h-4"></Skeleton>
+                </Table.Cell>
+                <Table.Cell>
+                    <Skeleton class="h-4"></Skeleton>
+                </Table.Cell>
+            </Table.Row>
+        {/if}
+        {#each data.home_users as user}
             {#if user.roleIds.length === 1 && user.roleIds[0] === ROLE_CONTROLLER_ID && user.vacc == null && user.ratingShort === "OBS"}
                 <!-- skip -->
             {:else}
@@ -106,9 +119,9 @@
                     </Table.Cell>
                     <Table.Cell>{user.ratingShort}</Table.Cell>
                     <Table.Cell
-                    >{user.vacc == null ? "N/A" : user.vacc}</Table.Cell
+                    >{user.vaccId == null ? "N/A" : user.vaccId}</Table.Cell
                     >
-                    {#if can(data.roles, ["division.role.assign"]) || (can(data.roles, ["vacc.role.assign"]) && user.vacc === data.user.vacc)}
+                    {#if can(data.roles, ["|division.role.assign"]) || (can(data.roles, ["|vacc.role.assign"]) && user.vaccId === data.user.vaccId)}
                         <Table.Cell>
                             <DropdownMenu.Root>
                                 <DropdownMenu.Trigger asChild let:builder>
@@ -119,35 +132,35 @@
                                         <DropdownMenu.Label>Toggle Role</DropdownMenu.Label>
                                         <DropdownMenu.Separator/>
                                         <DropdownMenu.Item
-                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_DEVELOPER_ID)}}>
+                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_DEVELOPER_ID)}}>
                                             Developer
                                         </DropdownMenu.Item>
                                         <DropdownMenu.Item
-                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_DIVISION_DIRECTOR_ID)}}>
+                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_DIVISION_DIRECTOR_ID)}}>
                                             Division Director
                                         </DropdownMenu.Item>
                                         <DropdownMenu.Item
-                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_DIVISION_STAFF_ID)}}>
+                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_DIVISION_STAFF_ID)}}>
                                             Division Staff
                                         </DropdownMenu.Item>
                                         <DropdownMenu.Item
-                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_VACC_DIRECTOR_ID)}}>
+                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_VACC_DIRECTOR_ID)}}>
                                             vACC Director
                                         </DropdownMenu.Item>
                                         <DropdownMenu.Item
-                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_VACC_STAFF_ID)}}>
+                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_VACC_STAFF_ID)}}>
                                             vACC Staff
                                         </DropdownMenu.Item>
                                         <DropdownMenu.Item
-                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_MENTOR_ID)}}>
+                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_MENTOR_ID)}}>
                                             Mentor
                                         </DropdownMenu.Item>
                                         <DropdownMenu.Item
-                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_CONTROLLER_ID)}}>
+                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_CONTROLLER_ID)}}>
                                             Controller
                                         </DropdownMenu.Item>
                                         <DropdownMenu.Item
-                                                on:click={() => {toggleRole(user.cid, user.roleIds, ROLE_MEMBER_ID)}}>
+                                                on:click={() => {toggleRole(user.id, user.roleIds, ROLE_MEMBER_ID)}}>
                                             VATSIM Member
                                         </DropdownMenu.Item>
                                     </DropdownMenu.Group>

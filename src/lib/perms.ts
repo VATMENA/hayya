@@ -27,7 +27,16 @@ export function can(roles: Role[], perms: string[]): boolean {
         all_perms = all_perms.concat(role.permissions);
     }
     for (let req_perm of perms) {
-        if (!all_perms.includes(req_perm)) {
+        let perm_id;
+        let or = req_perm.startsWith("|");
+        let and = req_perm.startsWith("&");
+        perm_id = req_perm.substring(1);
+
+        if (or && all_perms.includes(req_perm)) {
+            return true;
+        }
+
+        if (and && !all_perms.includes(req_perm)) {
             return false;
         }
     }

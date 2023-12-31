@@ -25,7 +25,10 @@ export const load: LayoutServerLoad = async ({fetch, cookies}) => {
     let cid = maybe_cid!;
 
     let user = await prisma.user.findUnique({
-        where: { id: cid }
+        where: { id: cid },
+        include: {
+            vacc: true
+        }
     });
 
     let roles = [];

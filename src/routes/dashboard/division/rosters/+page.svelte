@@ -97,7 +97,7 @@
                             <Table.Head>Name</Table.Head>
                             <Table.Head>Rating</Table.Head>
                             <Table.Head>vACC</Table.Head>
-                            {#if can(data.roles, ["division.role.assign"]) || can(data.roles, ["vacc.role.assign"])}
+                            {#if can(data.roles, ["|division.role.assign", "|vacc.role.assign"])}
                                 <Table.Head>Actions</Table.Head>
                             {/if}
                         </Table.Row>
@@ -143,7 +143,7 @@
                                     <Table.Cell
                                     >{user.vaccId == null ? "N/A" : user.vaccId}</Table.Cell
                                     >
-                                    {#if can(data.roles, ["division.role.assign"]) || (can(data.roles, ["vacc.role.assign"]) && user.vaccId === data.user.vaccId)}
+                                    {#if can(data.roles, ["|division.role.assign"]) || (can(data.roles, ["|vacc.role.assign"]) && user.vaccId === data.user.vaccId)}
                                         <Table.Cell>
                                             <DropdownMenu.Root>
                                                 <DropdownMenu.Trigger asChild let:builder>
