@@ -14,7 +14,7 @@
 		ServerCog,
 	} from "lucide-svelte";
 	import { setMode, resetMode } from "mode-watcher";
-	import { can } from "$lib/perms";
+	import { can } from "$lib/perms/can";
 	import {
 		ROLE_DEVELOPER_ID,
 		ROLE_DIVISION_DIRECTOR_ID,
