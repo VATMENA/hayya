@@ -3,7 +3,8 @@ import { fail, redirect } from "@sveltejs/kit";
 import { verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
 import type { User } from "@prisma/client";
-import { can, getUserRoles } from "$lib/perms";
+import { can } from "$lib/perms/can";
+import { getUserRoles } from "$lib/perms/getUserRoles";
 
 export const load: PageServerLoad = async ({ cookies }) => {
   if (!cookies.get("hq_token")) {
