@@ -38,15 +38,16 @@ export const load: PageServerLoad = async ({ cookies }) => {
   let user_roles = await getUserRoles(user.id);
   if (!user_roles) redirect(307, "/");
 
-  let has_divisionwide = can(user_roles, ["|division.roster.extended"]);
-  let has_vaccwide = can(user_roles, ["|vacc.roster.extended"]);
-
   let altered_roster = [];
 
   for (let roster_user of division_roster) {
     if (
-      has_divisionwide ||
-      (has_vaccwide && roster_user.vaccId == user.vaccId)
+      can(
+        user_roles,
+        roster_user.vaccId,
+        user.vaccId,
+        `vacc.${roster_user.vaccId}.roster.extended`,
+      )
     ) {
       // extended. leave as-is
       altered_roster.push(roster_user);
@@ -63,6 +64,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
     load_error: false,
     home_users: altered_roster,
     vaccs: vaccs,
+    user: user,
   };
 };
 
@@ -102,13 +104,14 @@ export const actions = {
     });
     if (!target_user) return;
 
-    let has_divisionwide = can(user_roles, ["|division.role.assign"]);
-    let has_vaccwide = can(user_roles, ["|vacc.role.assign"]);
-
-    let has_permission =
-      has_divisionwide || (has_vaccwide && target_user.vaccId == user.vaccId);
-
-    if (!has_permission) {
+    if (
+      !can(
+        user_roles,
+        target_user.vaccId,
+        user.vaccId,
+        `vacc.${target_user.vaccId}.role.assign`,
+      )
+    ) {
       return fail(403, { success: false, error: "unauthorized" });
     }
 

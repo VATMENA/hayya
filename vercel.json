@@ -1,6 +1,4 @@
 {
   "outputDirectory": "public",
-  "crons": [
-    {"path": "/cron/roster", "schedule": "0 * * * *"}
-  ]
+  "crons": [{ "path": "/cron/roster", "schedule": "0 * * * *" }]
 }

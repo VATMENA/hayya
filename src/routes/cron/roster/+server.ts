@@ -86,8 +86,8 @@ export const GET: RequestHandler = async () => {
       roster_user.subdivision_id === null
         ? null
         : Object.keys(vaccs).includes(roster_user.subdivision_id)
-        ? roster_user.subdivision_id
-        : null;
+          ? roster_user.subdivision_id
+          : null;
 
     if (Object.keys(existing_roster).includes(roster_user.id.toString())) {
       let updated_roleIds = existing_roster[roster_user.id.toString()].roleIds;

@@ -100,5 +100,5 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 
   let token = makeToken(user_details.cid);
   cookies.set("hq_token", token, { path: "/" });
-  redirect(301, "/dashboard");
+  redirect(301, "/switch_hq");
 };

@@ -1,6 +1,12 @@
 import type { Role } from "@prisma/client";
+import { minimatch } from "minimatch";
 
-export function can(roles: Role[], perms: string[]): boolean {
+export function can(
+  roles: Role[],
+  targetVacc: string | null,
+  userVacc: string | null,
+  req_perm: string,
+): boolean {
   if (roles === null || roles === undefined) {
     return false;
   }
@@ -8,17 +14,40 @@ export function can(roles: Role[], perms: string[]): boolean {
   for (let role of roles) {
     all_perms = all_perms.concat(role.permissions);
   }
-  for (let req_perm of perms) {
-    let perm_id;
-    let or = req_perm.startsWith("|");
-    let and = req_perm.startsWith("&");
-    perm_id = req_perm.substring(1);
-
-    if (or && all_perms.includes(req_perm)) {
+  for (let perm of all_perms) {
+    let real_perm = perm;
+    if (targetVacc == userVacc) {
+      real_perm = perm.replace("vacc.own", `vacc.${targetVacc}`);
+    }
+    if (minimatch(req_perm, perm)) {
       return true;
     }
+  }
 
-    if (and && !all_perms.includes(req_perm)) {
+  return false;
+}
+
+export function canAny(
+  roles: Role[],
+  targetVacc: string,
+  userVacc: string,
+  perms: string[],
+): boolean {
+  for (let needed_perm of perms) {
+    if (can(roles, targetVacc, userVacc, needed_perm)) {
+      return true;
+    }
+  }
+}
+
+export function canAll(
+  roles: Role[],
+  targetVacc: string,
+  userVacc: string,
+  perms: string[],
+): boolean {
+  for (let needed_perm of perms) {
+    if (!can(roles, targetVacc, userVacc, needed_perm)) {
       return false;
     }
   }
