@@ -10,8 +10,19 @@ import { getUserRoles } from "$lib/perms/getUserRoles";
 import { can } from "$lib/perms/can";
 
 export const load: PageServerLoad = async ({ params }) => {
+  let queue = await prisma.trainingQueue.findUnique({
+    where: {
+      id: params.queueId,
+      vaccId: params.id,
+    },
+  });
+  let form = await superValidate(formSchema);
+  form.data.name = queue!.name;
+  form.data.openRegistration = queue!.joinableByDefault;
+  form.data.description = queue!.description;
   return {
-    form: await superValidate(formSchema),
+    form,
+    queue,
   };
 };
 
@@ -48,10 +59,11 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
-    const queue: TrainingQueue = await prisma.trainingQueue.create({
+    const queue: TrainingQueue = await prisma.trainingQueue.update({
+      where: {
+        id: event.params.queueId,
+      },
       data: {
-        id: ulid(),
-        vaccId: event.params.id,
         name: form.data.name,
         description: form.data.description,
         joinableByDefault: form.data.openRegistration,

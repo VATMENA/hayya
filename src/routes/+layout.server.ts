@@ -46,8 +46,6 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
     );
   }
 
-  console.log(user);
-
   return {
     loggedin: true,
     user: user,

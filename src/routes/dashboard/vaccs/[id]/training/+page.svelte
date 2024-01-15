@@ -20,7 +20,7 @@
       <Card.Content class="space-y-1.5">
         <p>
           Enrolled in the <b>Basic/S1</b>
-           queue.
+          queue.
         </p>
         <Progress value={(177 / 300) * 100} />
         <p class="text-xs text-foreground/60">Position #177 in the queue</p>
