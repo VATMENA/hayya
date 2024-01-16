@@ -148,6 +148,8 @@ export const GET: RequestHandler = async () => {
           division: roster_user.division_id,
           roleIds: should_have_roles,
           vaccId: vacc,
+          recommendedTrainingQueues: [],
+          completedTrainingQueues: []
         },
       });
 

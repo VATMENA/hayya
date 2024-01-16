@@ -92,6 +92,8 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
       region: user_details.vatsim.region.id,
       division: user_details.vatsim.division.id,
       vaccId: null,
+      recommendedTrainingQueues: [],
+      completedTrainingQueues: [],
       roleIds: should_be_controller
         ? ["01HGRHM5BTJDXG8VT7MCZ9B2F6"]
         : ["01HGRHMZ0JKRAGWG2DG0QH5Q16"],

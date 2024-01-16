@@ -47,6 +47,8 @@ model User {
   vaccId String?
 
   trainingQueues TrainingQueueMembership[]
+  recommendedTrainingQueues String[]
+  completedTrainingQueues String[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

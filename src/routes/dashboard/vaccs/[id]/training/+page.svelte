@@ -3,7 +3,7 @@
   import { Progress } from "$lib/components/ui/progress";
   import { Button } from "$lib/components/ui/button";
   import { LogOutIcon, SettingsIcon } from "lucide-svelte";
-  import { can } from "$lib/perms/can";
+  import {can, canAny} from "$lib/perms/can";
   import { page } from "$app/stores";
 </script>
 
@@ -28,7 +28,7 @@
           <LogOutIcon class="mr-2 w-4 h-4" />
           Leave
         </Button>
-        {#if can($page.data.roles, $page.params.id, $page.data.user.vaccId, "vacc.own.training.queues.manage")}
+        {#if canAny($page.data.roles, $page.params.id, $page.data.user.vaccId, [`vacc.${$page.params.id}.training.queues.manage`, `vacc.${$page.params.id}.training.queues.recommend`])}
           <Button
             href="/dashboard/vaccs/{$page.params.id}/training/queues/manage">
             <SettingsIcon class="mr-2 w-4 h-4" />
