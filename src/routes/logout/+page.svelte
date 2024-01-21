@@ -3,7 +3,7 @@
   import { goto } from "$app/navigation";
 
   onMount(() => {
-    document.cookie = `hqt=; max-age=-1; path=/`;
+    document.cookie = `hq_token=; max-age=-1; path=/`;
     goto("/");
   });
 </script>

@@ -28,6 +28,11 @@
   </h2>
 </div>
 
-<p>Recommending a student for a queue allows them to enroll in the queue, even if public enrollment is disabled. Only do this once they have completed their current queue, and have been marked complete there, and are ready to move to the next stage.</p>
+<p>
+  Recommending a student for a queue allows them to enroll in the queue, even if
+  public enrollment is disabled. Only do this once they have completed their
+  current queue, and have been marked complete there, and are ready to move to
+  the next stage.
+</p>
 
 <RecommendForm form={data.form} queue={data.queue} />

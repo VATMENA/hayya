@@ -34,11 +34,6 @@
   };
 
   const division_pages: Page = {
-    dashboard: {
-      name: "Division Dashboard",
-      link: "/dashboard/division",
-      visible: true,
-    },
     vacc: {
       name: "vACCs",
       link: "/dashboard/vaccs",
@@ -52,11 +47,6 @@
   };
 
   const vacc_pages: Page = {
-    vacc_dashboard: {
-      name: "vACC Dashboard",
-      link: `/dashboard/vaccs/${$page.data.vacc_id}`,
-      visible: true,
-    },
     training: {
       name: "Training",
       link: `/dashboard/vaccs/${$page.data.vacc_id}/training`,
@@ -115,7 +105,11 @@
   class="sticky top-0 z-50 w-full border-b bg-background shadow-lg backdrop-blur rounded-md">
   <div class="flex p-8 h-14 items-center">
     <div class="mr-4 hidden md:flex">
-      <a class="mr-6 flex items-center space-x-2" href="#">
+      <a
+        class="mr-6 flex items-center space-x-2"
+        href={$page.data.nav_vacc
+          ? `/dashboard/vaccs/${$page.data.vacc_id}`
+          : "/dashboard/division"}>
         <span class="hidden font-bold sm:inline-block text-[15px] lg:text-base">
           {$page.data.nav_title === undefined ? "MENA" : $page.data.nav_title} HQ
         </span>
@@ -123,7 +117,7 @@
       <nav class="flex items-center space-x-6 text-sm font-medium">
         {#each Object.entries(pages) as [_, { name, link, visible }]}
           {#if visible}
-            {#if $page.url.pathname === link}
+            {#if $page.url.pathname.startsWith(link)}
               <a
                 class="transition-colors hover:text-foreground/80 text-foreground"
                 href={link}>

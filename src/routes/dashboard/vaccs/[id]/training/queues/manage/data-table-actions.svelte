@@ -3,7 +3,7 @@
   import { Button } from "$lib/components/ui/button";
   import { Copy, MoreHorizontal } from "lucide-svelte";
   import { page } from "$app/stores";
-  import {can} from "$lib/perms/can";
+  import { can } from "$lib/perms/can";
 
   export let id: string;
 </script>
@@ -30,10 +30,14 @@
 
     {#if can($page.data.roles, $page.params.id, $page.data.user.vaccId, `vacc.${$page.params.id}.training.queues.recommend`)}
       <DropdownMenu.Group>
-        <DropdownMenu.Item href="/dashboard/vaccs/{$page.params.id}/training/queues/{id}/recommend">
+        <DropdownMenu.Item
+          href="/dashboard/vaccs/{$page.params
+            .id}/training/queues/{id}/recommend">
           Recommend Student
         </DropdownMenu.Item>
-        <DropdownMenu.Item href="/dashboard/vaccs/{$page.params.id}/training/queues/{id}/complete">
+        <DropdownMenu.Item
+          href="/dashboard/vaccs/{$page.params
+            .id}/training/queues/{id}/complete">
           Mark Student Complete
         </DropdownMenu.Item>
       </DropdownMenu.Group>
@@ -44,17 +48,15 @@
     {#if can($page.data.roles, $page.params.id, $page.data.user.vaccId, `vacc.${$page.params.id}.training.queues.manage`)}
       <DropdownMenu.Group>
         <DropdownMenu.Item
-                href="/dashboard/vaccs/{$page.params.id}/training/queues/{id}/edit/">
+          href="/dashboard/vaccs/{$page.params.id}/training/queues/{id}/edit/">
           Edit details
         </DropdownMenu.Item>
         <DropdownMenu.Item
-                href="/dashboard/vaccs/{$page.params.id}/training/queues/{id}/delete/"
-                class="text-red-500 data-[highlighted]:bg-red-500/30 data-[highlighted]:text-red-500">
+          href="/dashboard/vaccs/{$page.params.id}/training/queues/{id}/delete/"
+          class="text-red-500 data-[highlighted]:bg-red-500/30 data-[highlighted]:text-red-500">
           Delete queue
         </DropdownMenu.Item>
       </DropdownMenu.Group>
     {/if}
-
-
   </DropdownMenu.Content>
 </DropdownMenu.Root>

@@ -18,9 +18,7 @@
     <Form.Item>
       <Form.Label>CID</Form.Label>
       <Form.Input autocomplete="off" />
-      <Form.Description>
-        CID of the user
-      </Form.Description>
+      <Form.Description>CID of the user</Form.Description>
       <Form.Validation />
     </Form.Item>
   </Form.Field>

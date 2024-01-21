@@ -149,7 +149,7 @@ export const GET: RequestHandler = async () => {
           roleIds: should_have_roles,
           vaccId: vacc,
           recommendedTrainingQueues: [],
-          completedTrainingQueues: []
+          completedTrainingQueues: [],
         },
       });
 

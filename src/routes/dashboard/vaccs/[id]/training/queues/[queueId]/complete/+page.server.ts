@@ -62,8 +62,8 @@ export const actions: Actions = {
       },
       data: {
         completedTrainingQueues: {
-          push: event.params.queueId
-        }
+          push: event.params.queueId,
+        },
       },
     });
 

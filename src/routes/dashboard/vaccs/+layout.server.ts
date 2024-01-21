@@ -1,9 +1,9 @@
-import type { PageServerLoad } from "./$types";
+import type { LayoutServerLoad } from "./$types";
 import { redirect } from "@sveltejs/kit";
 import prisma from "$lib/prisma";
 import { verifyToken } from "$lib/auth";
 
-export const load: PageServerLoad = async ({ cookies }) => {
+export const load: LayoutServerLoad = async ({ cookies }) => {
   if (!cookies.get("hq_token")) {
     redirect(301, "/");
   }
