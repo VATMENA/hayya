@@ -88,7 +88,6 @@
           str_name += "Enroute";
           color = "bg-fuchsia-500";
         }
-        valid_in = cert.issuedInId;
       } else if (parsed_position.p_typ === P_TYP.SuperCenter) {
         str_name += "Enroute (SuperCenter)";
         short_name += "SUPERCTR";
