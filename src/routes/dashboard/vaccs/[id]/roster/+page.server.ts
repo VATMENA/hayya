@@ -75,6 +75,14 @@ export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
 
   let vaccs = await prisma.vacc.findMany();
 
+  let all_roles = await prisma.role.findMany();
+
+  altered_roster = altered_roster.sort((a, b) => {
+    if (a.name < b.name) return -1;
+    else if (a.name > b.name) return 1;
+    else return 0;
+  });
+
   return {
     load_error: false,
     home_users: altered_roster,
@@ -82,6 +90,7 @@ export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
     user: user,
     roles: user_roles,
     form: await superValidate(formSchema),
+    all_roles: all_roles,
   };
 };
 

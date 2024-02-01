@@ -15,6 +15,41 @@
   export let user: User;
 
   let cert_issue_open = false;
+
+  async function toggleRole(
+    cid: string,
+    existing_roles: string[],
+    new_role: string,
+  ) {
+    let new_roles = [];
+    if (existing_roles.includes(new_role)) {
+      for (let item of existing_roles) {
+        if (item != new_role) {
+          new_roles.push(item);
+        }
+      }
+    } else {
+      new_roles = existing_roles;
+      new_roles.push(new_role);
+    }
+    let data = new URLSearchParams();
+    data.set("user", cid);
+    data.set("roles", new_roles.join(","));
+
+    let resp = await fetch("?/set_roles", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: data.toString(),
+    });
+    if (!resp.ok) {
+      throw new Error(
+        "server returned error response, see console for details",
+      );
+    }
+    await invalidateAll();
+  }
 </script>
 
 <DropdownMenu.Root>
@@ -46,6 +81,24 @@
         }}>
         Issue certificate
       </DropdownMenu.Item>
+    {/if}
+    {#if can($page.data.roles, $page.data.vacc_id, $page.data.user.vaccId, `vacc.${$page.data.vacc_id}.role.assign`)}
+      <DropdownMenu.Sub>
+        <DropdownMenu.SubTrigger>Toggle Roles</DropdownMenu.SubTrigger>
+        <DropdownMenu.SubContent>
+          <DropdownMenu.Label>Toggle Roles</DropdownMenu.Label>
+          <DropdownMenu.Separator />
+          {#each $page.data.all_roles as role}
+            <DropdownMenu.CheckboxItem
+              on:click={async () => {
+                await toggleRole(user.id, user.roleIds, role.id);
+              }}
+              checked={user.roleIds.includes(role.id)}>
+              {role.name}
+            </DropdownMenu.CheckboxItem>
+          {/each}
+        </DropdownMenu.SubContent>
+      </DropdownMenu.Sub>
     {/if}
   </DropdownMenu.Content>
 </DropdownMenu.Root>
