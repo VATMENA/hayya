@@ -1,27 +1,13 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import { can, canAny } from "$lib/perms/can";
-  import { Skeleton } from "$lib/components/ui/skeleton";
-  import {
-    ROLE_CONTROLLER_ID,
-    ROLE_DEVELOPER_ID,
-    ROLE_DIVISION_DIRECTOR_ID,
-    ROLE_DIVISION_STAFF_ID,
-    ROLE_MEMBER_ID,
-    ROLE_MENTOR_ID,
-    ROLE_VACC_DIRECTOR_ID,
-    ROLE_VACC_STAFF_ID,
-  } from "$lib/roles";
-  import { Badge } from "$lib/components/ui/badge";
-  import { Button } from "$lib/components/ui/button";
-  import * as Alert from "$lib/components/ui/alert";
-  import * as Tabs from "$lib/components/ui/tabs";
-  import * as Card from "$lib/components/ui/card";
-  import * as Table from "$lib/components/ui/table";
-  import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import { page } from "$app/stores";
+  import DataTable from "./data-table.svelte";
 
   export let data: PageData;
+
+  $: {
+    console.log(data);
+  }
 
   let error: string | null = null;
 
@@ -67,6 +53,9 @@
   </h2>
 </div>
 
+<DataTable data={data.home_users} />
+
+<!--
 <Alert.Root>
   <Alert.Title>Heads up!</Alert.Title>
   <Alert.Description>
@@ -110,7 +99,6 @@
     {/if}
     {#each data.home_users as user}
       {#if user.roleIds.length === 1 && user.roleIds[0] === ROLE_CONTROLLER_ID && user.vacc == null && user.ratingShort === "OBS"}
-        <!-- skip -->
       {:else}
         <Table.Row>
           <Table.Cell class="space-x-1">
@@ -215,3 +203,4 @@
     {/each}
   </Table.Body>
 </Table.Root>
+-->

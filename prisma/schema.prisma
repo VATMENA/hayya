@@ -30,6 +30,7 @@ model Vacc {
   User      User[]
 
   trainingQueues TrainingQueue[] @relation
+  Certificate    Certificate[]
 }
 
 model User {
@@ -46,12 +47,17 @@ model User {
   vacc   Vacc?   @relation(fields: [vaccId], references: [id])
   vaccId String?
 
-  trainingQueues TrainingQueueMembership[]
+  trainingQueues            TrainingQueueMembership[]
   recommendedTrainingQueues String[]
-  completedTrainingQueues String[]
+  completedTrainingQueues   String[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  heldCertificates    Certificate[] @relation(name: "heldCertificates")
+  grantedCertificates Certificate[] @relation(name: "grantedCertificates")
+
+  certificatesAlreadyGrandfathered Boolean @default(false)
 }
 
 model AuditLogEntry {
@@ -81,8 +87,8 @@ model TrainingQueue {
 }
 
 model TrainingQueueMembership {
-  user    User          @relation(fields: [userId], references: [id])
-  userId  String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
   queue   TrainingQueue @relation(fields: [queueId], references: [id])
   queueId String
@@ -90,4 +96,24 @@ model TrainingQueueMembership {
   joinedAt DateTime @default(now())
 
   @@id([userId, queueId])
+}
+
+model Certificate {
+  id BigInt @id @default(autoincrement())
+
+  holder   User   @relation(name: "heldCertificates", fields: [holderId], references: [id])
+  holderId String
+
+  instructor   User   @relation(name: "grantedCertificates", fields: [instructorId], references: [id])
+  instructorId String
+
+  position String // This is a restricted, standardized set of values. See src/lib/cert.ts
+  expires  DateTime?
+
+  instructorComments String
+
+  issuedIn   Vacc   @relation(fields: [issuedInId], references: [id])
+  issuedInId String
+
+  createdAt DateTime @default(now())
 }
