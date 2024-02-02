@@ -16,7 +16,7 @@
     UserRound,
   } from "lucide-svelte";
   import * as HoverCard from "$lib/components/ui/hover-card";
-  import {page} from "$app/stores";
+  import { page } from "$app/stores";
 
   export let cert: Certificate;
 
@@ -96,7 +96,9 @@
         valid_in = cert.issuedInId;
       }
     }
-    if (!valid_in) { valid_in = $page.data.vacc_id; }
+    if (!valid_in) {
+      valid_in = $page.data.vacc_id;
+    }
   }
 </script>
 

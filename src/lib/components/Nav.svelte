@@ -44,6 +44,11 @@
       link: "/dashboard/division/rosters",
       visible: true,
     },
+    resources: {
+      name: "Resources",
+      link: "/dashboard/division/resources",
+      visible: true,
+    },
   };
 
   const vacc_pages: Page = {
@@ -76,6 +81,11 @@
         $page.data.user.vaccId,
         `vacc.${$page.data.vacc_id}.details.edit`,
       ),
+    },
+    resources: {
+      name: "Resources",
+      link: `/dashboard/vaccs/${$page.data.vacc_id}/resources`,
+      visible: true,
     },
   };
 

@@ -14,8 +14,14 @@ vacc.own.training.queues.manage
 
 vacc.own.accessHq
 
+vacc.own.resource.manage
+vacc.own.resource.viewPrivate
+
 division.training.certificate.issue.solo
 division.training.certificate.issue.openskies
 
 division.training.certificate.revoke.solo
 division.training.certificate.revoke.openskies
+
+division.resource.manage
+division.resource.viewPrivate

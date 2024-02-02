@@ -31,6 +31,7 @@ model Vacc {
 
   trainingQueues TrainingQueue[] @relation
   Certificate    Certificate[]
+  Resource       Resource[]
 }
 
 model User {
@@ -116,4 +117,17 @@ model Certificate {
   issuedInId String
 
   createdAt DateTime @default(now())
+}
+
+model Resource {
+  id String @id
+
+  vacc   Vacc?   @relation(fields: [vaccId], references: [id])
+  vaccId String?
+
+  isStaffOnly Boolean
+
+  name        String
+  description String
+  link        String
 }

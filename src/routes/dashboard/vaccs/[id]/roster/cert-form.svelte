@@ -44,10 +44,14 @@
   let ptyp_req_perm = new Map();
   ptyp_req_perm.set(P_TYP.OpenSkies, has_openskies_permission);
 
-  export let onsubmit;
+  export let onsubmit: any;
 
   let options = {
-    onSubmit: onsubmit,
+    onUpdated: ({ form }) => {
+      if (form.valid) {
+        onsubmit();
+      }
+    },
   };
 </script>
 
@@ -68,7 +72,9 @@
             <Form.SelectContent>
               {#each Object.entries(c_typ_e) as [k, v]}
                 <Form.SelectItem
-                  disabled={ctyp_req_perm.has(v) ? !ctyp_req_perm.get(v) : false}
+                  disabled={ctyp_req_perm.has(v)
+                    ? !ctyp_req_perm.get(v)
+                    : false}
                   value={v}>
                   {k}
                 </Form.SelectItem>
@@ -86,7 +92,9 @@
             <Form.SelectContent>
               {#each Object.entries(p_typ_e) as [k, v]}
                 <Form.SelectItem
-                  disabled={ptyp_req_perm.has(v) ? !ptyp_req_perm.get(v) : false}
+                  disabled={ptyp_req_perm.has(v)
+                    ? !ptyp_req_perm.get(v)
+                    : false}
                   value={v}>
                   {k}
                 </Form.SelectItem>
