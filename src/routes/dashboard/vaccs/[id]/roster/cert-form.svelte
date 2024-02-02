@@ -68,7 +68,7 @@
             <Form.SelectContent>
               {#each Object.entries(c_typ_e) as [k, v]}
                 <Form.SelectItem
-                  disabled={ctyp_req_perm.has(v) ? ctyp_req_perm.get(v) : true}
+                  disabled={ctyp_req_perm.has(v) ? !ctyp_req_perm.get(v) : true}
                   value={v}>
                   {k}
                 </Form.SelectItem>
@@ -86,7 +86,7 @@
             <Form.SelectContent>
               {#each Object.entries(p_typ_e) as [k, v]}
                 <Form.SelectItem
-                  disabled={ptyp_req_perm.has(v) ? ptyp_req_perm.get(v) : true}
+                  disabled={ptyp_req_perm.has(v) ? !ptyp_req_perm.get(v) : true}
                   value={v}>
                   {k}
                 </Form.SelectItem>
