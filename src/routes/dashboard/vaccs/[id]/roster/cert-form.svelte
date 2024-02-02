@@ -75,9 +75,6 @@
               {/each}
             </Form.SelectContent>
           </Form.Select>
-          <Form.Description>
-            The certificate type of the certificate.
-          </Form.Description>
           <Form.Validation />
         </Form.Field>
       </Form.Item>
@@ -96,9 +93,6 @@
               {/each}
             </Form.SelectContent>
           </Form.Select>
-          <Form.Description>
-            The position type of the certificate.
-          </Form.Description>
           <Form.Validation />
         </Form.Field>
       </Form.Item>
@@ -108,9 +102,6 @@
         <Form.Field {config} name="facility">
           <Form.Label>Facility ICAO</Form.Label>
           <Form.Input />
-          <Form.Description>
-            Leave blank unless issuing a Tier1 or Tier2 certificate.
-          </Form.Description>
           <Form.Validation />
         </Form.Field>
       </Form.Item>
@@ -125,11 +116,6 @@
               {/each}
             </Form.SelectContent>
           </Form.Select>
-          <Form.Description>
-            Leave blank if issuing SuperCenter or Enroute certificates. Required
-            for all other certificates. Do not issue with P/TYP Enroute except
-            for OpenSkies certificates.
-          </Form.Description>
           <Form.Validation />
         </Form.Field>
       </Form.Item>
@@ -142,10 +128,6 @@
         <Form.Textarea
           placeholder="Any additional comments or restrictions"
           class="resize-none" />
-        <Form.Description>
-          These comments will be attached to your notarization of this
-          certificate.
-        </Form.Description>
         <Form.Validation />
       </Form.Item>
     </Form.Field>
@@ -153,12 +135,7 @@
 
   <input type="hidden" name="id" value={user.id} />
 
-  <DatePicker
-    {config}
-    label="Solo Expiry"
-    class=""
-    name="solo_expires"
-    description="Leave blank unless issuing solo certificate" />
+  <DatePicker {config} />
 
   <Form.Button class="w-full">Issue Certificate</Form.Button>
 </Form.Root>
