@@ -1,11 +1,14 @@
 <script lang="ts">
   import * as Card from "$lib/components/ui/card";
   import { Progress } from "$lib/components/ui/progress";
-  import { Button } from "$lib/components/ui/button";
-  import { LogInIcon, LogOutIcon, SettingsIcon } from "lucide-svelte";
-  import { canAny } from "$lib/perms/can";
+  import {Button, buttonVariants} from "$lib/components/ui/button";
+  import {LogInIcon, LogOutIcon, PlusIcon, ScrollTextIcon, SettingsIcon} from "lucide-svelte";
+  import {can, canAny} from "$lib/perms/can";
   import { page } from "$app/stores";
+  import * as Dialog from "$lib/components/ui/dialog";
   import type { PageData } from "./$types";
+  import {Label} from "$lib/components/ui/label";
+  import {Input} from "$lib/components/ui/input";
 
   export let data: PageData;
 </script>
@@ -14,7 +17,7 @@
   <h2 class="text-3xl font-bold tracking-tight">Training</h2>
 </div>
 
-<div class="grid grid-cols-3">
+<div class="grid grid-cols-3 gap-4">
   <div>
     <Card.Root>
       <Card.Header>
@@ -51,4 +54,48 @@
       </Card.Content>
     </Card.Root>
   </div>
+  <div class="grid gap-4">
+    <Card.Root>
+      <Card.Header>
+        <Card.Title>My Sessions</Card.Title>
+      </Card.Header>
+      <Card.Content class="space-y-1.5">
+        <p>You have not received any sessions in this vACC yet.</p>
+      </Card.Content>
+    </Card.Root>
+    <Card.Root>
+      <Card.Header>
+        <Card.Title>Mentorship</Card.Title>
+      </Card.Header>
+      <Card.Content class="space-y-1.5">
+        {#if can($page.data.roles, $page.data.vaccId, $page.data.user.vaccId, `vacc.${$page.data.vaccId}.training.train`)}
+          <Button>
+            <PlusIcon class="mr-2 w-4 h-4" />
+            Create Session
+          </Button>
+
+          <Dialog.Root>
+            <Dialog.Trigger class={buttonVariants()}>
+              <ScrollTextIcon class="mr-2 w-4 h-4" />
+              Open a Student's Transcript
+            </Dialog.Trigger>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title>View Student Transcript</Dialog.Title>
+                <Dialog.Description>This transcript contains <i>all training data ever</i> for this student in this vACC. This information should be considered confidential.</Dialog.Description>
+              </Dialog.Header>
+              <div class="grid gap-4 py-4">
+                <Label for="cid">CID</Label>
+                <Input id="cid" placeholder="1710004" class="col-span-2" />
+              </div>
+              <Dialog.Footer>
+                <Button type="submit">View Transcript</Button>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Root>
+        {/if}
+      </Card.Content>
+    </Card.Root>
+  </div>
 </div>
+

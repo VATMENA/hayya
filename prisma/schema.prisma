@@ -59,6 +59,9 @@ model User {
   grantedCertificates Certificate[] @relation(name: "grantedCertificates")
 
   certificatesAlreadyGrandfathered Boolean @default(false)
+
+  receivedSessions Session[] @relation(name: "receivedSessions")
+  taughtSessions   Session[] @relation(name: "taughtSessions")
 }
 
 model AuditLogEntry {
@@ -130,4 +133,24 @@ model Resource {
   name        String
   description String
   link        String
+}
+
+model Session {
+  id String @id
+
+  student   User   @relation(name: "receivedSessions", fields: [studentId], references: [id])
+  studentId String
+
+  instructor   User   @relation(name: "taughtSessions", fields: [instructorId], references: [id])
+  instructorId String
+
+  sessionType String
+
+  date DateTime
+
+  studentComments    String
+  instructorComments String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

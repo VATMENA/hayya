@@ -12,6 +12,8 @@ vacc.own.training.certificate.revoke
 vacc.own.training.queues.recommend
 vacc.own.training.queues.manage
 
+vacc.own.training.train
+
 vacc.own.accessHq
 
 vacc.own.resource.manage
