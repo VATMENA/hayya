@@ -38,6 +38,7 @@ export function canAny(
       return true;
     }
   }
+  return false;
 }
 
 export function canAll(

@@ -11,10 +11,12 @@
   import {Input} from "$lib/components/ui/input";
   import SessionForm from "./session-form.svelte";
   import {toast} from "svelte-sonner";
+  import {goto} from "$app/navigation";
 
   export let data: PageData;
 
   let sessionOpen = false;
+  let viewTranscriptId = "";
 </script>
 
 <div class="flex items-center justify-between space-y-2">
@@ -30,11 +32,9 @@
       <Card.Content class="space-y-1.5">
         {#if data.memberOfQueue !== null}
           <p>
-            Enrolled in the <b>Basic/S1</b>
+            Enrolled in the <b>{data.memberOfQueue.name}</b>
             queue.
           </p>
-          <Progress value={(177 / 300) * 100} />
-          <p class="text-xs text-foreground/60">Position #177 in the queue</p>
           <Button
             href="/dashboard/vaccs/{$page.params.id}/training/queues/{data
               .memberOfQueue.id}/leave">
@@ -61,10 +61,13 @@
   <div class="grid gap-4">
     <Card.Root>
       <Card.Header>
-        <Card.Title>My Sessions</Card.Title>
+        <Card.Title>My Transcript</Card.Title>
       </Card.Header>
       <Card.Content class="space-y-1.5">
-        <p>You have not received any sessions in this vACC yet.</p>
+        <Button href="/dashboard/vaccs/{$page.params.id}/training/transcript/{$page.data.user.id}">
+          <ScrollTextIcon class="mr-2 w-4 h-4" />
+          My Training Transcript
+        </Button>
       </Card.Content>
     </Card.Root>
     <Card.Root>
@@ -90,10 +93,10 @@
               </Dialog.Header>
               <div class="grid gap-4 py-4">
                 <Label for="cid">CID</Label>
-                <Input id="cid" placeholder="1710004" class="col-span-2" />
+                <Input bind:value={viewTranscriptId} id="cid" placeholder="1710004" class="col-span-2" />
               </div>
               <Dialog.Footer>
-                <Button type="submit">View Transcript</Button>
+                <Button href="/dashboard/vaccs/{$page.params.id}/training/transcript/{viewTranscriptId}">View Transcript</Button>
               </Dialog.Footer>
             </Dialog.Content>
           </Dialog.Root>

@@ -2,6 +2,7 @@ import { verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { redirect } from "@sveltejs/kit";
 import type { LayoutServerLoad } from "./$types";
+import type {Role} from "@prisma/client";
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
   if (!cookies.get("hq_token")) {
@@ -32,18 +33,17 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
     },
   });
 
-  let roles = [];
+  let roles: Role[] = [];
 
   if (!user) {
     redirect(307, "/");
   }
 
   for (let roleId of user.roleIds) {
-    roles.push(
-      await prisma.role.findUnique({
-        where: { id: roleId },
-      }),
-    );
+    let role = await prisma.role.findUnique({where: { id: roleId }});
+    if (role) {
+      roles.push(role);
+    }
   }
 
   return {

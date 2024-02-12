@@ -11,7 +11,7 @@
     Sun,
     Moon,
     SunMoon,
-    ServerCog,
+    ServerCog, BookIcon,
   } from "lucide-svelte";
   import { setMode, resetMode } from "mode-watcher";
   import { can } from "$lib/perms/can";
@@ -253,6 +253,10 @@
             <DropdownMenu.Item href="/dashboard/api">
               <Cloud class="mr-2 h-4 w-4" />
               <span>API</span>
+            </DropdownMenu.Item>
+            <DropdownMenu.Item href="https://docs.hayya.vatsim.me">
+              <BookIcon class="mr-2 h-4 w-4" />
+              <span>Documentation</span>
             </DropdownMenu.Item>
           </DropdownMenu.Group>
 
