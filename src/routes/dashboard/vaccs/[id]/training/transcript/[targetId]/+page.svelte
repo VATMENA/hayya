@@ -2,6 +2,7 @@
     import type {PageData} from "./$types";
     import {CalendarDate} from "@internationalized/date";
     import * as Accordion from "$lib/components/ui/accordion";
+    import Markdown from "$lib/components/Markdown.svelte";
 
     export let data: PageData;
 
@@ -26,15 +27,15 @@
                 <div class="grid-cols-{data.isMentor ? '2' : '1'} grid gap-4">
                     <div>
                         <p class="font-semibold text-foreground/40">COMMENTS</p>
-                        <div class="mt-2 relative rounded bg-muted p-[0.5rem] font-mono text-sm font-semibold mb-5 overflow-auto h-[150px]">
-                            <pre>{session.studentComments}</pre>
+                        <div class="mt-2 relative rounded bg-muted p-[0.5rem] text-sm mb-5 overflow-auto h-[150px]">
+                            <Markdown src={session.studentComments} />
                         </div>
                     </div>
                     {#if data.isMentor}
                         <div>
                             <p class="font-semibold text-foreground/40">PRIVATE MENTOR NOTES</p>
-                            <div class="mt-2 relative rounded bg-muted p-[0.5rem] font-mono text-sm font-semibold mb-5 overflow-auto h-[150px]">
-                                <pre>{session.instructorComments}</pre>
+                            <div class="mt-2 relative rounded bg-muted p-[0.5rem] text-sm mb-5 overflow-auto h-[150px]">
+                                <Markdown src={session.instructorComments} />
                             </div>
                         </div>
                     {/if}

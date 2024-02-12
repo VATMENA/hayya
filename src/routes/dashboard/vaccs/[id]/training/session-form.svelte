@@ -44,7 +44,7 @@
                             class="resize-none"
                     />
                     <Form.Description>
-                        These comments will be visible to the student and other mentors.
+                        These comments will be visible to the student and other mentors. You can use Markdown to add links and styles.
                     </Form.Description>
                     <Form.Validation />
                 </Form.Item>
@@ -57,7 +57,7 @@
                             class="resize-none"
                     />
                     <Form.Description>
-                        These comments will be visible only to other mentors.
+                        These comments will be visible only to other mentors. You can use Markdown to add links and styles.
                     </Form.Description>
                     <Form.Validation />
                 </Form.Item>
