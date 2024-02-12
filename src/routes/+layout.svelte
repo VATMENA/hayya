@@ -5,6 +5,7 @@
   import { toast } from "svelte-sonner";
   import { getFlash } from "sveltekit-flash-message";
   import { page } from "$app/stores";
+  import {version} from "$app/environment";
 
   const flash = getFlash(page);
 
@@ -32,6 +33,11 @@
   class="h-screen flex flex-col p-6 space-y-4 bg-[url('/sunset2.jpg')] bg-cover bg-no-repeat items-center justify-center">
   <slot />
 </div>
+
+<p class="text-xs fixed left-1 bottom-1">
+  Hayya {version}
+</p>
+
 
 <p class="text-xs fixed right-1 bottom-1">
   Made with &lt;3 by core, sharif_, and liam
