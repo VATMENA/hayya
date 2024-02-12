@@ -70,7 +70,7 @@ export const formSchema = z
       });
     }
     if (
-      (data.p_typ === P_TYP.Tier1 || data.p_typ === P_TYP.Tier2) &&
+      (data.p_typ === P_TYP.Tier1 || data.p_typ === P_TYP.Tier2 || data.p_typ === P_TYP.Specific) &&
       !data.pos
     ) {
       ctx.addIssue({
@@ -80,7 +80,7 @@ export const formSchema = z
       });
     }
     if (
-      (data.p_typ === P_TYP.Tier1 || data.p_typ === P_TYP.Tier2) &&
+      (data.p_typ === P_TYP.Tier1 || data.p_typ === P_TYP.Tier2 || data.p_typ === P_TYP.Specific) &&
       !data.facility
     ) {
       ctx.addIssue({

@@ -48,6 +48,7 @@
         parsed_position.p_typ === P_TYP.Unrestricted ||
         parsed_position.p_typ === P_TYP.Tier1 ||
         parsed_position.p_typ === P_TYP.Tier2 ||
+              parsed_position.p_typ === P_TYP.Specific ||
         parsed_position.p_typ === P_TYP.OpenSkies
       ) {
         if (parsed_position.p_typ === P_TYP.Tier1) {
@@ -57,6 +58,10 @@
           valid_in = cert.issuedInId;
         } else if (parsed_position.p_typ === P_TYP.Tier2) {
           str_name += "Tier 2 ";
+          short_name += parsed_position.facility;
+          short_name += "-";
+          valid_in = cert.issuedInId;
+        } else if (parsed_position.p_typ === P_TYP.Specific) {
           short_name += parsed_position.facility;
           short_name += "-";
           valid_in = cert.issuedInId;

@@ -8,6 +8,7 @@ export enum P_TYP {
   Unrestricted = "AFUR",
   Tier1 = "AFT1",
   Tier2 = "AFT2",
+  Specific = "AFSP",
   Enroute = "ENRT",
 }
 export enum POS {
@@ -40,7 +41,7 @@ export function validate_position_v2(pos: PositionV2): boolean {
   }
   // T1 & T2 must have a position and facility set
   return !(
-    (pos.p_typ === P_TYP.Tier1 || pos.p_typ === P_TYP.Tier2) &&
+    (pos.p_typ === P_TYP.Tier1 || pos.p_typ === P_TYP.Tier2 || pos.p_typ === P_TYP.Specific) &&
     (pos.position === null || pos.facility === null)
   );
 }
@@ -92,7 +93,7 @@ export function parse_position_v2(input: string): PositionV2 | null {
     return { c_typ, p_typ, facility: null, position: pos };
   }
   // {SOLO,PERM}-{AFT1,AFT2}-ICAO-{DEL,GND,TWR,APP}
-  if (p_typ === P_TYP.Tier1 || p_typ === P_TYP.Tier2) {
+  if (p_typ === P_TYP.Tier1 || p_typ === P_TYP.Tier2 || p_typ === P_TYP.Specific) {
     if (split.length < 4) return null;
 
     let facility_icao = split[2];
