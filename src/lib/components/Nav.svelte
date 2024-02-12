@@ -51,10 +51,6 @@
     },
   };
 
-  console.log("JUSTIN - PERMISSIONS DEBUG!!");
-  console.log($page.data.roles, $page.data.vacc_id, $page.data.user.vaccId, `vacc.${$page.data.vacc_id}.accessHq`, can($page.data.roles, $page.data.vacc_id, $page.data.user.vaccId, `vacc.${$page.data.vacc_id}.accessHq`));
-  console.log("END PERMISSIONS DEBUG");
-
   const vacc_pages: Page = {
     training: {
       name: "Training",

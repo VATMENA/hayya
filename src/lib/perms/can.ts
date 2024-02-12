@@ -19,7 +19,7 @@ export function can(
     if (targetVacc == userVacc) {
       real_perm = perm.replace("vacc.own", `vacc.${targetVacc}`);
     }
-    if (minimatch(req_perm, perm)) {
+    if (minimatch(req_perm, real_perm)) {
       return true;
     }
   }

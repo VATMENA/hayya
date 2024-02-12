@@ -9,8 +9,12 @@
   import type { PageData } from "./$types";
   import {Label} from "$lib/components/ui/label";
   import {Input} from "$lib/components/ui/input";
+  import SessionForm from "./session-form.svelte";
+  import {toast} from "svelte-sonner";
 
   export let data: PageData;
+
+  let sessionOpen = false;
 </script>
 
 <div class="flex items-center justify-between space-y-2">
@@ -69,9 +73,9 @@
       </Card.Header>
       <Card.Content class="space-y-1.5">
         {#if can($page.data.roles, $page.data.vaccId, $page.data.user.vaccId, `vacc.${$page.data.vaccId}.training.train`)}
-          <Button>
+          <Button on:click={() => {sessionOpen = true}}>
             <PlusIcon class="mr-2 w-4 h-4" />
-            Create Session
+            Log Session
           </Button>
 
           <Dialog.Root>
@@ -99,3 +103,13 @@
   </div>
 </div>
 
+{#if can($page.data.roles, $page.data.vaccId, $page.data.user.vaccId, `vacc.${$page.data.vaccId}.training.train`)}
+  <Dialog.Root bind:open={sessionOpen} >
+    <Dialog.Content class="max-w-[50vw]">
+      <Dialog.Header>
+        <Dialog.Title>Log Training Session</Dialog.Title>
+      </Dialog.Header>
+      <SessionForm form={data.form} onsubmit={() => {sessionOpen = false; toast.success('Session has been saved to the student\'s transcript')}} />
+    </Dialog.Content>
+  </Dialog.Root>
+{/if}
