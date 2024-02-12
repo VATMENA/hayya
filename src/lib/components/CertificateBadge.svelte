@@ -48,7 +48,7 @@
         parsed_position.p_typ === P_TYP.Unrestricted ||
         parsed_position.p_typ === P_TYP.Tier1 ||
         parsed_position.p_typ === P_TYP.Tier2 ||
-              parsed_position.p_typ === P_TYP.Specific ||
+        parsed_position.p_typ === P_TYP.Specific ||
         parsed_position.p_typ === P_TYP.OpenSkies
       ) {
         if (parsed_position.p_typ === P_TYP.Tier1) {

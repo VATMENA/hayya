@@ -1,8 +1,8 @@
 import type { PageServerLoad } from "./$types";
-import { redirect } from "@sveltejs/kit";
+import { redirect } from "sveltekit-flash-message/server";
 import prisma from "$lib/prisma";
 
-export const load: PageServerLoad = async ({ params, parent }) => {
+export const load: PageServerLoad = async ({ params, parent, cookies }) => {
   let { user } = await parent();
 
   let queue = await prisma.trainingQueue.findUnique({
@@ -33,8 +33,18 @@ export const load: PageServerLoad = async ({ params, parent }) => {
         userId: user!.id,
       },
     });
-    redirect(301, `/dashboard/vaccs/${params.id}/training`);
+    redirect(
+      301,
+      `/dashboard/vaccs/${params.id}/training`,
+      { type: "success", message: "Joined training queue successfully" },
+      cookies,
+    );
   } else {
-    redirect(301, `/dashboard/vaccs/${params.id}/training/queues`);
+    redirect(
+      301,
+      `/dashboard/vaccs/${params.id}/training/queues`,
+      { type: "error", message: "You aren't allowed to join that queue" },
+      cookies,
+    );
   }
 };

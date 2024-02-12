@@ -1,7 +1,8 @@
 import type { PageServerLoad, Actions } from "./$types";
 import { superValidate } from "sveltekit-superforms/server";
 import { formSchema } from "./schema";
-import { fail, redirect } from "@sveltejs/kit";
+import { fail } from "@sveltejs/kit";
+import { redirect } from "sveltekit-flash-message/server";
 import prisma from "$lib/prisma";
 import type { TrainingQueue } from "@prisma/client";
 import { ulid } from "ulid";
@@ -18,12 +19,22 @@ export const load: PageServerLoad = async ({ params }) => {
 export const actions: Actions = {
   default: async (event) => {
     if (!event.cookies.get("hq_token")) {
-      redirect(301, "/");
+      redirect(
+        301,
+        "/",
+        { type: "error", message: "You need to be logged in for that" },
+        event,
+      );
     }
     let token = event.cookies.get("hq_token")!;
     let maybe_cid = verifyToken(token);
     if (maybe_cid === null) {
-      redirect(301, "/");
+      redirect(
+        301,
+        "/",
+        { type: "error", message: "You need to be logged in for that" },
+        event,
+      );
     }
     let user = await prisma.user.findUnique({
       where: {
@@ -40,7 +51,12 @@ export const actions: Actions = {
         `vacc.${event.params.id}.training.queues.manage`,
       )
     ) {
-      redirect(301, `/dashboard/vaccs/${event.params.id}`);
+      redirect(
+        301,
+        `/dashboard/vaccs/${event.params.id}`,
+        { type: "error", message: "You don't have permission to do that." },
+        event,
+      );
     }
 
     const form = await superValidate(event, formSchema);
@@ -58,6 +74,11 @@ export const actions: Actions = {
       },
     });
 
-    redirect(307, `/dashboard/vaccs/${event.params.id}/training/queues/manage`);
+    redirect(
+      307,
+      `/dashboard/vaccs/${event.params.id}/training/queues/manage`,
+      { type: "success", message: "Queue created successfully" },
+      event,
+    );
   },
 };

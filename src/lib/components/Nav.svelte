@@ -11,7 +11,8 @@
     Sun,
     Moon,
     SunMoon,
-    ServerCog, BookIcon,
+    ServerCog,
+    BookIcon,
   } from "lucide-svelte";
   import { setMode, resetMode } from "mode-watcher";
   import { can } from "$lib/perms/can";

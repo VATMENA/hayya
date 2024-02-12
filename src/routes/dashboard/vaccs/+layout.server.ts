@@ -1,16 +1,26 @@
 import type { LayoutServerLoad } from "./$types";
-import { redirect } from "@sveltejs/kit";
+import { redirect } from "sveltekit-flash-message/server";
 import prisma from "$lib/prisma";
 import { verifyToken } from "$lib/auth";
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
   if (!cookies.get("hq_token")) {
-    redirect(301, "/");
+    redirect(
+      301,
+      "/",
+      { type: "error", message: "You need to be logged in for that" },
+      cookies,
+    );
   }
   let token = cookies.get("hq_token")!;
   let maybe_cid = verifyToken(token);
   if (maybe_cid === null) {
-    redirect(301, "/");
+    redirect(
+      301,
+      "/",
+      { type: "error", message: "You need to be logged in for that" },
+      cookies,
+    );
   }
   let user = await prisma.user.findUnique({
     where: {
@@ -18,7 +28,12 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
     },
   })!;
   if (!user) {
-    redirect(307, "/");
+    redirect(
+      301,
+      "/",
+      { type: "error", message: "You need to be logged in for that" },
+      cookies,
+    );
   }
 
   let vaccs = await prisma.vacc.findMany();

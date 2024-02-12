@@ -2,6 +2,26 @@
   import "../app.pcss";
   import { ModeWatcher } from "mode-watcher";
   import { Toaster } from "$lib/components/ui/sonner";
+  import { toast } from "svelte-sonner";
+  import { getFlash } from "sveltekit-flash-message";
+  import { page } from "$app/stores";
+
+  const flash = getFlash(page);
+
+  $: if ($flash) {
+    if ($flash.type === "success") {
+      toast.success($flash.message);
+    } else if ($flash.type === "info") {
+      toast.info($flash.message);
+    } else if ($flash.type === "warning") {
+      toast.info($flash.message);
+    } else if ($flash.type === "error") {
+      toast.error($flash.message);
+    }
+
+    // Clear the flash message to avoid double-toasting.
+    $flash = undefined;
+  }
 </script>
 
 <!-- Dark mode -->

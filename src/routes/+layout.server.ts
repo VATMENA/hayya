@@ -1,10 +1,11 @@
 import { verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
-import { redirect } from "@sveltejs/kit";
+import { redirect } from "sveltekit-flash-message/server";
 import type { LayoutServerLoad } from "./$types";
-import type {Role} from "@prisma/client";
+import type { Role } from "@prisma/client";
+import { loadFlash } from "sveltekit-flash-message/server";
 
-export const load: LayoutServerLoad = async ({ cookies }) => {
+export const load: LayoutServerLoad = loadFlash(async ({ cookies }) => {
   if (!cookies.get("hq_token")) {
     return {
       loggedin: false,
@@ -36,11 +37,16 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
   let roles: Role[] = [];
 
   if (!user) {
-    redirect(307, "/");
+    redirect(
+      301,
+      "/",
+      { type: "error", message: "You need to be logged in for that" },
+      cookies,
+    );
   }
 
   for (let roleId of user.roleIds) {
-    let role = await prisma.role.findUnique({where: { id: roleId }});
+    let role = await prisma.role.findUnique({ where: { id: roleId } });
     if (role) {
       roles.push(role);
     }
@@ -51,4 +57,4 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
     user: user,
     roles: roles,
   };
-};
+});

@@ -1,5 +1,5 @@
 import type { PageServerLoad } from "./$types";
-import { redirect } from "@sveltejs/kit";
+import { redirect } from "sveltekit-flash-message/server";
 import {
   PUBLIC_VATSIM_OAUTH_ENDPOINT,
   PUBLIC_VATSIM_OAUTH_CLIENT_ID,
@@ -102,5 +102,10 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 
   let token = makeToken(user_details.cid);
   cookies.set("hq_token", token, { path: "/" });
-  redirect(301, "/switch_hq");
+  redirect(
+    301,
+    "/switch_hq",
+    { type: "success", message: "Logged in! Please select a HQ." },
+    cookies,
+  );
 };

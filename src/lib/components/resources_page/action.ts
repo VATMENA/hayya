@@ -1,6 +1,7 @@
 import { superValidate } from "sveltekit-superforms/server";
 import { formSchema } from "./schema";
-import { fail, redirect } from "@sveltejs/kit";
+import { fail } from "@sveltejs/kit";
+import { redirect } from "sveltekit-flash-message/server";
 import { can } from "$lib/perms/can";
 import { verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
@@ -16,12 +17,22 @@ export async function handleResourceSubmit(event: any, vaccId: string | null) {
   }
 
   if (!event.cookies.get("hq_token")) {
-    redirect(301, "/");
+    redirect(
+      301,
+      "/",
+      { type: "error", message: "You need to be logged in for that" },
+      event,
+    );
   }
   let token = event.cookies.get("hq_token")!;
   let maybe_cid = verifyToken(token);
   if (maybe_cid === null) {
-    redirect(301, "/");
+    redirect(
+      301,
+      "/",
+      { type: "error", message: "You need to be logged in for that" },
+      event,
+    );
   }
   let user = await prisma.user.findUnique({
     where: {

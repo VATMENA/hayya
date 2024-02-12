@@ -1,5 +1,6 @@
 import type { PageServerLoad, Actions } from "./$types";
-import { fail, redirect } from "@sveltejs/kit";
+import { fail } from "@sveltejs/kit";
+import { redirect } from "sveltekit-flash-message/server";
 import { verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
 import type { User } from "@prisma/client";
@@ -18,12 +19,22 @@ import { parseDate } from "@internationalized/date";
 
 export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
   if (!cookies.get("hq_token")) {
-    redirect(301, "/");
+    redirect(
+      301,
+      "/",
+      { type: "error", message: "You need to be logged in for that" },
+      cookies,
+    );
   }
   let token = cookies.get("hq_token")!;
   let maybe_cid = verifyToken(token);
   if (maybe_cid === null) {
-    redirect(301, "/");
+    redirect(
+      301,
+      "/",
+      { type: "error", message: "You need to be logged in for that" },
+      cookies,
+    );
   }
   let user = await prisma.user.findUnique({
     where: {
@@ -97,12 +108,22 @@ export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
 export const actions = {
   set_roles: async ({ cookies, request }) => {
     if (!cookies.get("hq_token")) {
-      redirect(301, "/");
+      redirect(
+        301,
+        "/",
+        { type: "error", message: "You need to be logged in for that" },
+        cookies,
+      );
     }
     let token = cookies.get("hq_token")!;
     let maybe_cid = verifyToken(token);
     if (maybe_cid === null) {
-      redirect(301, "/");
+      redirect(
+        301,
+        "/",
+        { type: "error", message: "You need to be logged in for that" },
+        cookies,
+      );
     }
     let user = await prisma.user.findUnique({
       where: {
@@ -157,12 +178,22 @@ export const actions = {
     console.log(form.data);
 
     if (!event.cookies.get("hq_token")) {
-      redirect(301, "/");
+      redirect(
+        301,
+        "/",
+        { type: "error", message: "You need to be logged in for that" },
+        event,
+      );
     }
     let token = event.cookies.get("hq_token")!;
     let maybe_cid = verifyToken(token);
     if (maybe_cid === null) {
-      redirect(301, "/");
+      redirect(
+        301,
+        "/",
+        { type: "error", message: "You need to be logged in for that" },
+        event,
+      );
     }
     let user = await prisma.user.findUnique({
       where: {
