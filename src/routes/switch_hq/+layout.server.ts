@@ -46,7 +46,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
   let shown_vaccs = [];
 
   for (let vacc of vaccs) {
-    if (can(user_roles, vacc.id, user.vaccId, "vacc.own.accessHq")) {
+    if (can(user_roles!, vacc.id, user.vaccId, `vacc.${vacc.id}.accessHq`)) {
       shown_vaccs.push(vacc);
     }
   }
