@@ -1,15 +1,5 @@
 <script lang="ts">
   import Nav from "$lib/components/Nav.svelte";
-  import type { LayoutData } from "./$types";
-  import { onMount } from "svelte";
-
-  export let data: LayoutData;
-
-  onMount(() => {
-    if (!data.loggedin) {
-      window.location.href = "/";
-    }
-  });
 </script>
 
 <Nav />

@@ -5,7 +5,7 @@
   import { toast } from "svelte-sonner";
   import { getFlash } from "sveltekit-flash-message";
   import { page } from "$app/stores";
-  import {version} from "$app/environment";
+  import { version } from "$app/environment";
 
   const flash = getFlash(page);
 
@@ -37,7 +37,6 @@
 <p class="text-xs fixed left-1 bottom-1">
   Hayya {version}
 </p>
-
 
 <p class="text-xs fixed right-1 bottom-1">
   Made with &lt;3 by core, sharif_, and liam

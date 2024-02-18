@@ -27,11 +27,12 @@ model Vacc {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  User      User[]
+  users     User[]   @relation()
 
   trainingQueues TrainingQueue[] @relation
-  Certificate    Certificate[]
-  Resource       Resource[]
+  certificates   Certificate[]   @relation
+  resources      Resource[]      @relation
+  events         Event[]         @relation
 }
 
 model User {
@@ -62,6 +63,9 @@ model User {
 
   receivedSessions Session[] @relation(name: "receivedSessions")
   taughtSessions   Session[] @relation(name: "taughtSessions")
+
+  eventSignups     EventSignup[]     @relation
+  eventAssignments EventAssignment[] @relation
 }
 
 model AuditLogEntry {
@@ -153,4 +157,68 @@ model Session {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Event {
+  id String @id
+
+  name String
+
+  host   Vacc   @relation(fields: [hostId], references: [id])
+  hostId String
+
+  start DateTime
+  end   DateTime
+
+  description String
+
+  bannerUrl       String
+  bannerBlurHash  String
+
+  positions String[]
+
+  public       Boolean
+  allowSignups Boolean
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  signups     EventSignup[]     @relation
+  assignments EventAssignment[] @relation
+}
+
+model EventSignup {
+  id String @id
+
+  event   Event  @relation(fields: [eventId], references: [id])
+  eventId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  desiredPosition String
+
+  availableFrom DateTime
+  availableTo   DateTime
+
+  comments String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EventAssignment {
+  id String @id
+
+  event   Event  @relation(fields: [eventId], references: [id])
+  eventId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  assignedPosition String
+  positionDetails  String
+
+  startTime DateTime
+  endTime   DateTime
 }

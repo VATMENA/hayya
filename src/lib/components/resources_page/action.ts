@@ -3,7 +3,7 @@ import { formSchema } from "./schema";
 import { fail } from "@sveltejs/kit";
 import { redirect } from "sveltekit-flash-message/server";
 import { can } from "$lib/perms/can";
-import { verifyToken } from "$lib/auth";
+import { loadUserData, verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { getUserRoles } from "$lib/perms/getUserRoles";
 import { ulid } from "ulid";
@@ -16,34 +16,11 @@ export async function handleResourceSubmit(event: any, vaccId: string | null) {
     });
   }
 
-  if (!event.cookies.get("hq_token")) {
-    redirect(
-      301,
-      "/",
-      { type: "error", message: "You need to be logged in for that" },
-      event,
-    );
-  }
-  let token = event.cookies.get("hq_token")!;
-  let maybe_cid = verifyToken(token);
-  if (maybe_cid === null) {
-    redirect(
-      301,
-      "/",
-      { type: "error", message: "You need to be logged in for that" },
-      event,
-    );
-  }
-  let user = await prisma.user.findUnique({
-    where: {
-      id: maybe_cid!,
-    },
-  })!;
-  let user_roles = await getUserRoles(user!.id);
+  let { user, roles } = await loadUserData(event.cookies);
 
   let hasEdit = vaccId
-    ? can(user_roles!, vaccId, user!.vaccId, `vacc.${vaccId}.resource.manage`)
-    : can(user_roles!, vaccId, user!.vaccId, `division.resource.manage`);
+    ? can(roles, vaccId, user.vaccId, `vacc.${vaccId}.resource.manage`)
+    : can(roles, vaccId, user.vaccId, `division.resource.manage`);
 
   if (!hasEdit) {
     return fail(403, {

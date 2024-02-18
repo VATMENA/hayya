@@ -2,17 +2,28 @@ import type { Role } from "@prisma/client";
 import { minimatch } from "minimatch";
 
 export interface PermissionTrace {
+  roles: Role[];
+  targetVacc: string | null;
+  userVacc: string | null;
+  req_perm: string;
+  all_permissions: string[];
+  outcome: boolean;
+  because: string;
+  checked_perms: {
+    original: string;
+    replaced: string;
+    was_replaced: boolean;
+    req_perm: string;
+    matched: boolean;
+  }[];
+}
+
+export function _can(
   roles: Role[],
   targetVacc: string | null,
   userVacc: string | null,
   req_perm: string,
-  all_permissions: string[]
-  outcome: boolean,
-  because: string,
-  checked_perms: { original: string, replaced: string, was_replaced: boolean, req_perm: string, matched: boolean }[]
-}
-
-export function _can(roles: Role[], targetVacc: string | null, userVacc: string | null, req_perm: string): [boolean, PermissionTrace] {
+): [boolean, PermissionTrace] {
   let trace: PermissionTrace = {
     roles,
     targetVacc,
@@ -21,7 +32,7 @@ export function _can(roles: Role[], targetVacc: string | null, userVacc: string 
     all_permissions: [],
     outcome: false,
     because: "not yet evaluated",
-    checked_perms: []
+    checked_perms: [],
   };
 
   if (roles === null || roles === undefined) {
@@ -44,8 +55,8 @@ export function _can(roles: Role[], targetVacc: string | null, userVacc: string 
       replaced: "",
       req_perm,
       matched: false,
-      was_replaced: false
-    }
+      was_replaced: false,
+    };
     let real_perm = perm;
     if (targetVacc == userVacc) {
       traceperm.was_replaced = true;

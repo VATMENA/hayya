@@ -1,11 +1,11 @@
 import adapter from "@sveltejs/adapter-auto";
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 
-import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
 
-const file = fileURLToPath(new URL('package.json', import.meta.url));
-const json = readFileSync(file, 'utf8');
+const file = fileURLToPath(new URL("package.json", import.meta.url));
+const json = readFileSync(file, "utf8");
 const pkg = JSON.parse(json);
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -23,8 +23,8 @@ const config = {
       checkOrigin: process.env.NODE_ENV !== "development",
     },
     version: {
-      name: pkg.version
-    }
+      name: pkg.version,
+    },
   },
 };
 

@@ -1,5 +1,4 @@
 import type { PageServerLoad } from "./$types";
-import { redirect } from "sveltekit-flash-message/server";
 import {
   PUBLIC_VATSIM_OAUTH_ENDPOINT,
   PUBLIC_VATSIM_OAUTH_CLIENT_ID,
@@ -8,6 +7,7 @@ import {
 import { VATSIM_OAUTH_CLIENT_SECRET } from "$env/static/private";
 import prisma from "$lib/prisma";
 import { makeToken } from "$lib/auth";
+import { redirect } from "sveltekit-flash-message/server";
 
 export const load: PageServerLoad = async ({ url, cookies }) => {
   if (!url.searchParams.get("code")) {
@@ -101,9 +101,11 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
   });
 
   let token = makeToken(user_details.cid);
+
   cookies.set("hq_token", token, { path: "/" });
+
   redirect(
-    301,
+    307,
     "/switch_hq",
     { type: "success", message: "Logged in! Please select a HQ." },
     cookies,

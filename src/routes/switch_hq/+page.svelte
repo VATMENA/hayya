@@ -2,18 +2,9 @@
   import * as Card from "$lib/components/ui/card";
   import { Button } from "$lib/components/ui/button";
   import type { PageData } from "./$types";
-  import { onMount } from "svelte";
-  import { page } from "$app/stores";
   import { LogIn } from "lucide-svelte";
 
   export let data: PageData;
-
-  onMount(() => {
-    if (!data.loggedin) {
-      window.location.href = "/";
-    }
-    console.log(data);
-  });
 </script>
 
 <div class="h-screen flex flex-col p-6 space-y-4 items-center justify-center">
