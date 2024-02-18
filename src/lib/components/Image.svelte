@@ -11,33 +11,37 @@
   let props: any = $$restProps;
 
   $: {
-      if (priority) {
-          props.loading ||= "eager";
-          props.fetchpriority ||= "high";
-      } else {
-          props.loading ||= "lazy";
-          props.decoding ||= "async";
-      }
+    if (priority) {
+      props.loading ||= "eager";
+      props.fetchpriority ||= "high";
+    } else {
+      props.loading ||= "lazy";
+      props.decoding ||= "async";
+    }
 
-      if (props.alt === "") {
-          props.role ||= "presentation";
-      }
+    if (props.alt === "") {
+      props.role ||= "presentation";
+    }
 
-      let style = '';
+    let style = "";
 
-      if (width) {
-          style += `width: ${width};`;
-      }
-      if (height) {
-          style += `height: ${height};`;
-      }
+    if (width) {
+      style += `width: ${width} !important;`;
+    }
+    if (height) {
+      style += `height: ${height} !important;`;
+    }
 
-      if (blurhash) {
-          let bg = blurhashToCssGradientString(blurhash);
-          style += `background-image: ${bg};`;
-      }
+    if (blurhash) {
+      let bg = blurhashToCssGradientString(blurhash);
+      style += `background-image: ${bg};`;
+    }
 
+    if (!props.style) {
+      props.style = style;
+    } else {
       props.style += style;
+    }
   }
 </script>
 

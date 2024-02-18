@@ -40,11 +40,12 @@
       <Table.Row>
         <Table.Cell>
           <Image
-                  width="480px"
+            width="480px"
             class="rounded"
             src={event.bannerUrl}
             blurhash={event.bannerBlurHash}
-            alt={event.name} />
+            style="aspect-ratio: 16/9;"
+            alt="" />
         </Table.Cell>
         <Table.Cell>{event.name}</Table.Cell>
         <Table.Cell>{event.start} to {event.end}</Table.Cell>
