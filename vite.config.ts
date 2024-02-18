@@ -21,6 +21,7 @@ export default defineConfig({
       "jsonwebtoken",
       "@prisma/client",
       "marked",
+      "@unpic/placeholder"
     ],
   },
 });

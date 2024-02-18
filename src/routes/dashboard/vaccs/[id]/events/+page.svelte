@@ -40,8 +40,8 @@
       <Table.Row>
         <Table.Cell>
           <Image
-            width="500px"
-            height="281px"
+                  width="480px"
+            class="rounded"
             src={event.bannerUrl}
             blurhash={event.bannerBlurHash}
             alt={event.name} />
