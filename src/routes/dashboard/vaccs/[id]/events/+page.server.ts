@@ -54,38 +54,33 @@ export const actions: Actions = {
       );
     }
 
+    // combine the datetimes
+
+    let startDate = form.data.startDate.split("T")[0];
+    let startTime = String(form.data.startTime).padStart(4, "0");
+    let startHour = startTime.slice(0, 2);
+    let startMinute = startTime.slice(2);
+    let start = `${startDate}T${startHour}:${startMinute}:00Z`;
+
+    let endDate = form.data.endDate.split("T")[0];
+    let endTime = String(form.data.endTime).padStart(4, "0");
+    let endHour = endTime.slice(0, 2);
+    let endMinute = endTime.slice(2);
+    let end = `${endDate}T${endHour}:${endMinute}:00Z`;
+
     // generate the blurhash
 
     const imageData = await getPixels(form.data.bannerUrl);
     const data = Uint8ClampedArray.from(imageData.data);
     const blurhash = encode(data, imageData.width, imageData.height, 4, 4);
 
-    // combine the datetimes
-    let startDate = new Date(form.data.startDate);
-    let start_hour = parseInt(
-      String(form.data.startTime).padStart(4, "0").slice(0, 2),
-    );
-    let start_minute = parseInt(
-      String(form.data.startTime).padStart(4, "0").slice(2),
-    );
-    startDate.setHours(start_hour, start_minute);
-
-    let endDate = new Date(form.data.endDate);
-    let end_hour = parseInt(
-      String(form.data.endTime).padStart(4, "0").slice(0, 2),
-    );
-    let end_minute = parseInt(
-      String(form.data.endTime).padStart(4, "0").slice(2),
-    );
-    endDate.setHours(end_hour, end_minute);
-
     await prisma.event.create({
       data: {
         id: ulid(),
         name: form.data.name,
         hostId: event.params.id,
-        start: startDate,
-        end: endDate,
+        start: start,
+        end: end,
         description: form.data.description,
         bannerUrl: form.data.bannerUrl,
         bannerBlurHash: blurhash,
@@ -99,4 +94,41 @@ export const actions: Actions = {
       form,
     };
   },
+  setVisibility: async (event) => {
+    let { user, roles } = await loadUserData(event.cookies);
+
+    if (
+        !can(
+            roles,
+            event.params.id,
+            user.vaccId,
+            `vacc.${event.params.id}.events.manage`,
+        )
+    ) {
+      return redirect(
+          307,
+          `/dashboard/vaccs/${event.params.id}/`,
+          { message: "You don't have permission to do that.", type: "error" },
+          event.cookies,
+      );
+    }
+
+    let data = await event.request.formData();
+
+    if (!data.has("eventId") || !data.has("public")) {
+      return { success: false };
+    } else {
+      let id = data.get("eventId")!.toString();
+      let isPublic = data.get("public")!.toString() === "true";
+      await prisma.event.update({
+        where: {
+          id
+        },
+        data: {
+          public: isPublic
+        }
+      });
+      return { success: true };
+    }
+  }
 };
