@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ params }) => {
 };
 
 export const actions: Actions = {
-  default: async (event) => {
+  create: async (event) => {
     const form = await superValidate(event, formSchema);
 
     if (!form.valid) {

@@ -25,7 +25,7 @@
   };
 </script>
 
-<Form.Root method="POST" {form} schema={formSchema} {options} let:config>
+<Form.Root method="POST" action="?/create" {form} schema={formSchema} {options} let:config>
   <div class="space-y-2">
     <Form.Field {config} name="name">
       <Form.Item class="flex flex-col">
