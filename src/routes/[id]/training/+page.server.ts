@@ -5,7 +5,6 @@ import { type Actions, fail } from "@sveltejs/kit";
 import { redirect } from "sveltekit-flash-message/server";
 import { verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
-import { getUserRoles } from "$lib/perms/getUserRoles";
 import { can } from "$lib/perms/can";
 import { ulid } from "ulid";
 import { parseDate, parseDateTime } from "@internationalized/date";

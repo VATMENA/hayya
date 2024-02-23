@@ -41,7 +41,7 @@ export const load: PageServerLoad = async ({ parent, params, cookies }) => {
     },
   })!;
 
-  if (!isMentor) {
+  if (!can(TRAIN)) {
     for (let session of sessions) {
       session.instructorComments = "[unavailable]"; // Data is just passed as json, so hidden data must be hidden at the server level
     }
@@ -50,6 +50,5 @@ export const load: PageServerLoad = async ({ parent, params, cookies }) => {
   return {
     sessions,
     targetUser,
-    isMentor,
   };
 };

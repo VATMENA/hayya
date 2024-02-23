@@ -4,6 +4,7 @@ import type { Cookies } from "@sveltejs/kit";
 import { redirect } from "sveltekit-flash-message/server";
 import prisma from "$lib/prisma";
 import type { Role, User } from "@prisma/client";
+import {setUserRoles} from "$lib/authDual";
 
 export function makeToken(cid: string): string {
   return jwt.sign({ cid: cid }, JWT_HMAC_KEY);
@@ -25,7 +26,7 @@ export interface UserData {
 
 export async function loadUserData(
   cookies: Cookies,
-  inFacility: string,
+  inFacility: string | null,
 ): Promise<UserData> {
   if (!cookies.get("hq_token")) {
     redirect(
@@ -73,6 +74,8 @@ export async function loadUserData(
       roles = facility.roles;
     }
   }
+
+  setUserRoles(roles);
 
   return {
     user,

@@ -19,7 +19,7 @@ export const load: LayoutServerLoad = async ({ params, cookies }) => {
   if (!facility) {
     redirect(
       301,
-      "/select_hq",
+      "/switch_hq",
       {
         type: "error",
         message: "Invalid facility ID, please select another facility.",

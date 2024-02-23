@@ -9,7 +9,7 @@
     ScrollTextIcon,
     SettingsIcon,
   } from "lucide-svelte";
-  import { can, canAny } from "$lib/perms/can";
+  import { can } from "$lib/perms/can";
   import { page } from "$app/stores";
   import * as Dialog from "$lib/components/ui/dialog";
   import type { PageData } from "./$types";
@@ -18,7 +18,7 @@
   import SessionForm from "./session-form.svelte";
   import { toast } from "svelte-sonner";
   import { goto } from "$app/navigation";
-  import { TRAIN } from "$lib/perms/permissions";
+  import {MANAGE_QUEUES, RECOMMEND_FOR_QUEUE, TRAIN} from "$lib/perms/permissions";
 
   export let data: PageData;
 
@@ -55,7 +55,7 @@
             Join A Queue
           </Button>
         {/if}
-        {#if canAny( $page.data.roles, $page.params.id, $page.data.user.vaccId, [`vacc.${$page.params.id}.training.queues.manage`, `vacc.${$page.params.id}.training.queues.recommend`], )}
+        {#if can(MANAGE_QUEUES) || can(RECOMMEND_FOR_QUEUE)}
           <Button href="/{$page.params.id}/training/queues/manage">
             <SettingsIcon class="mr-2 w-4 h-4" />
             Manage Queues

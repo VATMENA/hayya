@@ -1,6 +1,5 @@
 import prisma from "$lib/prisma";
 import type { PageServerLoad } from "./$types";
-import { getUserRoles } from "$lib/perms/getUserRoles";
 import { can } from "$lib/perms/can";
 import { superValidate } from "sveltekit-superforms/server";
 import { formSchema } from "$lib/components/resources_page/schema";

@@ -2,7 +2,6 @@ import type { LayoutServerLoad } from "./$types";
 import { redirect } from "sveltekit-flash-message/server";
 import prisma from "$lib/prisma";
 import { verifyToken } from "$lib/auth";
-import { getUserRoles } from "$lib/perms/getUserRoles";
 import { can } from "$lib/perms/can";
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
@@ -14,6 +13,7 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
       cookies,
     );
   }
+
   let token = cookies.get("hq_token")!;
   let maybe_cid = verifyToken(token);
   if (maybe_cid === null) {
@@ -24,6 +24,7 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
       cookies,
     );
   }
+
   let user = await prisma.user.findUnique({
     where: {
       id: maybe_cid,

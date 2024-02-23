@@ -1,21 +1,19 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { can, canAny } from "$lib/perms/can";
+  import { can } from "$lib/perms/can";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import DataTable from "./data-table.svelte";
   import { Button } from "$lib/components/ui/button";
   import { Plus } from "lucide-svelte";
   import type { PageData } from "./$types";
+  import {MANAGE_QUEUES, RECOMMEND_FOR_QUEUE} from "$lib/perms/permissions";
 
   export let data: PageData;
 
   onMount(() => {
     if (
-      !canAny($page.data.roles, $page.params.id, $page.data.user.vaccId, [
-        `vacc.${$page.params.id}.training.queues.manage`,
-        `vacc.${$page.params.id}.training.queues.recommend`,
-      ])
+      !(can(MANAGE_QUEUES) || can(RECOMMEND_FOR_QUEUE))
     ) {
       goto(`/${$page.params.id}`);
     }

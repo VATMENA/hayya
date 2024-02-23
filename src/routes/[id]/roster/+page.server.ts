@@ -5,7 +5,6 @@ import { verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
 import type { User } from "@prisma/client";
 import { can } from "$lib/perms/can";
-import { getUserRoles } from "$lib/perms/getUserRoles";
 import { setError, superValidate } from "sveltekit-superforms/server";
 import { formSchema } from "./schema";
 import {

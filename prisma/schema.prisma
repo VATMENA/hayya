@@ -91,13 +91,13 @@ model User {
   heldCertificates    Certificate[] @relation(name: "heldCertificates")
   grantedCertificates Certificate[] @relation(name: "grantedCertificates")
 
-  certificatesAlreadyGrandfathered Boolean @default(false)
-
   receivedSessions Session[] @relation(name: "receivedSessions")
   taughtSessions   Session[] @relation(name: "taughtSessions")
 
   eventSignups     EventSignup[]     @relation
   eventAssignments EventAssignment[] @relation
+
+  isSiteAdmin Boolean @default(false)
 }
 
 model AuditLogEntry {

@@ -2,7 +2,6 @@ import prisma from "$lib/prisma";
 import type { PageServerLoad } from "./$types";
 import { redirect } from "sveltekit-flash-message/server";
 import { verifyToken } from "$lib/auth";
-import { getUserRoles } from "$lib/perms/getUserRoles";
 import { can } from "$lib/perms/can";
 import { MANAGE_QUEUES } from "$lib/perms/permissions";
 

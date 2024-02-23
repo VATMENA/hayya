@@ -3,6 +3,8 @@
   import { CalendarDate } from "@internationalized/date";
   import * as Accordion from "$lib/components/ui/accordion";
   import Markdown from "$lib/components/Markdown.svelte";
+  import {TRAIN} from "$lib/perms/permissions";
+  import {can} from "$lib/perms/can";
 
   export let data: PageData;
 
@@ -25,7 +27,7 @@
           .instructor.name}
       </Accordion.Trigger>
       <Accordion.Content>
-        <div class="grid-cols-{data.isMentor ? '2' : '1'} grid gap-4">
+        <div class="grid-cols-{can(TRAIN) ? '2' : '1'} grid gap-4">
           <div>
             <p class="font-semibold text-foreground/40">COMMENTS</p>
             <div
@@ -33,7 +35,7 @@
               <Markdown src={session.studentComments} />
             </div>
           </div>
-          {#if data.isMentor}
+          {#if can(TRAIN)}
             <div>
               <p class="font-semibold text-foreground/40">
                 PRIVATE MENTOR NOTES

@@ -7,7 +7,6 @@ import prisma from "$lib/prisma";
 import type { TrainingQueue } from "@prisma/client";
 import { ulid } from "ulid";
 import { verifyToken } from "$lib/auth";
-import { getUserRoles } from "$lib/perms/getUserRoles";
 import { can } from "$lib/perms/can";
 import { RECOMMEND_FOR_QUEUE } from "$lib/perms/permissions";
 
