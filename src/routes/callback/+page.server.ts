@@ -91,7 +91,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
       division: user_details.vatsim.division.id,
       recommendedTrainingQueues: [],
       completedTrainingQueues: [],
-    }
+    },
   });
 
   let token = makeToken(user_details.cid);

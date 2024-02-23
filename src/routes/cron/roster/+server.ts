@@ -2,7 +2,7 @@ import { VATSIM_CORE_API_TOKEN } from "$env/static/private";
 import type { RequestHandler } from "@sveltejs/kit";
 import prisma from "$lib/prisma";
 import type { UserFacilityAssignment } from "@prisma/client";
-import {ulid} from "ulid";
+import { ulid } from "ulid";
 
 export const GET: RequestHandler = async () => {
   console.log("[RosterUpdate] Roster update task started");
@@ -11,10 +11,10 @@ export const GET: RequestHandler = async () => {
     include: {
       users: {
         include: {
-          user: true
-        }
-      }
-    }
+          user: true,
+        },
+      },
+    },
   });
 
   let ratings = [
@@ -36,17 +36,13 @@ export const GET: RequestHandler = async () => {
   let all_existing_users = await prisma.user.findMany();
 
   for (let facility of facilities) {
-
     let dotnetUrl = `https://api.vatsim.net/v2/orgs/${facility.dotnetType === "Division" ? "division" : "subdivision"}/${facility.dotnetId}`;
 
-    let initial_vatsim_resp = await fetch(
-        `${dotnetUrl}?limit=1`,
-        {
-          headers: {
-            "X-API-Key": VATSIM_CORE_API_TOKEN,
-          },
-        },
-    );
+    let initial_vatsim_resp = await fetch(`${dotnetUrl}?limit=1`, {
+      headers: {
+        "X-API-Key": VATSIM_CORE_API_TOKEN,
+      },
+    });
 
     let initial_json = await initial_vatsim_resp.json();
 
@@ -56,14 +52,11 @@ export const GET: RequestHandler = async () => {
 
     let need_to_pull = initial_json.count;
 
-    let real_roster_resp = await fetch(
-        `${dotnetUrl}?limit=${need_to_pull}`,
-        {
-          headers: {
-            "X-API-Key": VATSIM_CORE_API_TOKEN,
-          },
-        },
-    );
+    let real_roster_resp = await fetch(`${dotnetUrl}?limit=${need_to_pull}`, {
+      headers: {
+        "X-API-Key": VATSIM_CORE_API_TOKEN,
+      },
+    });
 
     let roster_json = await real_roster_resp.json();
 
@@ -74,16 +67,18 @@ export const GET: RequestHandler = async () => {
     let roster = roster_json.items;
 
     for (let roster_user of roster) {
-
       let already_existed = false;
 
       for (let existing_user of all_existing_users) {
         if (existing_user.id === roster_user.id) {
           // update if any details changed
           let checklist = [
-              [existing_user.name, `${roster_user.name_first} ${roster_user.name_last}`],
-              [existing_user.ratingId, ]
-          ]
+            [
+              existing_user.name,
+              `${roster_user.name_first} ${roster_user.name_last}`,
+            ],
+            [existing_user.ratingId],
+          ];
           already_existed = true;
           break;
         }
@@ -94,20 +89,17 @@ export const GET: RequestHandler = async () => {
         await prisma.user.create({
           data: {
             id: roster_user.id,
-
-          }
-        })
+          },
+        });
       }
 
       let facilityAssignment: UserFacilityAssignment = {
         id: ulid(),
         assignmentType: "Primary",
         userId: roster_user.id,
-
       };
     }
-
-  }/*
+  } /*
 
   let initial_vatsim_resp = await fetch(
     "https://api.vatsim.net/v2/orgs/division/MENA?limit=1",
@@ -179,9 +171,7 @@ export const GET: RequestHandler = async () => {
 
   }*/
 
-  console.log(
-    `[RosterUpdate] Roster update task finished`
-  );
+  console.log(`[RosterUpdate] Roster update task finished`);
 
   return new Response("");
 };
