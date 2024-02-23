@@ -28,6 +28,9 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
     where: {
       id: maybe_cid,
     },
+    include: {
+      facilities: true
+    }
   })!;
   if (!user) {
     redirect(
@@ -37,23 +40,8 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
       cookies,
     );
   }
-  let user_roles = await getUserRoles(user.id)!;
-
-  let vaccs = await prisma.vacc.findMany();
-
-  // todo: visiting logic
-
-  let shown_vaccs = [];
-
-  for (let vacc of vaccs) {
-    if (can(user_roles!, vacc.id, user.vaccId, `vacc.${vacc.id}.accessHq`)) {
-      shown_vaccs.push(vacc);
-    }
-  }
 
   return {
-    load_error: false,
-    shown_vaccs: shown_vaccs,
     user: user,
   };
 };

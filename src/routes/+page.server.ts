@@ -22,9 +22,6 @@ export const load: PageServerLoad = loadFlash(async ({ cookies }) => {
 
   let user = await prisma.user.findUnique({
     where: { id: cid },
-    include: {
-      vacc: true,
-    },
   });
 
   if (!user) {

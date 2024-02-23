@@ -12,8 +12,7 @@
     <Card.Header>
       <Card.Title>Switch HQ</Card.Title>
       <Card.Description>
-        Select which HQ should be the active session. Only HQs that you have
-        access to are shown.
+        Select which HQ should be the active session. Access lists are refreshed every hour - if you don't see a facility that you recently gained access to, please check back later!
       </Card.Description>
     </Card.Header>
     <Card.Content class="grid space-y-4">
