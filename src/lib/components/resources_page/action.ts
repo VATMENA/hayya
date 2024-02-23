@@ -5,7 +5,6 @@ import { redirect } from "sveltekit-flash-message/server";
 import { can } from "$lib/perms/can";
 import { loadUserData, verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
-import { getUserRoles } from "$lib/perms/getUserRoles";
 import { ulid } from "ulid";
 
 export async function handleResourceSubmit(event: any, vaccId: string | null) {

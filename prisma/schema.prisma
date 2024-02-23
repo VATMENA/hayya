@@ -51,6 +51,7 @@ model Role {
 enum FacilityAssignmentType {
   Primary
   Secondary
+  DivisionalStaff
 }
 
 model UserFacilityAssignment {

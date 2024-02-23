@@ -29,8 +29,12 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
       id: maybe_cid,
     },
     include: {
-      facilities: true
-    }
+      facilities: {
+        include: {
+          facility: true,
+        },
+      },
+    },
   })!;
   if (!user) {
     redirect(

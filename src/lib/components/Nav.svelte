@@ -16,15 +16,8 @@
   } from "lucide-svelte";
   import { setMode, resetMode } from "mode-watcher";
   import { can } from "$lib/perms/can";
-  import {
-    ROLE_DEVELOPER_ID,
-    ROLE_DIVISION_DIRECTOR_ID,
-    ROLE_DIVISION_STAFF_ID,
-    ROLE_MENTOR_ID,
-    ROLE_VACC_DIRECTOR_ID,
-    ROLE_VACC_STAFF_ID,
-  } from "$lib/roles";
   import { Badge } from "$lib/components/ui/badge";
+  import { EDIT_DETAILS } from "$lib/perms/permissions";
 
   type Page = {
     [pageId: string]: {
@@ -34,58 +27,30 @@
     };
   };
 
-  const division_pages: Page = {
-    vacc: {
-      name: "vACCs",
-      link: "/dashboard/vaccs",
-      visible: true,
-    },
-    rosters: {
-      name: "Rosters",
-      link: "/dashboard/division/rosters",
-      visible: true,
-    },
-    resources: {
-      name: "Resources",
-      link: "/dashboard/division/resources",
-      visible: true,
-    },
-  };
-
-  const vacc_pages: Page = {
+  const pages: Page = {
     training: {
       name: "Training",
-      link: `/dashboard/vaccs/${$page.data.vacc_id}/training`,
-      visible: can(
-        $page.data.roles,
-        $page.data.vacc_id,
-        $page.data.user.vaccId,
-        `vacc.${$page.data.vacc_id}.accessHq`,
-      ),
+      link: `/${$page.data.facility.id}/training`,
+      visible: true,
     },
     events: {
       name: "Events",
-      link: `/dashboard/vaccs/${$page.data.vacc_id}/events`,
+      link: `/${$page.data.facility.id}/events`,
       visible: true,
     },
     roster: {
       name: "Roster",
-      link: `/dashboard/vaccs/${$page.data.vacc_id}/roster`,
+      link: `/${$page.data.facility.id}/roster`,
       visible: true,
     },
     manage: {
       name: "Manage vACC",
-      link: `/dashboard/vaccs/${$page.data.vacc_id}/manage`,
-      visible: can(
-        $page.data.roles,
-        $page.data.vacc_id,
-        $page.data.user.vaccId,
-        `vacc.${$page.data.vacc_id}.details.edit`,
-      ),
+      link: `/${$page.data.facility.id}/manage`,
+      visible: can(EDIT_DETAILS),
     },
     resources: {
       name: "Resources",
-      link: `/dashboard/vaccs/${$page.data.vacc_id}/resources`,
+      link: `/${$page.data.facility.id}/resources`,
       visible: true,
     },
   };
@@ -103,13 +68,6 @@
   function avatar(name: string): string {
     return `https://avatar.vercel.sh/${name}`;
   }
-
-  let pages: Page;
-  if ($page.data.nav_vacc) {
-    pages = vacc_pages;
-  } else {
-    pages = division_pages;
-  }
 </script>
 
 <header
@@ -118,11 +76,9 @@
     <div class="mr-4 hidden md:flex">
       <a
         class="mr-6 flex items-center space-x-2"
-        href={$page.data.nav_vacc
-          ? `/dashboard/vaccs/${$page.data.vacc_id}`
-          : "/dashboard/division"}>
+        href="/${$page.data.facility.id}">
         <span class="hidden font-bold sm:inline-block text-[15px] lg:text-base">
-          {$page.data.nav_title === undefined ? "MENA" : $page.data.nav_title} HQ
+          {$page.data.facility.name} HQ
         </span>
       </a>
       <nav class="flex items-center space-x-6 text-sm font-medium">
