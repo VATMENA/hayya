@@ -3,8 +3,8 @@
   import { CalendarDate } from "@internationalized/date";
   import * as Accordion from "$lib/components/ui/accordion";
   import Markdown from "$lib/components/Markdown.svelte";
-  import {TRAIN} from "$lib/perms/permissions";
-  import {can} from "$lib/perms/can";
+  import { TRAIN } from "$lib/perms/permissions";
+  import { can } from "$lib/perms/can";
 
   export let data: PageData;
 

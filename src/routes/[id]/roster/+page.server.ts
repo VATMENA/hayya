@@ -28,23 +28,24 @@ export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
 
   // Privacy stuff
 
-  let roster: UserFacilityAssignment[] = await prisma.userFacilityAssignment.findMany({
-    where: {
-      facilityId: params.id,
-    },
-    include: {
-      user: {
-        include: {
-          heldCertificates: {
-            include: {
-              instructor: true
-            }
-          }
-        }
+  let roster: UserFacilityAssignment[] =
+    await prisma.userFacilityAssignment.findMany({
+      where: {
+        facilityId: params.id,
       },
-      roles: true
-    },
-  });
+      include: {
+        user: {
+          include: {
+            heldCertificates: {
+              include: {
+                instructor: true,
+              },
+            },
+          },
+        },
+        roles: true,
+      },
+    });
 
   let altered_roster = [];
 
@@ -88,18 +89,24 @@ export const actions = {
       return fail(403, { success: false, error: "unauthorized" });
     }
 
-    let newRoles = data.get("roles")!.toString().split(",").map((u) => {return {id: u}});
+    let newRoles = data
+      .get("roles")!
+      .toString()
+      .split(",")
+      .map((u) => {
+        return { id: u };
+      });
     if (data.get("roles")!.toString() === "") {
       newRoles = [];
     }
 
     await prisma.userFacilityAssignment.update({
       where: {
-        id: data.get("target")!.toString()
+        id: data.get("target")!.toString(),
       },
       data: {
         roles: {
-          set: newRoles
+          set: newRoles,
         },
       },
     });

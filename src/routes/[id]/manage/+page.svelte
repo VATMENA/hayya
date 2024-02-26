@@ -1,8 +1,8 @@
 <script lang="ts">
   import * as Card from "$lib/components/ui/card";
   import type { PageData } from "./$types";
-  import {Badge} from "$lib/components/ui/badge";
-  import {color} from "$lib/colors";
+  import { Badge } from "$lib/components/ui/badge";
+  import { color } from "$lib/colors";
 
   export let data: PageData;
 </script>
@@ -18,9 +18,10 @@
         <Card.Title>Roles</Card.Title>
       </Card.Header>
       <Card.Content class="space-y-1.5">
-
         {#each data.facility.roles as role}
-          <Badge style="background-color: {color(role.color)};">{role.name}</Badge>
+          <Badge style="background-color: {color(role.color)};">
+            {role.name}
+          </Badge>
         {/each}
       </Card.Content>
     </Card.Root>

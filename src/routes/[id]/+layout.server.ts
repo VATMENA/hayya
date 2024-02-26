@@ -13,7 +13,7 @@ export const load: LayoutServerLoad = async ({ params, cookies }) => {
     },
     include: {
       roles: true,
-      trainingQueues: true
+      trainingQueues: true,
     },
   });
 

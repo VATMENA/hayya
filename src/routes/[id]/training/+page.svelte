@@ -18,7 +18,11 @@
   import SessionForm from "./session-form.svelte";
   import { toast } from "svelte-sonner";
   import { goto } from "$app/navigation";
-  import {MANAGE_QUEUES, RECOMMEND_FOR_QUEUE, TRAIN} from "$lib/perms/permissions";
+  import {
+    MANAGE_QUEUES,
+    RECOMMEND_FOR_QUEUE,
+    TRAIN,
+  } from "$lib/perms/permissions";
 
   export let data: PageData;
 

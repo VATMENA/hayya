@@ -18,11 +18,11 @@
 
   async function remove() {
     await fetch("?", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: ""
+      body: "",
     });
     await goto(`/${$page.params.id}/training/queues/`);
     toast.success("Queue deleted successfully");
@@ -42,11 +42,7 @@
 </p>
 <b class="text-red-500">This cannot be undone!</b>
 
-<Button
-  variant="destructive"
-  on:click={remove}>
-  I'm sure
-</Button>
+<Button variant="destructive" on:click={remove}>I'm sure</Button>
 <Button variant="outline" href="/{$page.params.id}/training/queues/manage">
   Nevermind
 </Button>

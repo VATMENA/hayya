@@ -5,7 +5,7 @@
   import { Button } from "$lib/components/ui/button";
   import { Plus } from "lucide-svelte";
   import type { PageData } from "./$types";
-  import {MANAGE_QUEUES} from "$lib/perms/permissions";
+  import { MANAGE_QUEUES } from "$lib/perms/permissions";
 
   export let data: PageData;
 </script>

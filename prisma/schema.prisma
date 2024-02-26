@@ -67,7 +67,7 @@ model UserFacilityAssignment {
 
   roles Role[]
 
-  @@unique([userId, facilityId])
+  @@unique([userId, facilityId, assignmentType])
 }
 
 model User {

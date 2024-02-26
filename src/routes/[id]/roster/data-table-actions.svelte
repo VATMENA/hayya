@@ -69,7 +69,10 @@
     <DropdownMenu.Group>
       <DropdownMenu.Label>Actions</DropdownMenu.Label>
       <DropdownMenu.Item
-        on:click={() => {navigator.clipboard.writeText(user.user.id); toast.success("CID copied to clipboard!")}}>
+        on:click={() => {
+          navigator.clipboard.writeText(user.user.id);
+          toast.success("CID copied to clipboard!");
+        }}>
         Copy CID
       </DropdownMenu.Item>
     </DropdownMenu.Group>
@@ -93,9 +96,19 @@
           {#each $page.data.facility.roles as role}
             <DropdownMenu.CheckboxItem
               on:click={async () => {
-                await toggleRole(user.id, user.roles.map((u) => {return u.id;}), role.id);
+                await toggleRole(
+                  user.id,
+                  user.roles.map((u) => {
+                    return u.id;
+                  }),
+                  role.id,
+                );
               }}
-              checked={user.roles.map((u) => {return u.id;}).includes(role.id)}>
+              checked={user.roles
+                .map((u) => {
+                  return u.id;
+                })
+                .includes(role.id)}>
               {role.name}
             </DropdownMenu.CheckboxItem>
           {/each}

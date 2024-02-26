@@ -136,7 +136,9 @@
               {#each $page.data.roles as role}
                 {#each $page.data.facility.roles as possibleRole}
                   {#if role.id === possibleRole.id}
-                    <Badge style="background-color: {color(role.color)}">{possibleRole.name}</Badge>
+                    <Badge style="background-color: {color(role.color)}">
+                      {possibleRole.name}
+                    </Badge>
                   {/if}
                 {/each}
               {/each}

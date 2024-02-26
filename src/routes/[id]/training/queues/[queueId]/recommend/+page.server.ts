@@ -13,7 +13,7 @@ import { RECOMMEND_FOR_QUEUE } from "$lib/perms/permissions";
 export const load: PageServerLoad = async ({ params }) => {
   let queue = await prisma.trainingQueue.findUnique({
     where: {
-      id: params.queueId
+      id: params.queueId,
     },
   });
   let form = await superValidate(formSchema);

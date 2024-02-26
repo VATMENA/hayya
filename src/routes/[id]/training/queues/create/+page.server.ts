@@ -6,7 +6,7 @@ import { redirect } from "sveltekit-flash-message/server";
 import prisma from "$lib/prisma";
 import type { TrainingQueue } from "@prisma/client";
 import { ulid } from "ulid";
-import {loadUserData, verifyToken} from "$lib/auth";
+import { loadUserData, verifyToken } from "$lib/auth";
 import { can } from "$lib/perms/can";
 import { MANAGE_QUEUES } from "$lib/perms/permissions";
 

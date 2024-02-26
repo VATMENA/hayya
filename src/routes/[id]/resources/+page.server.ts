@@ -8,7 +8,7 @@ import type { Actions } from "@sveltejs/kit";
 import { VIEW_PRIVATE_RESOURCES } from "$lib/perms/permissions";
 
 export const load: PageServerLoad = async ({ params, parent }) => {
-if (can(VIEW_PRIVATE_RESOURCES)) {
+  if (can(VIEW_PRIVATE_RESOURCES)) {
     return {
       resources: await prisma.resource.findMany({
         where: {

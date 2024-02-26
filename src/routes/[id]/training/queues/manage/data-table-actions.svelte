@@ -24,11 +24,14 @@
   <DropdownMenu.Content>
     <DropdownMenu.Group>
       <DropdownMenu.Label>Actions</DropdownMenu.Label>
-      <DropdownMenu.Item on:click={() => {navigator.clipboard.writeText(id); toast.success("Queue ID copied to clipboard!");}}>
+      <DropdownMenu.Item
+        on:click={() => {
+          navigator.clipboard.writeText(id);
+          toast.success("Queue ID copied to clipboard!");
+        }}>
         Copy ID
       </DropdownMenu.Item>
     </DropdownMenu.Group>
-
 
     {#if can(RECOMMEND_FOR_QUEUE)}
       <DropdownMenu.Separator />
@@ -43,8 +46,6 @@
           Mark Student Complete
         </DropdownMenu.Item>
       </DropdownMenu.Group>
-
-
     {/if}
 
     {#if can(MANAGE_QUEUES)}

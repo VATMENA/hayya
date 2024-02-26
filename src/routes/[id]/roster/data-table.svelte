@@ -64,7 +64,10 @@
       accessor: (u) => u,
       header: "Certificates",
       cell: ({ value }) => {
-        return createRender(DataTableCertificates, { heldCertificates: value.user.heldCertificates, holder: value.user });
+        return createRender(DataTableCertificates, {
+          heldCertificates: value.user.heldCertificates,
+          holder: value.user,
+        });
       },
       plugins: {
         filter: {

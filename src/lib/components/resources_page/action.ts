@@ -8,7 +8,10 @@ import prisma from "$lib/prisma";
 import { ulid } from "ulid";
 import { MANAGE_RESOURCES } from "$lib/perms/permissions";
 
-export async function handleResourceSubmit(event: any, facilityId: string | null) {
+export async function handleResourceSubmit(
+  event: any,
+  facilityId: string | null,
+) {
   const form = await superValidate(event, formSchema);
   if (!form.valid) {
     return fail(400, {

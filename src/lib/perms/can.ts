@@ -2,7 +2,7 @@ import type { Role } from "@prisma/client";
 import type { Permission } from "$lib/perms/permissions";
 import { getContext } from "svelte";
 import { minimatch } from "minimatch";
-import {userRoles} from "$lib/authDual";
+import { userRoles } from "$lib/authDual";
 
 export function can(permission: Permission): boolean {
   let roles: Role[] = [];
@@ -12,7 +12,9 @@ export function can(permission: Permission): boolean {
     if (userRoles) {
       roles = userRoles;
     } else {
-      throw new Error("can() called before setContext() on client or before loadUserData() on server");
+      throw new Error(
+        "can() called before setContext() on client or before loadUserData() on server",
+      );
     }
   }
 

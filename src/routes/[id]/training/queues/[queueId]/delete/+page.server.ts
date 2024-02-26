@@ -8,12 +8,17 @@ import { redirect } from "sveltekit-flash-message/server";
 export const load: PageServerLoad = async ({ params, cookies }) => {
   let queue = await prisma.trainingQueue.findUnique({
     where: {
-      id: params.queueId
+      id: params.queueId,
     },
   });
 
   if (!queue) {
-    redirect(307, `/${params.id}/training/queues/manage`, { type: 'error', message: 'Queue does not exist' }, cookies);
+    redirect(
+      307,
+      `/${params.id}/training/queues/manage`,
+      { type: "error", message: "Queue does not exist" },
+      cookies,
+    );
   }
 
   return {
@@ -22,7 +27,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 };
 
 export const actions: Actions = {
-  default: async ({cookies, params}) => {
+  default: async ({ cookies, params }) => {
     await loadUserData(cookies, params.id);
 
     if (!can(MANAGE_QUEUES)) {
@@ -36,7 +41,7 @@ export const actions: Actions = {
 
     await prisma.trainingQueue.delete({
       where: {
-        id: params.queueId
+        id: params.queueId,
       },
     });
 
@@ -46,5 +51,5 @@ export const actions: Actions = {
       { type: "success", message: "Queue removed successfully!" },
       cookies,
     );
-  }
-}
+  },
+};
