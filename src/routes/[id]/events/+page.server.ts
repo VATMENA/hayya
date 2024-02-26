@@ -37,7 +37,7 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
-    let { user, roles } = await loadUserData(event.cookies);
+    await loadUserData(event.cookies, event.params.id);
 
     if (!can(MANAGE_EVENTS)) {
       return redirect(
@@ -89,7 +89,7 @@ export const actions: Actions = {
     };
   },
   setVisibility: async (event) => {
-    let { user, roles } = await loadUserData(event.cookies);
+    await loadUserData(event.cookies, event.params.id);
 
     if (!can(MANAGE_EVENTS)) {
       return redirect(

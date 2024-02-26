@@ -1,9 +1,9 @@
 import type { PageServerLoad, Actions } from "./$types";
 import { fail } from "@sveltejs/kit";
 import { redirect } from "sveltekit-flash-message/server";
-import { verifyToken } from "$lib/auth";
+import { loadUserData, verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
-import type { User } from "@prisma/client";
+import type { User, UserFacilityAssignment } from "@prisma/client";
 import { can } from "$lib/perms/can";
 import { setError, superValidate } from "sveltekit-superforms/server";
 import { formSchema } from "./schema";
@@ -24,68 +24,40 @@ import {
 } from "$lib/perms/permissions";
 
 export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
-  if (!cookies.get("hq_token")) {
-    redirect(
-      301,
-      "/",
-      { type: "error", message: "You need to be logged in for that" },
-      cookies,
-    );
-  }
-  let token = cookies.get("hq_token")!;
-  let maybe_cid = verifyToken(token);
-  if (maybe_cid === null) {
-    redirect(
-      301,
-      "/",
-      { type: "error", message: "You need to be logged in for that" },
-      cookies,
-    );
-  }
-  let user = await prisma.user.findUnique({
-    where: {
-      id: maybe_cid!,
-    },
-  })!;
+  let { user } = await loadUserData(cookies, params.id);
 
   // Privacy stuff
 
-  let division_roster: User[] = await prisma.user.findMany({
+  let roster: UserFacilityAssignment[] = await prisma.userFacilityAssignment.findMany({
     where: {
-      NOT: {
-        ratingShort: "SUS",
-      },
-      division: "MENA",
-      vaccId: params.id,
+      facilityId: params.id,
     },
     include: {
-      heldCertificates: {
+      user: {
         include: {
-          instructor: true,
-          holder: true,
-        },
+          heldCertificates: {
+            include: {
+              instructor: true
+            }
+          }
+        }
       },
+      roles: true
     },
   });
 
-  let user_roles = await getUserRoles(user!.id);
-
   let altered_roster = [];
 
-  for (let roster_user of division_roster) {
+  for (let roster_user of roster) {
     if (can(EXTENDED_ROSTER)) {
       // extended. leave as-is
       altered_roster.push(roster_user);
     } else {
-      roster_user.name =
-        roster_user.name.split(" ")[0] + " (" + roster_user.id + ")";
+      roster_user.user.name =
+        roster_user.user.name.split(" ")[0] + " (" + roster_user.userId + ")";
       altered_roster.push(roster_user);
     }
   }
-
-  let vaccs = await prisma.vacc.findMany();
-
-  let all_roles = await prisma.role.findMany();
 
   altered_roster = altered_roster.sort((a, b) => {
     if (a.name < b.name) return -1;
@@ -94,66 +66,41 @@ export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
   });
 
   return {
-    load_error: false,
-    home_users: altered_roster,
-    vaccs: vaccs,
-    user: user,
-    roles: user_roles,
+    users: altered_roster,
     form: await superValidate(formSchema),
-    all_roles: all_roles,
   };
 };
 
 export const actions = {
-  set_roles: async ({ cookies, request }) => {
-    if (!cookies.get("hq_token")) {
-      redirect(
-        301,
-        "/",
-        { type: "error", message: "You need to be logged in for that" },
-        cookies,
-      );
-    }
-    let token = cookies.get("hq_token")!;
-    let maybe_cid = verifyToken(token);
-    if (maybe_cid === null) {
-      redirect(
-        301,
-        "/",
-        { type: "error", message: "You need to be logged in for that" },
-        cookies,
-      );
-    }
-    let user = await prisma.user.findUnique({
-      where: {
-        id: maybe_cid!,
-      },
-    })!;
-    let user_roles = await getUserRoles(user!.id);
+  set_roles: async ({ cookies, params, request }) => {
+    await loadUserData(cookies, params.id);
 
     let data = await request.formData();
 
-    if (!data.has("user")) {
-      return fail(400, { success: false, error: "missing user" });
+    if (!data.has("target")) {
+      return fail(400, { success: false, error: "missing target" });
     }
     if (!data.has("roles")) {
       return fail(400, { success: false, error: "missing roles" });
     }
 
-    let target_user = await prisma.user.findUnique({
-      where: {
-        id: data.get("user")!.toString(),
-      },
-    })!;
-
     if (!can(ASSIGN_ROLES)) {
       return fail(403, { success: false, error: "unauthorized" });
     }
 
-    await prisma.user.update({
-      where: { id: target_user!.id.toString() },
+    let newRoles = data.get("roles")!.toString().split(",").map((u) => {return {id: u}});
+    if (data.get("roles")!.toString() === "") {
+      newRoles = [];
+    }
+
+    await prisma.userFacilityAssignment.update({
+      where: {
+        id: data.get("target")!.toString()
+      },
       data: {
-        roleIds: data.get("roles")!.toString().split(","),
+        roles: {
+          set: newRoles
+        },
       },
     });
 
@@ -167,8 +114,6 @@ export const actions = {
       });
     }
 
-    console.log(form.data);
-
     if (!event.cookies.get("hq_token")) {
       redirect(
         301,
@@ -177,22 +122,8 @@ export const actions = {
         event,
       );
     }
-    let token = event.cookies.get("hq_token")!;
-    let maybe_cid = verifyToken(token);
-    if (maybe_cid === null) {
-      redirect(
-        301,
-        "/",
-        { type: "error", message: "You need to be logged in for that" },
-        event,
-      );
-    }
-    let user = await prisma.user.findUnique({
-      where: {
-        id: maybe_cid!,
-      },
-    })!;
-    let user_roles = await getUserRoles(user!.id);
+
+    let { user } = await loadUserData(event.cookies, event.params.id);
 
     let targetUser = await prisma.user.findUnique({
       where: {
@@ -248,7 +179,7 @@ export const actions = {
         position: position_specifier,
         expires: date,
         instructorComments: form.data.comments,
-        issuedInId: user!.vaccId || targetUser!.vaccId!,
+        issuedInId: event.params.id,
       },
     });
 

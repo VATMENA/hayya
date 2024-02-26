@@ -8,12 +8,6 @@
   import { RECOMMEND_FOR_QUEUE } from "$lib/perms/permissions";
 
   export let data: PageData;
-
-  onMount(() => {
-    if (!can(RECOMMEND_FOR_QUEUE)) {
-      goto(`/${$page.params.id}`);
-    }
-  });
 </script>
 
 <div class="flex items-center justify-between">

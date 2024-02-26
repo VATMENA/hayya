@@ -8,11 +8,13 @@
   import * as Select from "$lib/components/ui/select";
   import { can } from "$lib/perms/can";
   import { page } from "$app/stores";
-  import type { User } from "@prisma/client";
+  import { type UserFacilityAssignment } from "@prisma/client";
   import CertForm from "./cert-form.svelte";
   import { goto, invalidate, invalidateAll } from "$app/navigation";
+  import { ASSIGN_ROLES, ISSUE_CERTIFICATE } from "$lib/perms/permissions";
+  import { toast } from "svelte-sonner";
 
-  export let user: User;
+  export let user: UserFacilityAssignment;
 
   let cert_issue_open = false;
 
@@ -33,7 +35,7 @@
       new_roles.push(new_role);
     }
     let data = new URLSearchParams();
-    data.set("user", cid);
+    data.set("target", cid);
     data.set("roles", new_roles.join(","));
 
     let resp = await fetch("?/set_roles", {
@@ -67,14 +69,14 @@
     <DropdownMenu.Group>
       <DropdownMenu.Label>Actions</DropdownMenu.Label>
       <DropdownMenu.Item
-        on:click={() => navigator.clipboard.writeText(user.id)}>
+        on:click={() => {navigator.clipboard.writeText(user.user.id); toast.success("CID copied to clipboard!")}}>
         Copy CID
       </DropdownMenu.Item>
     </DropdownMenu.Group>
     <DropdownMenu.Separator />
     <DropdownMenu.Item>View user profile</DropdownMenu.Item>
-    <DropdownMenu.Separator />
-    {#if can($page.data.roles, $page.data.vacc_id, $page.data.user.vaccId, `vacc.${$page.data.vacc_id}.training.issue_certificate`)}
+
+    {#if can(ISSUE_CERTIFICATE)}
       <DropdownMenu.Item
         on:click={() => {
           cert_issue_open = true;
@@ -82,18 +84,18 @@
         Issue certificate
       </DropdownMenu.Item>
     {/if}
-    {#if can($page.data.roles, $page.data.vacc_id, $page.data.user.vaccId, `vacc.${$page.data.vacc_id}.role.assign`)}
+    {#if can(ASSIGN_ROLES)}
       <DropdownMenu.Sub>
         <DropdownMenu.SubTrigger>Toggle Roles</DropdownMenu.SubTrigger>
         <DropdownMenu.SubContent>
           <DropdownMenu.Label>Toggle Roles</DropdownMenu.Label>
           <DropdownMenu.Separator />
-          {#each $page.data.all_roles as role}
+          {#each $page.data.facility.roles as role}
             <DropdownMenu.CheckboxItem
               on:click={async () => {
-                await toggleRole(user.id, user.roleIds, role.id);
+                await toggleRole(user.id, user.roles.map((u) => {return u.id;}), role.id);
               }}
-              checked={user.roleIds.includes(role.id)}>
+              checked={user.roles.map((u) => {return u.id;}).includes(role.id)}>
               {role.name}
             </DropdownMenu.CheckboxItem>
           {/each}
@@ -103,7 +105,7 @@
   </DropdownMenu.Content>
 </DropdownMenu.Root>
 
-{#if can($page.data.roles, $page.data.vacc_id, $page.data.user.vaccId, `vacc.${$page.data.vacc_id}.training.issue_certificate`)}
+{#if can(ISSUE_CERTIFICATE)}
   <Dialog.Root bind:open={cert_issue_open}>
     <Dialog.Content class="max-w-[40rem]">
       <Dialog.Header>

@@ -161,8 +161,8 @@ model Certificate {
 model Resource {
   id String @id
 
-  Facility   Facility? @relation(fields: [FacilityId], references: [id])
-  FacilityId String?
+  facility   Facility? @relation(fields: [facilityId], references: [id])
+  facilityId String?
 
   isStaffOnly Boolean
 

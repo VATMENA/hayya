@@ -37,7 +37,7 @@ export const actions: Actions = {
     const queue: TrainingQueue = await prisma.trainingQueue.create({
       data: {
         id: ulid(),
-        vaccId: event.params.id,
+        facilityId: event.params.id,
         name: form.data.name,
         description: form.data.description,
         joinableByDefault: form.data.openRegistration,

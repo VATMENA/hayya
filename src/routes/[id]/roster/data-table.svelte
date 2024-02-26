@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { User } from "@prisma/client";
+  import { type UserFacilityAssignment } from "@prisma/client";
   import {
     createTable,
     Render,
@@ -17,7 +17,7 @@
   import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-svelte";
   import { Input } from "$lib/components/ui/input";
 
-  export let data: User[];
+  export let data: UserFacilityAssignment[];
 
   let store = writable(data);
 
@@ -37,19 +37,19 @@
       accessor: (u) => u,
       header: "Name",
       cell: ({ value }) => {
-        return createRender(DataTableUser, { user: value });
+        return createRender(DataTableUser, { userAssignment: value });
       },
       plugins: {
         filter: {
           getFilterValue: (u) => {
-            return u.name;
+            return `${u.user.name} ${u.user.id}`;
           },
         },
       },
     }),
     table.column({
       id: "rating",
-      accessor: "ratingShort",
+      accessor: (u) => u.user.ratingShort,
       header: "Rating",
       cell: ({ value }) => {
         return createRender(DataTableRating, { rating: value });
@@ -61,10 +61,10 @@
       },
     }),
     table.column({
-      accessor: ({ heldCertificates }) => heldCertificates,
+      accessor: (u) => u,
       header: "Certificates",
       cell: ({ value }) => {
-        return createRender(DataTableCertificates, { heldCertificates: value });
+        return createRender(DataTableCertificates, { heldCertificates: value.user.heldCertificates, holder: value.user });
       },
       plugins: {
         filter: {

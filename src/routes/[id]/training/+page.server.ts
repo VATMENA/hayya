@@ -3,7 +3,7 @@ import { formSchema } from "./session-form";
 import type { PageServerLoad } from "./$types";
 import { type Actions, fail } from "@sveltejs/kit";
 import { redirect } from "sveltekit-flash-message/server";
-import { verifyToken } from "$lib/auth";
+import { loadUserData, verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { can } from "$lib/perms/can";
 import { ulid } from "ulid";
@@ -24,30 +24,8 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
-    if (!event.cookies.get("hq_token")) {
-      redirect(
-        301,
-        "/",
-        { type: "error", message: "You need to be logged in for that" },
-        event,
-      );
-    }
-    let token = event.cookies.get("hq_token")!;
-    let maybe_cid = verifyToken(token);
-    if (maybe_cid === null) {
-      redirect(
-        301,
-        "/",
-        { type: "error", message: "You need to be logged in for that" },
-        event,
-      );
-    }
-    let user = await prisma.user.findUnique({
-      where: {
-        id: maybe_cid!,
-      },
-    })!;
-    let user_roles = await getUserRoles(user!.id);
+    let { user } = await loadUserData(event.cookies, event.params.id!);
+
     let targetUser = await prisma.user.findUnique({
       where: {
         id: form.data.cid,

@@ -18,6 +18,7 @@
   import { can } from "$lib/perms/can";
   import { Badge } from "$lib/components/ui/badge";
   import { EDIT_DETAILS } from "$lib/perms/permissions";
+  import { color } from "$lib/colors";
 
   type Page = {
     [pageId: string]: {
@@ -133,26 +134,18 @@
             {$page.data.user.name}
             {#if $page.data.roles !== null}
               {#each $page.data.roles as role}
-                {#if role.id === ROLE_DEVELOPER_ID}
-                  <Badge class="bg-fuchsia-500">Developer</Badge>
-                {:else if role.id === ROLE_DIVISION_DIRECTOR_ID}
-                  <Badge class="bg-red-500">Division Director</Badge>
-                {:else if role.id === ROLE_DIVISION_STAFF_ID}
-                  <Badge class="bg-orange-500">Division Staff</Badge>
-                {:else if role.id === ROLE_VACC_DIRECTOR_ID}
-                  <Badge class="bg-emerald-500">vACC Director</Badge>
-                {:else if role.id === ROLE_VACC_STAFF_ID}
-                  <Badge class="bg-green-500">vACC Staff</Badge>
-                {:else if role.id === ROLE_MENTOR_ID}
-                  <Badge class="bg-sky-500">Mentor</Badge>
-                {/if}
+                {#each $page.data.facility.roles as possibleRole}
+                  {#if role.id === possibleRole.id}
+                    <Badge style="background-color: {color(role.color)}">{possibleRole.name}</Badge>
+                  {/if}
+                {/each}
               {/each}
             {/if}
           </DropdownMenu.Label>
           <DropdownMenu.Label class="font-normal text-foreground/60">
-            {$page.data.user.vaccId === null
+            {$page.data.user.facilityId === null
               ? "No vACC"
-              : $page.data.user.vaccId}
+              : $page.data.user.facilityId}
           </DropdownMenu.Label>
 
           <DropdownMenu.Separator />

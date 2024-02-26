@@ -8,14 +8,11 @@ import type { Actions } from "@sveltejs/kit";
 import { VIEW_PRIVATE_RESOURCES } from "$lib/perms/permissions";
 
 export const load: PageServerLoad = async ({ params, parent }) => {
-  let { user } = await parent();
-  let user_roles = await getUserRoles(user.id);
-
-  if (can(VIEW_PRIVATE_RESOURCES)) {
+if (can(VIEW_PRIVATE_RESOURCES)) {
     return {
       resources: await prisma.resource.findMany({
         where: {
-          vaccId: params.id,
+          facilityId: params.id,
         },
       }),
       form: await superValidate(formSchema),
@@ -24,7 +21,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
     return {
       resources: await prisma.resource.findMany({
         where: {
-          vaccId: params.id,
+          facilityId: params.id,
           isStaffOnly: false,
         },
       }),

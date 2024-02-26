@@ -6,15 +6,14 @@ import { redirect } from "sveltekit-flash-message/server";
 import prisma from "$lib/prisma";
 import type { TrainingQueue } from "@prisma/client";
 import { ulid } from "ulid";
-import { verifyToken } from "$lib/auth";
+import { loadUserData, verifyToken } from "$lib/auth";
 import { can } from "$lib/perms/can";
 import { RECOMMEND_FOR_QUEUE } from "$lib/perms/permissions";
 
 export const load: PageServerLoad = async ({ params }) => {
   let queue = await prisma.trainingQueue.findUnique({
     where: {
-      id: params.queueId,
-      vaccId: params.id,
+      id: params.queueId
     },
   });
   let form = await superValidate(formSchema);
@@ -26,30 +25,7 @@ export const load: PageServerLoad = async ({ params }) => {
 
 export const actions: Actions = {
   default: async (event) => {
-    if (!event.cookies.get("hq_token")) {
-      redirect(
-        301,
-        "/",
-        { type: "error", message: "You need to be logged in for that" },
-        event,
-      );
-    }
-    let token = event.cookies.get("hq_token")!;
-    let maybe_cid = verifyToken(token);
-    if (maybe_cid === null) {
-      redirect(
-        301,
-        "/",
-        { type: "error", message: "You need to be logged in for that" },
-        event,
-      );
-    }
-    let user = await prisma.user.findUnique({
-      where: {
-        id: maybe_cid!,
-      },
-    })!;
-    let roles = await getUserRoles(user!.id);
+    await loadUserData(event.cookies, event.params.id);
 
     if (!can(RECOMMEND_FOR_QUEUE)) {
       redirect(

@@ -5,10 +5,6 @@
 
   export let data: PageData;
 
-  $: {
-    console.log(data);
-  }
-
   let error: string | null = null;
 
   async function toggleRole(
@@ -49,11 +45,11 @@
 
 <div class="flex items-center justify-between space-y-2">
   <h2 class="text-3xl font-bold tracking-tight">
-    vACC Roster - {$page.params.id}
+    Facility Roster - {$page.params.id}
   </h2>
 </div>
 
-<DataTable data={data.home_users} />
+<DataTable data={data.users} />
 
 <!--
 <Alert.Root>

@@ -6,7 +6,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 
   let all_queues = await prisma.trainingQueue.findMany({
     where: {
-      vaccId: params.id,
+      facilityId: params.id,
     },
   });
 

@@ -5,6 +5,7 @@
   import { page } from "$app/stores";
   import { can } from "$lib/perms/can";
   import { MANAGE_QUEUES, RECOMMEND_FOR_QUEUE } from "$lib/perms/permissions";
+  import { toast } from "svelte-sonner";
 
   export let id: string;
 </script>
@@ -23,13 +24,15 @@
   <DropdownMenu.Content>
     <DropdownMenu.Group>
       <DropdownMenu.Label>Actions</DropdownMenu.Label>
-      <DropdownMenu.Item on:click={() => navigator.clipboard.writeText(id)}>
+      <DropdownMenu.Item on:click={() => {navigator.clipboard.writeText(id); toast.success("Queue ID copied to clipboard!");}}>
         Copy ID
       </DropdownMenu.Item>
     </DropdownMenu.Group>
-    <DropdownMenu.Separator />
+
 
     {#if can(RECOMMEND_FOR_QUEUE)}
+      <DropdownMenu.Separator />
+
       <DropdownMenu.Group>
         <DropdownMenu.Item
           href="/{$page.params.id}/training/queues/{id}/recommend">
@@ -41,10 +44,12 @@
         </DropdownMenu.Item>
       </DropdownMenu.Group>
 
-      <DropdownMenu.Separator />
+
     {/if}
 
     {#if can(MANAGE_QUEUES)}
+      <DropdownMenu.Separator />
+
       <DropdownMenu.Group>
         <DropdownMenu.Item href="/{$page.params.id}/training/queues/{id}/edit/">
           Edit details

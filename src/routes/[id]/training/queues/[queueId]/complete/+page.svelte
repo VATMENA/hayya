@@ -1,19 +1,8 @@
 <script lang="ts">
   import type { PageData } from "./$types";
   import RecommendForm from "./recommend-form.svelte";
-  import { onMount } from "svelte";
-  import { can } from "$lib/perms/can";
-  import { page } from "$app/stores";
-  import { goto } from "$app/navigation";
-  import { RECOMMEND_FOR_QUEUE } from "$lib/perms/permissions";
 
   export let data: PageData;
-
-  onMount(() => {
-    if (!can(RECOMMEND_FOR_QUEUE)) {
-      goto(`/${$page.params.id}`);
-    }
-  });
 </script>
 
 <div class="flex items-center justify-between">

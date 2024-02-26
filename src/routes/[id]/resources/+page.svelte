@@ -8,5 +8,5 @@
 
 <ResourcesPage
   form={data.form}
-  vaccId={$page.params.id}
+  facilityId={$page.params.id}
   resources={data.resources} />

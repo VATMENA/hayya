@@ -10,6 +10,7 @@
   import DatePicker from "./DatePicker.svelte";
   import { cn } from "$lib/utils";
   import { buttonVariants } from "$lib/components/ui/button";
+  import { ISSUE_CERTIFICATE, ISSUE_OPENSKIES_CERTIFICATES, ISSUE_SOLO_CERTIFICATES } from "$lib/perms/permissions";
 
   export let theForm: SuperValidated<FormSchema>;
   export let user: User;
@@ -18,24 +19,9 @@
   let p_typ_e = <any>P_TYP;
   let pos_e = <any>POS;
 
-  let has_solo_permission = can(
-    $page.data.roles,
-    $page.data.vacc_id,
-    $page.data.user.vaccId,
-    `division.training.issue_solo`,
-  );
-  let has_openskies_permission = can(
-    $page.data.roles,
-    $page.data.vacc_id,
-    $page.data.user.vaccId,
-    `division.training.issue_openskies`,
-  );
-  let has_perm_permission = can(
-    $page.data.roles,
-    $page.data.vacc_id,
-    $page.data.user.vaccId,
-    `vacc.${$page.data.vacc_id}.training.issue_certificate`,
-  );
+  let has_solo_permission = can(ISSUE_SOLO_CERTIFICATES);
+  let has_openskies_permission = can(ISSUE_OPENSKIES_CERTIFICATES);
+  let has_perm_permission = can(ISSUE_CERTIFICATE);
 
   let ctyp_req_perm = new Map();
   ctyp_req_perm.set(C_TYP.Solo as string, has_solo_permission);
@@ -141,7 +127,7 @@
     </Form.Field>
   </div>
 
-  <input type="hidden" name="id" value={user.id} />
+  <input type="hidden" name="id" value={user.user.id} />
 
   <DatePicker {config} />
 

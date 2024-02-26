@@ -5,7 +5,7 @@ export const load: PageServerLoad = async ({ params }) => {
   let queue = await prisma.trainingQueue.findUnique({
     where: {
       id: params.queueId,
-      vaccId: params.id,
+      facilityId: params.id,
     },
   });
 
