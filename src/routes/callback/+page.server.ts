@@ -71,8 +71,6 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 
   let user_details = (await user_details_resp.json()).data;
 
-  let should_be_controller = user_details.vatsim.division.id == "MENA";
-
   await prisma.user.upsert({
     where: { id: user_details.cid },
     update: {
@@ -91,12 +89,8 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
       ratingLong: user_details.vatsim.rating.long,
       region: user_details.vatsim.region.id,
       division: user_details.vatsim.division.id,
-      vaccId: null,
       recommendedTrainingQueues: [],
       completedTrainingQueues: [],
-      roleIds: should_be_controller
-        ? ["01HGRHM5BTJDXG8VT7MCZ9B2F6"]
-        : ["01HGRHMZ0JKRAGWG2DG0QH5Q16"],
     },
   });
 

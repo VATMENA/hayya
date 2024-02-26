@@ -3,8 +3,8 @@ import { JWT_HMAC_KEY } from "$env/static/private";
 import type { Cookies } from "@sveltejs/kit";
 import { redirect } from "sveltekit-flash-message/server";
 import prisma from "$lib/prisma";
-import { getUserRoles } from "$lib/perms/getUserRoles";
 import type { Role, User } from "@prisma/client";
+import { setUserRoles } from "$lib/authDual";
 
 export function makeToken(cid: string): string {
   return jwt.sign({ cid: cid }, JWT_HMAC_KEY);
@@ -24,7 +24,10 @@ export interface UserData {
   roles: Role[];
 }
 
-export async function loadUserData(cookies: Cookies): Promise<UserData> {
+export async function loadUserData(
+  cookies: Cookies,
+  inFacility: string | null,
+): Promise<UserData> {
   if (!cookies.get("hq_token")) {
     redirect(
       307,
@@ -47,6 +50,13 @@ export async function loadUserData(cookies: Cookies): Promise<UserData> {
     where: {
       id: maybe_cid,
     },
+    include: {
+      facilities: {
+        include: {
+          roles: true,
+        },
+      },
+    },
   })!;
   if (!user) {
     redirect(
@@ -57,10 +67,18 @@ export async function loadUserData(cookies: Cookies): Promise<UserData> {
     );
   }
 
-  let user_roles = await getUserRoles(user.id);
+  let roles: Role[] = [];
+
+  for (let facility of user.facilities) {
+    if (facility.facilityId === inFacility) {
+      roles = facility.roles;
+    }
+  }
+
+  setUserRoles(roles);
 
   return {
     user,
-    roles: user_roles!,
+    roles,
   };
 }

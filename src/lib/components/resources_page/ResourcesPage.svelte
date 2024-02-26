@@ -17,26 +17,14 @@
   import { Button } from "$lib/components/ui/button";
   import { formSchema, type FormSchema } from "./schema";
   import type { SuperValidated } from "sveltekit-superforms";
+  import { MANAGE_RESOURCES } from "$lib/perms/permissions";
 
-  export let vaccId: string | null;
   export let resources: Resource[];
 
   let resources_store = writable(resources);
   $: $resources_store = resources;
 
-  let hasEdit = vaccId
-    ? can(
-        $page.data.roles,
-        vaccId,
-        $page.data.user.vaccId,
-        `vacc.${vaccId}.resource.manage`,
-      )
-    : can(
-        $page.data.roles,
-        vaccId,
-        $page.data.user.vaccId,
-        `division.resource.manage`,
-      );
+  let hasEdit = can(MANAGE_RESOURCES);
 
   const table = createTable(resources_store);
   const columns = table.createColumns([

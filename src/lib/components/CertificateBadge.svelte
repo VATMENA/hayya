@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Certificate } from "@prisma/client";
+  import type { Certificate, User } from "@prisma/client";
   import { Badge } from "$lib/components/ui/badge";
   import {
     C_TYP,
@@ -19,6 +19,9 @@
   import { page } from "$app/stores";
 
   export let cert: Certificate;
+  export let holder: User;
+
+  console.log(cert);
 
   let parsed_position: PositionV2 | null = null;
   let color = "";
@@ -31,7 +34,7 @@
     color = "";
     str_name = "";
     short_name = "";
-    valid_in = "";
+    valid_in = cert.issuedInId;
 
     if (parsed_position !== null) {
       if (parsed_position.c_typ === C_TYP.Solo) {
@@ -120,7 +123,7 @@
       <div class="flex items-center pt-2">
         <UserRound class="mr-2 h-4 w-4 opacity-70" />{" "}
         <span class="text-xs text-muted-foreground">
-          Valid For: {cert.holder.name} in {valid_in}
+          Valid For: {holder.name} in {valid_in}
         </span>
       </div>
       <div class="flex items-center pt-2">

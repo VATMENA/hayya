@@ -12,35 +12,26 @@
     <Card.Header>
       <Card.Title>Switch HQ</Card.Title>
       <Card.Description>
-        Select which HQ should be the active session. Only HQs that you have
-        access to are shown.
+        Select which HQ should be the active session. Access lists are refreshed
+        every hour - if you don't see a facility that you recently gained access
+        to, please check back later!
       </Card.Description>
     </Card.Header>
     <Card.Content class="grid space-y-4">
-      <div class="flex items-center justify-between space-x-4">
-        <div class="flex items-center space-x-4">
-          <div>
-            <p class="text-sm font-medium leading-none">Division</p>
-            <p class="text-sm text-muted-foreground leading-none mt-1">MENA</p>
-          </div>
-        </div>
-        <Button href="/dashboard/division/" variant="outline" class="ml-auto">
-          Enter
-          <LogIn class="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-      {#each data.shown_vaccs as vacc}
+      {#each data.user.facilities as facilityAssignment}
         <div class="flex items-center justify-between space-x-4">
           <div class="flex items-center space-x-4">
             <div>
-              <p class="text-sm font-medium leading-none">{vacc.name}</p>
+              <p class="text-sm font-medium leading-none">
+                {facilityAssignment.facility.name}
+              </p>
               <p class="text-sm text-muted-foreground leading-none mt-1">
-                {vacc.id}
+                {facilityAssignment.facility.id}
               </p>
             </div>
           </div>
           <Button
-            href="/dashboard/vaccs/{vacc.id}"
+            href={facilityAssignment.facility.id}
             variant="outline"
             class="ml-auto">
             Enter

@@ -5,10 +5,13 @@ import { redirect } from "sveltekit-flash-message/server";
 import { can } from "$lib/perms/can";
 import { loadUserData, verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
-import { getUserRoles } from "$lib/perms/getUserRoles";
 import { ulid } from "ulid";
+import { MANAGE_RESOURCES } from "$lib/perms/permissions";
 
-export async function handleResourceSubmit(event: any, vaccId: string | null) {
+export async function handleResourceSubmit(
+  event: any,
+  facilityId: string | null,
+) {
   const form = await superValidate(event, formSchema);
   if (!form.valid) {
     return fail(400, {
@@ -16,11 +19,9 @@ export async function handleResourceSubmit(event: any, vaccId: string | null) {
     });
   }
 
-  let { user, roles } = await loadUserData(event.cookies);
+  await loadUserData(event.cookies, event.params.id);
 
-  let hasEdit = vaccId
-    ? can(roles, vaccId, user.vaccId, `vacc.${vaccId}.resource.manage`)
-    : can(roles, vaccId, user.vaccId, `division.resource.manage`);
+  let hasEdit = can(MANAGE_RESOURCES);
 
   if (!hasEdit) {
     return fail(403, {
@@ -31,7 +32,7 @@ export async function handleResourceSubmit(event: any, vaccId: string | null) {
   await prisma.resource.create({
     data: {
       id: ulid(),
-      vaccId: vaccId,
+      facilityId: facilityId,
       name: form.data.name,
       link: form.data.link,
       description: form.data.description,

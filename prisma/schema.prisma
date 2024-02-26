@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,29 +7,67 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum FacilityType {
+  Subdivision
+  Division
+}
+
+model Facility {
+  id   String @id
+  name String @unique
+
+  dotnetId   String       @unique
+  dotnetType FacilityType
+
+  roles Role[] @relation
+
+  website      String
+  contactEmail String
+
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+  users          UserFacilityAssignment[]
+  trainingQueues TrainingQueue[]
+  certificates   Certificate[]
+  resources      Resource[]
+  events         Event[]
+}
+
 model Role {
+  facilityId String
+  facility   Facility @relation(fields: [facilityId], references: [id])
+
   id          String   @id
   name        String   @unique
+  color       String
   permissions String[]
+
+  users UserFacilityAssignment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Vacc {
-  id           String @id
-  name         String @unique
-  website      String
-  contactEmail String
+enum FacilityAssignmentType {
+  Primary
+  Secondary
+  DivisionalStaff
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  users     User[]   @relation()
+model UserFacilityAssignment {
+  id String @id
 
-  trainingQueues TrainingQueue[] @relation
-  certificates   Certificate[]   @relation
-  resources      Resource[]      @relation
-  events         Event[]         @relation
+  assignmentType FacilityAssignmentType
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  facilityId String
+  facility   Facility @relation(fields: [facilityId], references: [id])
+
+  roles Role[]
+
+  @@unique([userId, facilityId, assignmentType])
 }
 
 model User {
@@ -44,10 +79,7 @@ model User {
   region      String
   division    String
 
-  roleIds String[]
-
-  vacc   Vacc?   @relation(fields: [vaccId], references: [id])
-  vaccId String?
+  facilities UserFacilityAssignment[] @relation
 
   trainingQueues            TrainingQueueMembership[]
   recommendedTrainingQueues String[]
@@ -59,13 +91,13 @@ model User {
   heldCertificates    Certificate[] @relation(name: "heldCertificates")
   grantedCertificates Certificate[] @relation(name: "grantedCertificates")
 
-  certificatesAlreadyGrandfathered Boolean @default(false)
-
   receivedSessions Session[] @relation(name: "receivedSessions")
   taughtSessions   Session[] @relation(name: "taughtSessions")
 
   eventSignups     EventSignup[]     @relation
   eventAssignments EventAssignment[] @relation
+
+  isSiteAdmin Boolean @default(false)
 }
 
 model AuditLogEntry {
@@ -81,8 +113,8 @@ model AuditLogEntry {
 model TrainingQueue {
   id String @id
 
-  vacc   Vacc   @relation(fields: [vaccId], references: [id])
-  vaccId String
+  facility   Facility @relation(fields: [facilityId], references: [id])
+  facilityId String
 
   name              String
   description       String
@@ -120,7 +152,7 @@ model Certificate {
 
   instructorComments String
 
-  issuedIn   Vacc   @relation(fields: [issuedInId], references: [id])
+  issuedIn   Facility @relation(fields: [issuedInId], references: [id])
   issuedInId String
 
   createdAt DateTime @default(now())
@@ -129,8 +161,8 @@ model Certificate {
 model Resource {
   id String @id
 
-  vacc   Vacc?   @relation(fields: [vaccId], references: [id])
-  vaccId String?
+  facility   Facility? @relation(fields: [facilityId], references: [id])
+  facilityId String?
 
   isStaffOnly Boolean
 
@@ -164,7 +196,7 @@ model Event {
 
   name String
 
-  host   Vacc   @relation(fields: [hostId], references: [id])
+  host   Facility @relation(fields: [hostId], references: [id])
   hostId String
 
   start DateTime
@@ -172,8 +204,8 @@ model Event {
 
   description String
 
-  bannerUrl       String
-  bannerBlurHash  String
+  bannerUrl      String
+  bannerBlurHash String
 
   positions String[]
 

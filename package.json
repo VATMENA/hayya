@@ -1,6 +1,6 @@
 {
   "name": "hq",
-  "version": "1.0.100",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "vite dev",
@@ -53,8 +53,5 @@
     "tailwind-variants": "^0.1.20",
     "ulid": "^2.3.0",
     "zod": "^3.22.4"
-  },
-  "prisma": {
-    "seed": "node prisma/seed.js"
   }
 }
