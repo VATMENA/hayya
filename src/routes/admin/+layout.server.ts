@@ -8,4 +8,6 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
   if (!user.isSiteAdmin) {
     redirect(307, "/");
   }
+
+  return { user };
 };
