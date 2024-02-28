@@ -6,6 +6,7 @@
   export let data: LayoutData;
 
   setContext("roles", data.roles);
+  setContext("user", data.user);
 </script>
 
 <Nav />
