@@ -171,6 +171,11 @@ model Resource {
   link        String
 }
 
+enum LogType {
+  Training
+  CertificateRevokal
+}
+
 model Session {
   id String @id
 
@@ -180,6 +185,7 @@ model Session {
   instructor   User   @relation(name: "taughtSessions", fields: [instructorId], references: [id])
   instructorId String
 
+  logType     LogType @default(Training)
   sessionType String
 
   date DateTime

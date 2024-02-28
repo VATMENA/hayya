@@ -15,8 +15,17 @@
     TowerControl,
     UserRound,
   } from "lucide-svelte";
-  import * as HoverCard from "$lib/components/ui/hover-card";
   import { page } from "$app/stores";
+  import { can } from "$lib/perms/can";
+  import {
+    REVOKE_CERTIFICATE,
+    REVOKE_OPENSKIES_CERTIFICATES,
+    REVOKE_SOLO_CERTIFICATES,
+  } from "$lib/perms/permissions";
+  import { buttonVariants } from "$lib/components/ui/button";
+  import * as Dialog from "$lib/components/ui/dialog";
+  import { Button } from "$lib/components/ui/button";
+  import * as HoverCard from "$lib/components/ui/hover-card";
 
   export let cert: Certificate;
   export let holder: User;
@@ -28,8 +37,17 @@
   let str_name = "";
   let short_name = "";
   let valid_in = "";
+  let can_revoke = false;
   $: {
     parsed_position = parse_position_v2(cert.position);
+
+    if (parsed_position?.c_typ === C_TYP.Solo) {
+      can_revoke = can(REVOKE_SOLO_CERTIFICATES);
+    } else if (parsed_position?.p_typ === P_TYP.OpenSkies) {
+      can_revoke = can(REVOKE_OPENSKIES_CERTIFICATES);
+    } else {
+      can_revoke = can(REVOKE_CERTIFICATE);
+    }
 
     color = "";
     str_name = "";
@@ -108,10 +126,13 @@
       valid_in = $page.data.vacc_id;
     }
   }
+
+  let revokeOpen = false;
+  let hovercardOpen = false;
 </script>
 
 {#if parsed_position !== null && (cert.expires !== null ? cert.expires > new Date() : true)}
-  <HoverCard.Root>
+  <HoverCard.Root bind:open={hovercardOpen}>
     <HoverCard.Trigger>
       <Badge class={color}>
         {short_name}
@@ -166,6 +187,31 @@
           Certificate #{cert.id}
         </span>
       </div>
+      {#if can_revoke}
+        <Button
+          on:click={() => {
+            revokeOpen = true;
+            hovercardOpen = false;
+          }}
+          class="mt-2 w-full">
+          Revoke Certificate
+        </Button>
+        <Dialog.Root bind:open={revokeOpen}>
+          <Dialog.Content class="sm:max-w-[425px]">
+            <Dialog.Header>
+              <Dialog.Title>Edit profile</Dialog.Title>
+              <Dialog.Description>
+                This will immediately invalidate the certificate and add a log
+                to the user's training transcript that the certificate was
+                revoked.
+              </Dialog.Description>
+            </Dialog.Header>
+            <Dialog.Footer>
+              <Button type="submit" variant="danger">Revoke certificate</Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Root>
+      {/if}
     </HoverCard.Content>
   </HoverCard.Root>
 {/if}
