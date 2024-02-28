@@ -190,28 +190,30 @@
       {#if can_revoke}
         <Button
           on:click={() => {
-            revokeOpen = true;
             hovercardOpen = false;
+            revokeOpen = true;
           }}
           class="mt-2 w-full">
           Revoke Certificate
         </Button>
-        <Dialog.Root bind:open={revokeOpen}>
-          <Dialog.Content class="sm:max-w-[425px]">
-            <Dialog.Header>
-              <Dialog.Title>Edit profile</Dialog.Title>
-              <Dialog.Description>
-                This will immediately invalidate the certificate and add a log
-                to the user's training transcript that the certificate was
-                revoked.
-              </Dialog.Description>
-            </Dialog.Header>
-            <Dialog.Footer>
-              <Button type="submit" variant="danger">Revoke certificate</Button>
-            </Dialog.Footer>
-          </Dialog.Content>
-        </Dialog.Root>
       {/if}
     </HoverCard.Content>
   </HoverCard.Root>
+{/if}
+
+{#if can_revoke}
+  <Dialog.Root bind:open={revokeOpen}>
+    <Dialog.Content class="sm:max-w-[425px]">
+      <Dialog.Header>
+        <Dialog.Title>Edit profile</Dialog.Title>
+        <Dialog.Description>
+          This will immediately invalidate the certificate and add a log to the
+          user's training transcript that the certificate was revoked.
+        </Dialog.Description>
+      </Dialog.Header>
+      <Dialog.Footer>
+        <Button type="submit" variant="danger">Revoke certificate</Button>
+      </Dialog.Footer>
+    </Dialog.Content>
+  </Dialog.Root>
 {/if}
