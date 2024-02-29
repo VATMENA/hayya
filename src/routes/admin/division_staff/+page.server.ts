@@ -52,6 +52,37 @@ export const actions: Actions = {
       form,
     };
   },
+  createAll: async (event) => {
+    let form = await superValidate(event, formSchema);
+
+    if (!form.valid) {
+      return fail(400, { form });
+    }
+
+    let { user } = await loadUserData(event.cookies, null);
+    if (!user.isSiteAdmin) {
+      return fail(400, { form });
+    }
+
+    let facilities = await prisma.facility.findMany();
+
+    for (let f of facilities) {
+      if (f.dotnetType === 'Subdivision') {
+        await prisma.userFacilityAssignment.create({
+          data: {
+            id: ulid(),
+            userId: form.data.cid.toString(),
+            facilityId: f.id,
+            assignmentType: "DivisionalStaff",
+          },
+        });
+      }
+    }
+
+    return {
+      form,
+    };
+  },
   delete: async (event) => {
     let { user } = await loadUserData(event.cookies, null);
     if (!user.isSiteAdmin) {

@@ -12,7 +12,7 @@
   import * as Form from "$lib/components/ui/form";
   import { Plus } from "lucide-svelte";
   import { Button } from "$lib/components/ui/button";
-  import { formSchema, type FormSchema } from "./schema";
+  import { formSchema, type FormSchema, formSchema2, type FormSchema2 } from "./schema";
   import type { SuperValidated } from "sveltekit-superforms";
   import type { PageData } from "./$types";
   import { toast } from "svelte-sonner";
@@ -49,11 +49,21 @@
   let createDialogOpen = false;
 
   export let form: SuperValidated<FormSchema>;
+  export let form2: SuperValidated<FormSchema2>;
 
   let options = {
     onUpdated: ({ form }) => {
       if (form.valid) {
         createDialogOpen = false;
+        toast.success("User assignments updated!");
+      }
+    },
+  };
+  let createDialogOpen2 = false;
+  let options2 = {
+    onUpdated: ({ form }) => {
+      if (form.valid) {
+        createDialogOpen2 = false;
         toast.success("User assignments updated!");
       }
     },
@@ -69,7 +79,14 @@
       createDialogOpen = true;
     }}>
     <Plus class="mr-2 w-4 h-4" />
-    Create
+    New
+  </Button>
+  <Button
+          on:click={() => {
+      createDialogOpen2 = true;
+    }}>
+    <Plus class="mr-2 w-4 h-4" />
+    New All
   </Button>
 </div>
 
@@ -137,6 +154,36 @@
         <Form.Button class="mt-2 w-100">
           <Plus class="mr-2 w-4 h-4" />
           Create
+        </Form.Button>
+      </Form.Root>
+    </div>
+  </Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root bind:open={createDialogOpen2}>
+  <Dialog.Content class="sm:max-w-[425px]">
+    <Dialog.Header>
+      <Dialog.Title>New Divisional Staff Assignment</Dialog.Title>
+    </Dialog.Header>
+
+    <div class="space-y-2">
+      <Form.Root
+              action="?/createAll"
+              method="POST"
+              form={form2}
+              schema={formSchema2}
+              options={options2}
+              let:config>
+        <Form.Field {config} name="cid">
+          <Form.Item>
+            <Form.Label>User CID</Form.Label>
+            <Form.Input />
+            <Form.Validation />
+          </Form.Item>
+        </Form.Field>
+        <Form.Button class="mt-2 w-100">
+          <Plus class="mr-2 w-4 h-4" />
+          New All
         </Form.Button>
       </Form.Root>
     </div>
