@@ -9,7 +9,7 @@
 
 <div class="space-x-2">
   {userAssignment.user.name}
-  {#if userAssignment.roles}
+  {#if Object.keys(userAssignment).includes("roles")}
     {#each userAssignment.roles as role}
       {#each $page.data.facility.roles as possibleRole}
         {#if role.id === possibleRole.id}

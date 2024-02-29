@@ -17,7 +17,7 @@
       },
     });
     await invalidateAll();
-    toast.success("Site admin removed");
+    toast.success("Facility permissions removed");
   }
 </script>
 
@@ -29,8 +29,7 @@
     <Dialog.Header>
       <Dialog.Title>Are you sure?</Dialog.Title>
       <Dialog.Description>
-        The user's site admin status will be removed. They will retain any staff
-        authorizations or facility assignments they may have.
+        The user's facility assignment status will be removed. They will lose access to the facility specified.
       </Dialog.Description>
     </Dialog.Header>
     <Dialog.Footer>
