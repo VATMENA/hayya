@@ -32,6 +32,9 @@ export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
     await prisma.userFacilityAssignment.findMany({
       where: {
         facilityId: params.id,
+        NOT: {
+          assignmentType: "DivisionalStaff"
+        }
       },
       include: {
         user: {
