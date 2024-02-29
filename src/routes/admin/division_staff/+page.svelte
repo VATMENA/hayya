@@ -29,11 +29,12 @@
     table.column({
       accessor: (o) => o,
       header: "Name & Facility Roles",
-      cell: ({value}) => createRender(DataTableUser, { userAssignment: value })
+      cell: ({ value }) =>
+        createRender(DataTableUser, { userAssignment: value }),
     }),
     table.column({
       accessor: "facilityId",
-      header: "Facility ID"
+      header: "Facility ID",
     }),
     table.column({
       accessor: ({ id }) => id,
@@ -60,7 +61,9 @@
 </script>
 
 <div class="flex items-center justify-between">
-  <h2 class="text-3xl font-bold tracking-tight">Manage Divisional Staff Assignments</h2>
+  <h2 class="text-3xl font-bold tracking-tight">
+    Manage Divisional Staff Assignments
+  </h2>
   <Button
     on:click={() => {
       createDialogOpen = true;

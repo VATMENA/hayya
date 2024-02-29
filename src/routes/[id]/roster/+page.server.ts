@@ -33,8 +33,8 @@ export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
       where: {
         facilityId: params.id,
         NOT: {
-          assignmentType: "DivisionalStaff"
-        }
+          assignmentType: "DivisionalStaff",
+        },
       },
       include: {
         user: {

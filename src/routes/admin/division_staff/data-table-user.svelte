@@ -9,13 +9,15 @@
 
 <div class="space-x-2">
   {userAssignment.user.name}
-  {#each userAssignment.roles as role}
-    {#each $page.data.facility.roles as possibleRole}
-      {#if role.id === possibleRole.id}
-        <Badge style="background-color: {color(role.color)}">
-          {possibleRole.name}
-        </Badge>
-      {/if}
+  {#if userAssignment.roles}
+    {#each userAssignment.roles as role}
+      {#each $page.data.facility.roles as possibleRole}
+        {#if role.id === possibleRole.id}
+          <Badge style="background-color: {color(role.color)}">
+            {possibleRole.name}
+          </Badge>
+        {/if}
+      {/each}
     {/each}
-  {/each}
+  {/if}
 </div>

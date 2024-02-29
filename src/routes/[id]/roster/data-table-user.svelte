@@ -9,7 +9,7 @@
 
 <div class="space-x-2">
   {userAssignment.user.name}
-  {#if userAssignment.assignmentType === 'Secondary' && userAssignment.facilityId !== 'MENA'}
+  {#if userAssignment.assignmentType === "Secondary" && userAssignment.facilityId !== "MENA"}
     <Badge style="background-color: bg-forest-500">Visitor</Badge>
   {/if}
   {#each userAssignment.roles as role}

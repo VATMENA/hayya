@@ -23,7 +23,7 @@ export function can(permission: Permission): boolean {
 
   if (!roles || !_user) {
     throw new Error(
-        "can() called before setContext() on client or before loadUserData() on server",
+      "can() called before setContext() on client or before loadUserData() on server",
     );
   }
 

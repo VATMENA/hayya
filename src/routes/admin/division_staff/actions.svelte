@@ -29,7 +29,8 @@
     <Dialog.Header>
       <Dialog.Title>Are you sure?</Dialog.Title>
       <Dialog.Description>
-        The user's site admin status will be removed. They will retain any staff authorizations or facility assignments they may have.
+        The user's site admin status will be removed. They will retain any staff
+        authorizations or facility assignments they may have.
       </Dialog.Description>
     </Dialog.Header>
     <Dialog.Footer>
