@@ -38,7 +38,7 @@ model Role {
   facility   Facility @relation(fields: [facilityId], references: [id])
 
   id          String   @id
-  name        String   @unique
+  name        String
   color       String
   permissions String[]
 
@@ -46,6 +46,8 @@ model Role {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([facilityId, name])
 }
 
 enum FacilityAssignmentType {
