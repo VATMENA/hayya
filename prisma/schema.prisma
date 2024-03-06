@@ -24,13 +24,14 @@ model Facility {
   website      String
   contactEmail String
 
-  createdAt      DateTime                 @default(now())
-  updatedAt      DateTime                 @updatedAt
-  users          UserFacilityAssignment[]
-  trainingQueues TrainingQueue[]
-  certificates   Certificate[]
-  resources      Resource[]
-  events         Event[]
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+  users           UserFacilityAssignment[]
+  trainingQueues  TrainingQueue[]
+  certificates    Certificate[]
+  resources       Resource[]
+  events          Event[]
+  TrainingRequest TrainingRequest[]
 }
 
 model Role {
@@ -100,6 +101,9 @@ model User {
   eventAssignments EventAssignment[] @relation
 
   isSiteAdmin Boolean @default(false)
+
+  requestedSessions TrainingRequest[] @relation(name: "requestStudent")
+  acceptedSessions  TrainingRequest[] @relation(name: "requestInstructor")
 }
 
 model AuditLogEntry {
@@ -261,4 +265,23 @@ model EventAssignment {
 
   startTime DateTime
   endTime   DateTime
+}
+
+model TrainingRequest {
+  id String @id
+
+  facility   Facility @relation(fields: [facilityId], references: [id])
+  facilityId String
+
+  student   User   @relation(fields: [studentId], references: [id], name: "requestStudent")
+  studentId String
+
+  instructor   User?   @relation(fields: [instructorId], references: [id], name: "requestInstructor")
+  instructorId String?
+
+  trainingType String
+  availability String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
