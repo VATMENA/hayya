@@ -77,7 +77,7 @@
     <div class="mr-4 hidden md:flex">
       <a
         class="mr-6 flex items-center space-x-2"
-        href="/${$page.data.facility.id}">
+        href="/{$page.data.facility.id}">
         <span class="hidden font-bold sm:inline-block text-[15px] lg:text-base">
           {$page.data.facility.name} HQ
         </span>
