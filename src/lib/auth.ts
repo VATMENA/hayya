@@ -5,7 +5,7 @@ import { redirect } from "sveltekit-flash-message/server";
 import prisma from "$lib/prisma";
 import type { Role, User } from "@prisma/client";
 import { setUser, setUserRoles } from "$lib/authDual";
-import {ulid} from "ulid";
+import { ulid } from "ulid";
 
 export function makeToken(cid: string): string {
   return jwt.sign({ cid: cid }, JWT_HMAC_KEY);
@@ -73,7 +73,7 @@ export async function loadUserData(
   for (let facility of user.facilities) {
     if (facility.facilityId === inFacility) {
       roles = facility.roles;
-      if (facility.assignmentType === 'DivisionalStaff') {
+      if (facility.assignmentType === "DivisionalStaff") {
         roles.push({
           id: ulid(),
           facilityId: inFacility,
@@ -81,7 +81,7 @@ export async function loadUserData(
           permissions: ["*"],
           color: "pink-500",
           createdAt: new Date(),
-          updatedAt: new Date()
+          updatedAt: new Date(),
         });
       }
     }
