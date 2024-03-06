@@ -3,12 +3,18 @@
   import type { PageData } from "./$types";
   import { Badge } from "$lib/components/ui/badge";
   import { color } from "$lib/colors";
+  import Button from "$lib/components/ui/button/button.svelte";
+  import { Plus } from "lucide-svelte";
 
   export let data: PageData;
 </script>
 
-<div class="flex items-center justify-between space-y-2">
+<div class="flex items-center justify-between">
   <h2 class="text-3xl font-bold tracking-tight">Manage Facility</h2>
+  <Button href="/{data.facility.id}/manage/createrole">
+    <Plus class="mr-2 w-4 h-4" />
+    Create
+  </Button>
 </div>
 
 <div class="grid grid-cols-3 gap-4">
