@@ -3,11 +3,12 @@
   import { Progress } from "$lib/components/ui/progress";
   import { Button, buttonVariants } from "$lib/components/ui/button";
   import {
+    GiftIcon,
     LogInIcon,
     LogOutIcon,
     PlusIcon,
     ScrollTextIcon,
-    SettingsIcon,
+    SettingsIcon
   } from "lucide-svelte";
   import { can } from "$lib/perms/can";
   import { page } from "$app/stores";
@@ -28,6 +29,8 @@
 
   let sessionOpen = false;
   let viewTranscriptId = "";
+
+  let requestTrainingOpen = false;
 </script>
 
 <div class="flex items-center justify-between space-y-2">
@@ -35,7 +38,7 @@
 </div>
 
 <div class="grid grid-cols-3 gap-4">
-  <div>
+  <div class="space-y-4">
     <Card.Root>
       <Card.Header>
         <Card.Title>Training Queues</Card.Title>
@@ -67,8 +70,19 @@
         {/if}
       </Card.Content>
     </Card.Root>
+    <Card.Root>
+      <Card.Header>
+        <Card.Title>Request Training</Card.Title>
+      </Card.Header>
+      <Card.Content>
+        <Button>
+          <GiftIcon class="mr-2 w-4 h-4" />
+          Request Training
+        </Button>
+      </Card.Content>
+    </Card.Root>
   </div>
-  <div class="grid gap-4">
+  <div class="space-y-4">
     <Card.Root>
       <Card.Header>
         <Card.Title>My Transcript</Card.Title>
@@ -147,3 +161,11 @@
     </Dialog.Content>
   </Dialog.Root>
 {/if}
+
+<Dialog.Root bind:open={requestTrainingOpen}>
+  <Dialog.Content class="max-w-[50vw]">
+    <Dialog.Header>
+      <Dialog.Title>Request Training Session</Dialog.Title>
+    </Dialog.Header>
+  </Dialog.Content>
+</Dialog.Root>
