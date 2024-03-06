@@ -10,31 +10,29 @@
 <div class="h-screen flex flex-col p-6 space-y-4 items-center justify-center">
   <Card.Root class="w-[20em] justify-center content-center">
     <Card.Header>
-      <Card.Title>Switch HQ</Card.Title>
+      <Card.Title>View Rosters</Card.Title>
       <Card.Description>
-        Select which HQ should be the active session. Access lists are refreshed
-        every hour - if you don't see a facility that you recently gained access
-        to, please check back later!
+        Select a facility to view it's controller roster and certifications.
       </Card.Description>
     </Card.Header>
     <Card.Content class="grid space-y-4">
-      {#each data.user.facilities as facilityAssignment}
+      {#each data.facilities as facility}
         <div class="flex items-center justify-between space-x-4">
           <div class="flex items-center space-x-4">
             <div>
               <p class="text-sm font-medium leading-none">
-                {facilityAssignment.facility.name}
+                {facility.name}
               </p>
               <p class="text-sm text-muted-foreground leading-none mt-1">
-                {facilityAssignment.facility.id}
+                {facility.id}
               </p>
             </div>
           </div>
           <Button
-            href={facilityAssignment.facility.id}
+            href="/{facility.id}/roster"
             variant="outline"
             class="ml-auto">
-            Enter
+            View
             <LogIn class="ml-2 h-4 w-4" />
           </Button>
         </div>
@@ -42,9 +40,9 @@
     </Card.Content>
     <Card.Footer>
       <Card.Description>
-        Just looking for the rosters? <a
+        Want to go to a facility's HQ? <a
           class="underline underline-offset-4"
-          href="/switch_hq/rosters">
+          href="/switch_hq">
           Find them here!
         </a>
       </Card.Description>

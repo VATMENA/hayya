@@ -29,7 +29,8 @@
     <Dialog.Header>
       <Dialog.Title>Are you sure?</Dialog.Title>
       <Dialog.Description>
-        The user's facility assignment status will be removed. They will lose access to the facility specified.
+        The user's facility assignment status will be removed. They will lose
+        access to the facility specified.
       </Dialog.Description>
     </Dialog.Header>
     <Dialog.Footer>

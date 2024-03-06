@@ -67,7 +67,7 @@ export const actions: Actions = {
     let facilities = await prisma.facility.findMany();
 
     for (let f of facilities) {
-      if (f.dotnetType === 'Subdivision') {
+      if (f.dotnetType === "Subdivision") {
         await prisma.userFacilityAssignment.create({
           data: {
             id: ulid(),

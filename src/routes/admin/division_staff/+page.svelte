@@ -12,7 +12,12 @@
   import * as Form from "$lib/components/ui/form";
   import { Plus } from "lucide-svelte";
   import { Button } from "$lib/components/ui/button";
-  import { formSchema, type FormSchema, formSchema2, type FormSchema2 } from "./schema";
+  import {
+    formSchema,
+    type FormSchema,
+    formSchema2,
+    type FormSchema2,
+  } from "./schema";
   import type { SuperValidated } from "sveltekit-superforms";
   import type { PageData } from "./$types";
   import { toast } from "svelte-sonner";
@@ -82,7 +87,7 @@
     New
   </Button>
   <Button
-          on:click={() => {
+    on:click={() => {
       createDialogOpen2 = true;
     }}>
     <Plus class="mr-2 w-4 h-4" />
@@ -168,12 +173,12 @@
 
     <div class="space-y-2">
       <Form.Root
-              action="?/createAll"
-              method="POST"
-              form={form2}
-              schema={formSchema2}
-              options={options2}
-              let:config>
+        action="?/createAll"
+        method="POST"
+        form={form2}
+        schema={formSchema2}
+        options={options2}
+        let:config>
         <Form.Field {config} name="cid">
           <Form.Item>
             <Form.Label>User CID</Form.Label>
