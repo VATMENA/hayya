@@ -9,10 +9,12 @@ import { can } from "$lib/perms/can";
 import { ulid } from "ulid";
 import { parseDate, parseDateTime } from "@internationalized/date";
 import { TRAIN } from "$lib/perms/permissions";
+import { formSchema as requestFormSchema } from "./request-form";
 
 export const load: PageServerLoad = async () => {
   return {
     form: await superValidate(formSchema),
+    requestForm: await superValidate(requestFormSchema),
   };
 };
 
