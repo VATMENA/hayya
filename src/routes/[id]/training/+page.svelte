@@ -8,7 +8,7 @@
     LogOutIcon,
     PlusIcon,
     ScrollTextIcon,
-    SettingsIcon
+    SettingsIcon,
   } from "lucide-svelte";
   import { can } from "$lib/perms/can";
   import { page } from "$app/stores";
@@ -24,6 +24,7 @@
     RECOMMEND_FOR_QUEUE,
     TRAIN,
   } from "$lib/perms/permissions";
+  import RequestForm from "./request-form.svelte";
 
   export let data: PageData;
 
@@ -75,7 +76,10 @@
         <Card.Title>Request Training</Card.Title>
       </Card.Header>
       <Card.Content>
-        <Button>
+        <Button
+          on:click={() => {
+            requestTrainingOpen = true;
+          }}>
           <GiftIcon class="mr-2 w-4 h-4" />
           Request Training
         </Button>
@@ -167,5 +171,11 @@
     <Dialog.Header>
       <Dialog.Title>Request Training Session</Dialog.Title>
     </Dialog.Header>
+    <RequestForm
+      form={data.requestForm}
+      onsubmit={() => {
+        requestTrainingOpen = false;
+        toast.success("Training request submitted!");
+      }} />
   </Dialog.Content>
 </Dialog.Root>
