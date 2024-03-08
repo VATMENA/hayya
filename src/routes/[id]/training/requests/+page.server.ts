@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({cookies, params}) => {
     where: {
       facilityId: params.id,
       endDate: {
-        lt: new Date()
+        gt: new Date()
       },
       instructorId: null
     },
@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({cookies, params}) => {
     where: {
       facilityId: params.id,
       endDate: {
-        gt: new Date()
+        lt: new Date()
       }
     },
     include: {
@@ -41,7 +41,7 @@ export const load: PageServerLoad = async ({cookies, params}) => {
     where: {
       facilityId: params.id,
       endDate: {
-        lt: new Date()
+        gt: new Date()
       },
       NOT: {
         instructorId: null

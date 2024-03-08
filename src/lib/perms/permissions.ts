@@ -64,6 +64,18 @@ export const MANAGE_EVENTS: Permission = {
   id: "events.manage",
   description: "Allows the user to create and delete events.",
 };
+export const ASSIGN_MENTORS_TO_REQUEST: Permission = {
+  id: "training.request.assign",
+  description: "Allows the user to assign other mentors to training requests."
+};
+export const SELF_ASSIGN_TO_REQUEST: Permission = {
+  id: "training.request.selfassign",
+  description: "Allows the user to assign themselves to training requests."
+};
+export const DELETE_REQUEST: Permission = {
+  id: "training.request.delete",
+  description: "Allows the user to delete training requests."
+}
 
 export const PERMISSIONS: Permission[] = [
   EDIT_DETAILS,
@@ -81,4 +93,7 @@ export const PERMISSIONS: Permission[] = [
   REVOKE_SOLO_CERTIFICATES,
   REVOKE_OPENSKIES_CERTIFICATES,
   MANAGE_EVENTS,
+  ASSIGN_MENTORS_TO_REQUEST,
+  SELF_ASSIGN_TO_REQUEST,
+  DELETE_REQUEST
 ];
