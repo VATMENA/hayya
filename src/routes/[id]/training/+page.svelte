@@ -83,6 +83,12 @@
           <GiftIcon class="mr-2 w-4 h-4" />
           Request Training
         </Button>
+        {#if can(TRAIN)}
+          <Button href="/{$page.params.id}/training/requests">
+            <SettingsIcon class="mr-2 w-4 h-4" />
+            Manage Requests
+          </Button>
+        {/if}
       </Card.Content>
     </Card.Root>
   </div>
