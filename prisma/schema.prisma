@@ -280,6 +280,10 @@ model TrainingRequest {
   instructorId String?
 
   trainingType String
+
+  startDate DateTime
+  endDate   DateTime
+
   availability String
 
   createdAt DateTime @default(now())

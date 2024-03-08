@@ -23,7 +23,7 @@
   {form}
   schema={formSchema}
   let:config
-  action="?/logSession">
+  action="?/requestTraining">
   <div class="space-y-4">
     <Form.Field {config} name="trainingType">
       <Form.Item class="flex flex-col">
