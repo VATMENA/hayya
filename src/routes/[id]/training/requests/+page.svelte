@@ -1,5 +1,9 @@
 <script lang="ts">
   import * as Tabs from "$lib/components/ui/tabs";
+  import type { PageData } from "./$types";
+  import DataTable from "./data-table.svelte";
+
+  export let data: PageData;
 </script>
 
 <div class="flex items-center justify-between space-y-2">
@@ -13,12 +17,12 @@
     <Tabs.Trigger value="expired">Expired</Tabs.Trigger>
   </Tabs.List>
   <Tabs.Content value="unassigned">
-
+    <DataTable data={data.unassigned} />
   </Tabs.Content>
   <Tabs.Content value="assigned">
-
+    <DataTable data={data.assigned} />
   </Tabs.Content>
   <Tabs.Content value="expired">
-
+    <DataTable data={data.expired} />
   </Tabs.Content>
 </Tabs.Root>
