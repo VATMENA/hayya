@@ -1,5 +1,6 @@
 import { superValidate } from "sveltekit-superforms/server";
 import { formSchema } from "./session-form";
+import { formSchema as requestFormSchema } from "./request-form";
 import type { PageServerLoad } from "./$types";
 import { type Actions, fail } from "@sveltejs/kit";
 import { redirect } from "sveltekit-flash-message/server";
@@ -9,7 +10,6 @@ import { can } from "$lib/perms/can";
 import { ulid } from "ulid";
 import { parseDate, parseDateTime } from "@internationalized/date";
 import { TRAIN } from "$lib/perms/permissions";
-import { formSchema as requestFormSchema } from "./request-form";
 
 export const load: PageServerLoad = async () => {
   return {
@@ -61,4 +61,34 @@ export const actions: Actions = {
       form,
     };
   },
+  requestTraining: async (event) => {
+    const form = await superValidate(event, requestFormSchema);
+
+    if (!form.valid) {
+      return fail(400, { form });
+    }
+
+    let { user } = await loadUserData(event.cookies, event.params.id!);
+
+    let startDate = parseDateTime(form.data.dateStart.replace("Z", "")).toDate("UTC");
+    let endDate = parseDateTime(form.data.dateEnd.replace("Z", "")).toDate("UTC");
+
+
+    await prisma.trainingRequest.create({
+      data: {
+        id: ulid(),
+        facilityId: event.params.id!,
+        studentId: user.id,
+        instructorId: null,
+        trainingType: form.data.trainingType,
+        startDate: startDate,
+        endDate: endDate,
+        availability: form.data.times
+      },
+    });
+
+    return {
+      form,
+    };
+  }
 };

@@ -62,9 +62,9 @@
           initialFocus
           onValueChange={(v) => {
             if (v) {
-              $form.date = toCalendarDateTime(v).toString() + "Z";
+              $form.dateEnd = toCalendarDateTime(v).toString() + "Z";
             } else {
-              $form.date = "";
+              $form.dateEnd = "";
             }
           }} />
       </Popover.Content>
