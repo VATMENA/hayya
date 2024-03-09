@@ -90,26 +90,30 @@ export const GET: RequestHandler = async () => {
     });
   });
 
-  await prisma.connection.updateMany({
-    where: {
-      id: {
-        in: closedConnections,
+  if (closedConnections.length) {
+    await prisma.connection.updateMany({
+      where: {
+        id: {
+          in: closedConnections,
+        },
       },
-    },
-    data: {
-      endTime: new Date(),
-    },
-  });
+      data: {
+        endTime: new Date(),
+      },
+    });
+  }
 
-  await prisma.connection.createMany({
-    data: newConnections.map((info) => ({
-      id: ulid(),
-      userId: info.userId,
-      callsign: info.callsign,
-      isAuthorized: info.isAuthorized,
-      startTime: new Date(),
-    })),
-  });
+  if (newConnections.length) {
+    await prisma.connection.createMany({
+      data: newConnections.map((info) => ({
+        id: ulid(),
+        userId: info.userId,
+        callsign: info.callsign,
+        isAuthorized: info.isAuthorized,
+        startTime: new Date(),
+      })),
+    });
+  }
 
   return new Response("");
 };
