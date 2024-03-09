@@ -15,5 +15,10 @@ export const load: PageServerLoad = async () => {
         isSiteAdmin: true,
       },
     }),
+    connections: await prisma.connection.count({
+      where: {
+        endTime: null,
+      },
+    }),
   };
 };
