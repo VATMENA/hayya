@@ -1,6 +1,6 @@
 import type { RequestHandler } from "@sveltejs/kit";
 import prisma from "$lib/prisma";
-import { FACILITIES, POS, RATINGS, parse_position_v2 } from "$lib/cert";
+import { FACILITIES, RATINGS, parse_position_v2 } from "$lib/cert";
 import { ulid } from "ulid";
 import type { Certificate } from "@prisma/client";
 
@@ -220,13 +220,9 @@ export const GET: RequestHandler = async () => {
       }
 
       if (FACILITIES[info.facility][0] === pos.position) {
-        ok = true;
+        newConnections[i].isAuthorized = true;
       }
     });
-
-    if (ok) {
-      newConnections[i].isAuthorized = true;
-    }
   });
 
   if (newConnections.length) {
