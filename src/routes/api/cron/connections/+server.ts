@@ -157,26 +157,7 @@ export const GET: RequestHandler = async () => {
     });
   }
 
-  const certs = await prisma.certificate.findMany({
-    where: {
-      holderId: {
-        in: newConnections.map((info) => info.userId),
-      },
-      OR: [
-        // Non-expired and permanent certificates.
-        { expires: { lt: new Date() } },
-        { expires: null },
-      ],
-    },
-  });
-
-  const certMap: Record<string, Certificate[]> = {};
-  certs.forEach((c) => {
-    if (!certMap[c.holderId]) certMap[c.holderId] = [];
-    certMap[c.holderId].push(c);
-  });
-
-  newConnections.forEach((info, i) => {
+  const insufficientRating = newConnections.filter((info, i) => {
     let ok = false;
     switch (FACILITIES[info.facility][0]) {
       case "DEL":
@@ -200,10 +181,34 @@ export const GET: RequestHandler = async () => {
     // Authorized from rating. No need to check certificates.
     if (ok) {
       newConnections[i].isAuthorized = true;
-      return;
     }
+    return !ok;
+  });
 
-    if (!certs) return;
+  const certs = await prisma.certificate.findMany({
+    where: {
+      holderId: {
+        in: insufficientRating.map((info) => info.userId),
+      },
+      OR: [
+        // Non-expired and permanent certificates.
+        { expires: { lt: new Date() } },
+        { expires: null },
+      ],
+    },
+  });
+
+  const certMap: Record<string, Certificate[]> = {};
+  certs.forEach((c) => {
+    if (!certMap[c.holderId]) certMap[c.holderId] = [];
+    certMap[c.holderId].push(c);
+  });
+
+  newConnections.forEach((info, i) => {
+    const certs = certMap[info.userId];
+    if (info.isAuthorized || !certs) return;
+    let ok = false;
+
     certs.forEach((c) => {
       const pos = parse_position_v2(c.position);
       if (!pos) return;
