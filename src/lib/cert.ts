@@ -222,6 +222,16 @@ export const GRANDFATHER_CERTS = {
   OBS: [],
 };
 
+export const FACILITIES = [
+  ["OBS", "Observer"],
+  ["FSS", "Flight Service Station"],
+  ["DEL", "Clearance Delivery"],
+  ["GND", "Ground"],
+  ["TWR", "Tower"],
+  ["APP", "Approach/Departure"],
+  ["CTR", "Enroute"],
+];
+
 export const RATINGS = [
   ["SUS", "Suspended"],
   ["OBS", "Observer"],

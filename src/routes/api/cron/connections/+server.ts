@@ -1,7 +1,8 @@
 import type { RequestHandler } from "@sveltejs/kit";
 import prisma from "$lib/prisma";
-import { RATINGS } from "$lib/cert";
+import { FACILITIES, POS, RATINGS, parse_position_v2 } from "$lib/cert";
 import { ulid } from "ulid";
+import type { Certificate } from "@prisma/client";
 
 interface Datafeed {
   controllers: Controller[];
@@ -31,7 +32,7 @@ export const GET: RequestHandler = async () => {
   let datafeed: Datafeed = await req.json();
 
   const activeConnections = datafeed.controllers.filter((c) => {
-    return callsigns.some(([_, r]) => c.callsign.match(r));
+    return Object.entries(callsigns).some(([_, r]) => c.callsign.match(r));
   });
 
   const openConnections = await prisma.connection.findMany({
@@ -55,6 +56,7 @@ export const GET: RequestHandler = async () => {
     callsign: string;
     isAuthorized: boolean;
     startTime: Date;
+    facility: number;
     // Fields used for creating new unknown users.
     name: string;
     rating: number;
@@ -75,6 +77,7 @@ export const GET: RequestHandler = async () => {
         callsign: ac.callsign,
         isAuthorized: false,
         startTime: ac.logon_time,
+        facility: ac.facility,
         name: ac.name,
         rating: ac.rating,
       });
@@ -97,6 +100,7 @@ export const GET: RequestHandler = async () => {
       callsign: ac.callsign,
       isAuthorized: false,
       startTime: ac.logon_time,
+      facility: ac.facility,
       name: ac.name,
       rating: ac.rating,
     });
@@ -143,7 +147,7 @@ export const GET: RequestHandler = async () => {
         id: u.userId,
         name: u.name,
         ratingId: u.rating,
-        ratingShort: ratings[u.rating][0],
+        ratingShort: RATINGS[u.rating][0],
         ratingLong: RATINGS[u.rating][1],
         region: "",
         division: "",
@@ -152,6 +156,73 @@ export const GET: RequestHandler = async () => {
       })),
     });
   }
+
+  const certs = await prisma.certificate.findMany({
+    where: {
+      holderId: {
+        in: newConnections.map((info) => info.userId),
+      },
+      OR: [
+        // Non-expired and permanent certificates.
+        { expires: { lt: new Date() } },
+        { expires: null },
+      ],
+    },
+  });
+
+  const certMap: Record<string, Certificate[]> = {};
+  certs.forEach((c) => {
+    if (!certMap[c.holderId]) certMap[c.holderId] = [];
+    certMap[c.holderId].push(c);
+  });
+
+  newConnections.forEach((info, i) => {
+    let ok = false;
+    switch (FACILITIES[info.facility][0]) {
+      case "DEL":
+      case "GND":
+        if (info.rating >= ratingID("S1")) {
+          ok = true;
+        }
+      case "TWR":
+        if (info.rating >= ratingID("S2")) {
+          ok = true;
+        }
+      case "APP":
+        if (info.rating >= ratingID("S3")) {
+          ok = true;
+        }
+      case "CTR":
+        if (info.rating >= ratingID("C1")) {
+          ok = true;
+        }
+    }
+    // Authorized from rating. No need to check certificates.
+    if (ok) {
+      newConnections[i].isAuthorized = true;
+      return;
+    }
+
+    if (!certs) return;
+    certs.forEach((c) => {
+      const pos = parse_position_v2(c.position);
+      if (!pos) return;
+
+      // Check to match callsign with certificate facility.
+      if (pos.facility && pos.facility in callsigns) {
+        const re = (callsigns as any)[pos.facility];
+        if (!info.callsign.match(re)) return;
+      }
+
+      if (FACILITIES[info.facility][0] === pos.position) {
+        ok = true;
+      }
+    });
+
+    if (ok) {
+      newConnections[i].isAuthorized = true;
+    }
+  });
 
   if (newConnections.length) {
     await prisma.connection.createMany({
@@ -168,7 +239,7 @@ export const GET: RequestHandler = async () => {
   return new Response("");
 };
 
-const callsigns = Object.entries({
+const callsigns = {
   HECC: /(^HE[A-Z]{2}_.+$)/,
   OJAC: /(^OJ[A-Z]{2}_.+$)|(^AMM_APP$)/,
   OMAE: /(^OM[A-Z]{2}_.+$)/,
@@ -209,4 +280,6 @@ const callsigns = Object.entries({
   staff_OYSC: /(^ACCYE\d+$)/,
   staff_OEJN: /(^ACCSA\d+$)/,
   staff_OLBB: /(^ACCLB\d+$)/,
-});
+};
+
+const ratingID = (name: string) => RATINGS.findIndex((r) => r[0] === name);
