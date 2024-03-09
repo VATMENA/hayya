@@ -6,6 +6,8 @@
   import * as Dialog from "$lib/components/ui/dialog";
   import { invalidateAll } from "$app/navigation";
   import { toast } from "svelte-sonner";
+  import AssignForm from "./assign-form.svelte";
+  import { page } from "$app/stores";
 
   export let request: TrainingRequest;
 
@@ -25,25 +27,32 @@
     toast.success('Removed request successfully!');
     await invalidateAll(); // This component will be unloaded here, so we have to be careful not to do anything afterwards
   }
+
+  let assignOpen = false;
+  let selfassignOpen = false;
 </script>
 
 {#if can(ASSIGN_MENTORS_TO_REQUEST)}
-  <Dialog.Root>
+  <Dialog.Root bind:open={assignOpen}>
     <Dialog.Trigger class={buttonVariants()}>Assign</Dialog.Trigger>
     <Dialog.Content>
       <Dialog.Header>
         <Dialog.Title>Assign request to a mentor</Dialog.Title>
+        <Dialog.Description>They'll be set as the assigned mentor for this request, and they should reach out to the user to work out a time with them to complete this session.</Dialog.Description>
       </Dialog.Header>
+      <AssignForm form={$page.data.form} onsubmit={() => {assignOpen = false; toast.success("Instructor has been assigned to that request. Check the Assigned tab for details.");}} action="?/assign" requestId={request.id} />
     </Dialog.Content>
   </Dialog.Root>
 {/if}
 {#if can(SELF_ASSIGN_TO_REQUEST)}
-  <Dialog.Root>
+  <Dialog.Root bind:open={selfassignOpen}>
     <Dialog.Trigger class={buttonVariants()}>Self-Assign</Dialog.Trigger>
     <Dialog.Content>
       <Dialog.Header>
         <Dialog.Title>Assign request to yourself</Dialog.Title>
+        <Dialog.Description>You'll be set as the assigned mentor for this request, and you should reach out to the user to work out a time with them to complete this session.</Dialog.Description>
       </Dialog.Header>
+      <AssignForm form={$page.data.form} onsubmit={() => {selfassignOpen = false; toast.success("You've been assigned to that request. Check the Assigned tab for details.");}} forceCid={$page.data.user.id} action="?/selfAssign" requestId={request.id} />
     </Dialog.Content>
   </Dialog.Root>
 {/if}
