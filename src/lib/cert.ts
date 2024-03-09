@@ -221,3 +221,19 @@ export const GRANDFATHER_CERTS = {
   SUS: [],
   OBS: [],
 };
+
+export const RATINGS = [
+  ["SUS", "Suspended"],
+  ["OBS", "Observer"],
+  ["S1", "Tower Trainee"],
+  ["S2", "Tower Controller"],
+  ["S3", "Senior Student"],
+  ["C1", "Enroute Controller"],
+  ["C2", "Controller 2 (not in use)"],
+  ["C3", "Senior Controller"],
+  ["I1", "Instructor"],
+  ["I2", "Instructor 2 (not in use)"],
+  ["I3", "Senior Instructor"],
+  ["SUP", "Supervisor"],
+  ["ADM", "Administrator"],
+];
