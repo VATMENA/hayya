@@ -1,5 +1,6 @@
 import type { RequestHandler } from "@sveltejs/kit";
 import prisma from "$lib/prisma";
+import { RATINGS } from "$lib/cert";
 import { ulid } from "ulid";
 
 interface Datafeed {
@@ -41,8 +42,12 @@ export const GET: RequestHandler = async () => {
 
   const activeMap: Record<string, Controller> = {};
   const openMap: Record<string, {}> = {};
-  activeConnections.forEach((c) => (activeMap[c.cid] = c));
+  activeConnections.forEach((c) => (activeMap[c.cid.toString()] = c));
   openConnections.forEach((c) => (openMap[c.userId] = c));
+
+  console.log(
+    `[ConnectionUpdater] Vatsim Connections: ${activeConnections.length} | DB Connections: ${openConnections.length}`,
+  );
 
   const closedConnections: Array<string> = [];
   const newConnections: Array<{
@@ -50,6 +55,9 @@ export const GET: RequestHandler = async () => {
     callsign: string;
     isAuthorized: boolean;
     startTime: Date;
+    // Fields used for creating new unknown users.
+    name: string;
+    rating: number;
   }> = [];
 
   // Collect changed callsigns and closed connections.
@@ -67,6 +75,8 @@ export const GET: RequestHandler = async () => {
         callsign: ac.callsign,
         isAuthorized: false,
         startTime: ac.logon_time,
+        name: ac.name,
+        rating: ac.rating,
       });
       return;
     }
@@ -76,7 +86,7 @@ export const GET: RequestHandler = async () => {
   });
 
   activeConnections.forEach((ac) => {
-    const oc = openConnections[ac.cid];
+    const oc = openMap[ac.cid.toString()];
     if (oc) {
       // Connection exists. Handled above.
       return;
@@ -87,8 +97,14 @@ export const GET: RequestHandler = async () => {
       callsign: ac.callsign,
       isAuthorized: false,
       startTime: ac.logon_time,
+      name: ac.name,
+      rating: ac.rating,
     });
   });
+
+  console.log(
+    `[ConnectionUpdater] New Connections: ${newConnections.length} | Closed Connections: ${closedConnections.length}`,
+  );
 
   if (closedConnections.length) {
     await prisma.connection.updateMany({
@@ -100,6 +116,40 @@ export const GET: RequestHandler = async () => {
       data: {
         endTime: new Date(),
       },
+    });
+  }
+
+  // Create any unknown potential users.
+  const activeUsers = await prisma.user.findMany({
+    where: {
+      id: {
+        in: newConnections.map((info) => info.userId),
+      },
+    },
+  });
+
+  const userMap: Record<string, boolean> = {};
+  activeUsers.forEach((u) => {
+    userMap[u.id] = true;
+  });
+
+  const newUsers = newConnections.filter((info) => !userMap[info.userId]);
+  if (newUsers.length) {
+    console.log(
+      `[ConnectionUpdater] Unknown User Connections: ${newUsers.length}`,
+    );
+    await prisma.user.createMany({
+      data: newUsers.map((u) => ({
+        id: u.userId,
+        name: u.name,
+        ratingId: u.rating,
+        ratingShort: ratings[u.rating][0],
+        ratingLong: RATINGS[u.rating][1],
+        region: "",
+        division: "",
+        recommendedTrainingQueues: [],
+        completedTrainingQueues: [],
+      })),
     });
   }
 

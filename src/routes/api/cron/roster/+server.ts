@@ -1,6 +1,7 @@
 import { VATSIM_CORE_API_TOKEN } from "$env/static/private";
 import type { RequestHandler } from "@sveltejs/kit";
 import prisma from "$lib/prisma";
+import { RATINGS } from "$lib/cert";
 import { ulid } from "ulid";
 import type { UserFacilityAssignment } from "@prisma/client";
 
@@ -54,33 +55,17 @@ export const GET: RequestHandler = async () => {
 
   let roster = roster_json.items;
 
-  let existing_roster = {};
+  let existing_roster: Record<string, any> = {};
   let existing_roster_arr = await prisma.user.findMany();
   for (let existing_user of existing_roster_arr) {
     existing_roster[existing_user.id.toString()] = existing_user;
   }
 
-  let vaccs = {};
+  let vaccs: Record<string, any> = {};
   let vaccs_arr = await prisma.facility.findMany();
   for (let vacc of vaccs_arr) {
     vaccs[vacc.id] = vacc;
   }
-
-  let ratings = [
-    ["SUS", "Suspended"],
-    ["OBS", "Observer"],
-    ["S1", "Tower Trainee"],
-    ["S2", "Tower Controller"],
-    ["S3", "Senior Student"],
-    ["C1", "Enroute Controller"],
-    ["C2", "Controller 2 (not in use)"],
-    ["C3", "Senior Controller"],
-    ["I1", "Instructor"],
-    ["I2", "Instructor 2 (not in use)"],
-    ["I3", "Senior Instructor"],
-    ["SUP", "Supervisor"],
-    ["ADM", "Administrator"],
-  ];
 
   let created = 0;
   let updated = 0;
@@ -91,7 +76,7 @@ export const GET: RequestHandler = async () => {
   let askipped = 0;
   let atotal = 0;
 
-  let userAssignments: string[UserFacilityAssignment] = {};
+  let userAssignments: Record<string, any> = {};
 
   let all_assignments: UserFacilityAssignment[] =
     await prisma.userFacilityAssignment.findMany();
@@ -115,7 +100,7 @@ export const GET: RequestHandler = async () => {
   for (let roster_user of roster) {
     total += 1;
 
-    let vacc: string | null = null;
+    let vacc = "";
 
     if (
       roster_user.subdivision_id &&
@@ -132,8 +117,8 @@ export const GET: RequestHandler = async () => {
       let new_data = {
         name: `${roster_user.name_first} ${roster_user.name_last}`,
         ratingId: roster_user.rating,
-        ratingShort: ratings[roster_user.rating][0],
-        ratingLong: ratings[roster_user.rating][1],
+        ratingShort: RATINGS[roster_user.rating][0],
+        ratingLong: RATINGS[roster_user.rating][1],
         region: roster_user.region_id,
         division: roster_user.division_id,
       };
@@ -168,8 +153,8 @@ export const GET: RequestHandler = async () => {
           id: roster_user.id.toString(),
           name: `${roster_user.name_first} ${roster_user.name_last}`,
           ratingId: roster_user.rating,
-          ratingShort: ratings[roster_user.rating][0],
-          ratingLong: ratings[roster_user.rating][1],
+          ratingShort: RATINGS[roster_user.rating][0],
+          ratingLong: RATINGS[roster_user.rating][1],
           region: roster_user.region_id,
           division: roster_user.division_id,
           recommendedTrainingQueues: [],
