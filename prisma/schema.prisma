@@ -99,6 +99,7 @@ model User {
 
   eventSignups     EventSignup[]     @relation
   eventAssignments EventAssignment[] @relation
+  Connection       Connection[]      @relation
 
   isSiteAdmin Boolean @default(false)
 
@@ -288,4 +289,17 @@ model TrainingRequest {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Connection {
+  id String @id
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  callsign     String
+  isAuthorized Boolean
+
+  startTime DateTime  @default(now())
+  endTime   DateTime?
 }

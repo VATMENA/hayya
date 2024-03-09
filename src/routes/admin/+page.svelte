@@ -1,7 +1,11 @@
 <script lang="ts">
   import * as Card from "$lib/components/ui/card";
-  import * as Table from "$lib/components/ui/table";
-  import { SquareUserIcon, TowerControlIcon, UserIcon } from "lucide-svelte";
+  import {
+    SquareUserIcon,
+    TowerControlIcon,
+    UserIcon,
+    NetworkIcon,
+  } from "lucide-svelte";
   import type { PageData } from "./$types";
 
   export let data: PageData;
@@ -69,6 +73,21 @@
         href="/admin/admins"
         class="text-sm text-foreground/80 underline underline-offset-4">
         Manage Site Administrators &rarr;
+      </a>
+    </Card.Content>
+  </Card.Root>
+  <Card.Root>
+    <Card.Header
+      class="flex flex-row items-center justify-between space-y-0 pb-2">
+      <Card.Title class="text-sm font-medium">Active Conections</Card.Title>
+      <NetworkIcon class="h-4 w-4 text-muted-foreground" />
+    </Card.Header>
+    <Card.Content>
+      <div class="text-2xl font-bold">{data.connections}</div>
+      <a
+        href="/admin/connections"
+        class="text-sm text-foreground/80 underline underline-offset-4">
+        See Active Connections &rarr;
       </a>
     </Card.Content>
   </Card.Root>
