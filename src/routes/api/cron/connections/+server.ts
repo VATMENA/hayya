@@ -110,7 +110,7 @@ export const GET: RequestHandler = async () => {
         userId: info.userId,
         callsign: info.callsign,
         isAuthorized: info.isAuthorized,
-        startTime: new Date(),
+        startTime: info.startTime,
       })),
     });
   }
