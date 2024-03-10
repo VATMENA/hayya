@@ -16,7 +16,7 @@ export enum POS {
   Ground = "GND",
   Tower = "TWR",
   Approach = "APP",
-  Enroute = "CTR",
+  OpenskiesEnroute = "CTR",
 }
 export interface PositionV2 {
   c_typ: C_TYP;

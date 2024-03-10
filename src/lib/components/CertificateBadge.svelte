@@ -110,7 +110,7 @@
           short_name += "APP";
           str_name += "App/Dep";
           color = "bg-cyan-500";
-        } else if (parsed_position.position === POS.Enroute) {
+        } else if (parsed_position.position === POS.OpenskiesEnroute) {
           short_name += "CTR";
           str_name += "Enroute";
           color = "bg-fuchsia-500";
