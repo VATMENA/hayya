@@ -105,12 +105,12 @@
         </Button>
       </Card.Content>
     </Card.Root>
-    <Card.Root>
-      <Card.Header>
-        <Card.Title>Mentorship</Card.Title>
-      </Card.Header>
-      <Card.Content class="space-y-1.5">
-        {#if can(TRAIN)}
+    {#if can(TRAIN)}
+      <Card.Root>
+        <Card.Header>
+          <Card.Title>Mentorship</Card.Title>
+        </Card.Header>
+        <Card.Content class="space-y-1.5">
           <Button
             on:click={() => {
               sessionOpen = true;
@@ -150,9 +150,9 @@
               </Dialog.Footer>
             </Dialog.Content>
           </Dialog.Root>
-        {/if}
-      </Card.Content>
-    </Card.Root>
+        </Card.Content>
+      </Card.Root>
+    {/if}
   </div>
 </div>
 

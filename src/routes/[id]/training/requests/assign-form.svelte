@@ -28,7 +28,11 @@
   <div class="space-y-4">
     <input type="hidden" id="requestId" name="requestId" value={requestId} />
     {#if forceCid}
-      <input type="hidden" id="instructorId" name="instructorId" value={forceCid} />
+      <input
+        type="hidden"
+        id="instructorId"
+        name="instructorId"
+        value={forceCid} />
     {:else}
       <Form.Field {config} name="instructorId">
         <Form.Item class="flex flex-col">

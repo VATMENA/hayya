@@ -1,7 +1,12 @@
 <script lang="ts">
   import type { TrainingRequest } from "@prisma/client";
   import { writable } from "svelte/store";
-  import { createRender, createTable, Render, Subscribe } from "svelte-headless-table";
+  import {
+    createRender,
+    createTable,
+    Render,
+    Subscribe,
+  } from "svelte-headless-table";
   import DataTableAssigned from "./data-table-assigned.svelte";
   import DataTableActions from "./data-table-actions.svelte";
   import DataTableAvailability from "./data-table-availability.svelte";
@@ -16,30 +21,33 @@
   const columns = table.createColumns([
     table.column({
       accessor: ({ student }) => student.name,
-      header: "Student"
+      header: "Student",
     }),
     table.column({
       accessor: "trainingType",
-      header: "Training Type"
+      header: "Training Type",
     }),
     table.column({
       accessor: ({ instructor }) => instructor,
       header: "Assigned?",
-      cell: ({value}) => createRender(DataTableAssigned, { instructor: value })
+      cell: ({ value }) =>
+        createRender(DataTableAssigned, { instructor: value }),
     }),
     table.column({
       accessor: (u) => u,
       header: "Availability",
-      cell: ({value}) => createRender(DataTableAvailability, { request: value })
+      cell: ({ value }) =>
+        createRender(DataTableAvailability, { request: value }),
     }),
     table.column({
       accessor: (o) => o,
       header: "Actions",
-      cell: ({value}) => createRender(DataTableActions, { request: value })
-    })
+      cell: ({ value }) => createRender(DataTableActions, { request: value }),
+    }),
   ]);
 
-  const { headerRows, pageRows, tableAttrs, tableBodyAttrs } = table.createViewModel(columns);
+  const { headerRows, pageRows, tableAttrs, tableBodyAttrs } =
+    table.createViewModel(columns);
 </script>
 
 <Table.Root {...$tableAttrs}>

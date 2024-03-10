@@ -7,7 +7,9 @@
 </script>
 
 <ScrollArea class="max-w-96">
-  From {humanReadableDateOnly(request.startDate)} to {humanReadableDateOnly(request.endDate)}.
-  <br>
+  From {humanReadableDateOnly(request.startDate)} to {humanReadableDateOnly(
+    request.endDate,
+  )}.
+  <br />
   {request.availability}
 </ScrollArea>

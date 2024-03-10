@@ -70,9 +70,12 @@ export const actions: Actions = {
 
     let { user } = await loadUserData(event.cookies, event.params.id!);
 
-    let startDate = parseDateTime(form.data.dateStart.replace("Z", "")).toDate("UTC");
-    let endDate = parseDateTime(form.data.dateEnd.replace("Z", "")).toDate("UTC");
-
+    let startDate = parseDateTime(form.data.dateStart.replace("Z", "")).toDate(
+      "UTC",
+    );
+    let endDate = parseDateTime(form.data.dateEnd.replace("Z", "")).toDate(
+      "UTC",
+    );
 
     await prisma.trainingRequest.create({
       data: {
@@ -83,12 +86,12 @@ export const actions: Actions = {
         trainingType: form.data.trainingType,
         startDate: startDate,
         endDate: endDate,
-        availability: form.data.times
+        availability: form.data.times,
       },
     });
 
     return {
       form,
     };
-  }
+  },
 };

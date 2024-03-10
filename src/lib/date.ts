@@ -19,7 +19,7 @@ export function humanReadableDateOnly(d: Date): string {
     weekday: "short",
     year: "numeric",
     month: "short",
-    day: "numeric"
+    day: "numeric",
   };
 
   return new Intl.DateTimeFormat("en-US", options).format(d);

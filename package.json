@@ -1,6 +1,6 @@
 {
   "name": "hq",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "private": true,
   "scripts": {
     "dev": "vite dev --port 3000",
