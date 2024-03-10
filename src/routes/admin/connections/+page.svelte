@@ -18,8 +18,12 @@
       header: "CID",
     }),
     table.column({
-      accessor: ({ user }) => `${user.name} ${user.ratingShort}`,
+      accessor: ({ user }) => `${user.name}`,
       header: "Name",
+    }),
+    table.column({
+      accessor: ({ user }) => `${user.ratingShort}`,
+      header: "Rating",
     }),
     table.column({
       accessor: "callsign",
