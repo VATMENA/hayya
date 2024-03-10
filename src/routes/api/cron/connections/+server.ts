@@ -173,6 +173,7 @@ export const GET: RequestHandler = async () => {
         if (info.rating >= ratingID("S3")) {
           ok = true;
         }
+      case "FSS":
       case "CTR":
         if (info.rating >= ratingID("C1")) {
           ok = true;
@@ -207,8 +208,6 @@ export const GET: RequestHandler = async () => {
   newConnections.forEach((info, i) => {
     const certs = certMap[info.userId];
     if (info.isAuthorized || !certs) return;
-    let ok = false;
-
     certs.forEach((c) => {
       const pos = parse_position_v2(c.position);
       if (!pos) return;
