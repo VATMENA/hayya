@@ -26,6 +26,9 @@
   import * as Dialog from "$lib/components/ui/dialog";
   import { Button } from "$lib/components/ui/button";
   import * as HoverCard from "$lib/components/ui/hover-card";
+  import { invalidateAll } from "$app/navigation";
+  import { toast } from "svelte-sonner";
+  import RevokeForm from "./revoke-form.svelte";
 
   export let cert: Certificate;
   export let holder: User;
@@ -129,6 +132,23 @@
 
   let revokeOpen = false;
   let hovercardOpen = false;
+  let revokeViaVoidOpen = false;
+  let revokeViaDeleteOpen = false;
+
+  async function deleteCertificate() {
+    let data = new URLSearchParams();
+    data.set("id", cert.id);
+    await fetch('?/deleteCertificate', {
+      body: data.toString(),
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    });
+    revokeViaDeleteOpen = false;
+    toast.success("Certificate has been deleted!");
+    await invalidateAll();
+  }
 </script>
 
 {#if parsed_position !== null && (cert.expires !== null ? cert.expires > new Date() : true)}
@@ -205,15 +225,40 @@
   <Dialog.Root bind:open={revokeOpen}>
     <Dialog.Content class="sm:max-w-[425px]">
       <Dialog.Header>
-        <Dialog.Title>Edit profile</Dialog.Title>
+        <Dialog.Title>Revoke Certificate</Dialog.Title>
         <Dialog.Description>
-          This will immediately invalidate the certificate and add a log to the
-          user's training transcript that the certificate was revoked.
+          Select what type of revocation you would like to issue.
+        </Dialog.Description>
+      </Dialog.Header>
+        <Button on:click={() => {revokeOpen = false; revokeViaVoidOpen = true;}}>Revoke Certificate</Button>
+        <p>A certificate revocation will invalidate the certificate, and add a log to the user's training transcript that it was revoked by you. You'll need to provide reasoning.</p>
+        <Button on:click={() => {revokeOpen = false; revokeViaDeleteOpen = true;}}>Delete Certificate</Button>
+        <p>A certificate deletion will simply remove the certificate, as if it had never existed. Use this if you made a mistake while issuing a certificate. <b>Do not use this for any other reason.</b></p>
+    </Dialog.Content>
+  </Dialog.Root>
+  <Dialog.Root bind:open={revokeViaDeleteOpen}>
+    <Dialog.Content class="sm:max-w-[425px]">
+      <Dialog.Header>
+        <Dialog.Title>Are you sure?</Dialog.Title>
+        <Dialog.Description>
+          Deleting a certificate will <b>remove</b> it from the database. <b>It will be as if it was never issued.</b> Deleting a certificate will leave no trace that it was ever created or deleted. Be very careful with this option.
         </Dialog.Description>
       </Dialog.Header>
       <Dialog.Footer>
-        <Button type="submit" variant="danger">Revoke certificate</Button>
+        <Button on:click={() => {revokeViaDeleteOpen = false}}>Nevermind</Button>
+        <Button on:click={deleteCertificate} class="text-red-950 bg-red-500 hover:bg-red-600">I'm sure, delete it</Button>
       </Dialog.Footer>
+    </Dialog.Content>
+  </Dialog.Root>
+  <Dialog.Root bind:open={revokeViaVoidOpen}>
+    <Dialog.Content>
+      <Dialog.Header>
+        <Dialog.Title>Void certificate #{cert.id}</Dialog.Title>
+        <Dialog.Description>
+          Why are you revoking this certificate? Please provide reasoning in the fields below.
+        </Dialog.Description>
+      </Dialog.Header>
+      <RevokeForm form={$page.data.formRevoke} id={cert.id} onsubmit={() => {revokeViaVoidOpen = false; toast.success("Certificate has been voided")}} />
     </Dialog.Content>
   </Dialog.Root>
 {/if}

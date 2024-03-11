@@ -23,8 +23,12 @@
   {#each data.sessions as session}
     <Accordion.Item value={session.id}>
       <Accordion.Trigger>
+        {#if session.logType === "Training"}
         {convertDate(session.date)} - {session.sessionType} session with {session
           .instructor.name}
+        {:else if session.logType === "CertificateRevokal"}
+          {convertDate(session.date)} - {session.sessionType} certificate revoked by {session.instructor.name}
+        {/if}
       </Accordion.Trigger>
       <Accordion.Content>
         <div class="grid-cols-{can(TRAIN) ? '2' : '1'} grid gap-4">

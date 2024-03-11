@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Certificate, User } from "@prisma/client";
-  import CertificateBadge from "$lib/components/CertificateBadge.svelte";
+  import CertificateBadge from "./CertificateBadge.svelte";
 
   export let heldCertificates: Certificate[];
   export let holder: User;

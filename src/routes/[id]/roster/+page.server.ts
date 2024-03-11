@@ -1,27 +1,24 @@
-import type { PageServerLoad, Actions } from "./$types";
+import type { Actions, PageServerLoad } from "./$types";
 import { fail } from "@sveltejs/kit";
 import { redirect } from "sveltekit-flash-message/server";
-import { loadUserData, verifyToken } from "$lib/auth";
+import { loadUserData } from "$lib/auth";
 import prisma from "$lib/prisma";
-import type { User, UserFacilityAssignment } from "@prisma/client";
+import type { UserFacilityAssignment } from "@prisma/client";
 import { can } from "$lib/perms/can";
 import { setError, superValidate } from "sveltekit-superforms/server";
 import { formSchema } from "./schema";
-import {
-  C_TYP,
-  P_TYP,
-  type PositionV2,
-  serialize_position_v2,
-} from "$lib/cert";
-import { page } from "$app/stores";
+import { C_TYP, P_TYP, parse_position_v2, POS, type PositionV2, serialize_position_v2 } from "$lib/cert";
 import { parseDate } from "@internationalized/date";
 import {
   ASSIGN_ROLES,
   EXTENDED_ROSTER,
   ISSUE_CERTIFICATE,
   ISSUE_OPENSKIES_CERTIFICATES,
-  ISSUE_SOLO_CERTIFICATES,
+  ISSUE_SOLO_CERTIFICATES, REVOKE_CERTIFICATE, REVOKE_OPENSKIES_CERTIFICATES,
+  REVOKE_SOLO_CERTIFICATES
 } from "$lib/perms/permissions";
+import { ulid } from "ulid";
+import { formSchema as formSchemaRevoke } from "./revoke-form";
 
 export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
   let { user } = await loadUserData(cookies, params.id);
@@ -72,6 +69,7 @@ export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
   return {
     users: altered_roster,
     form: await superValidate(formSchema),
+    formRevoke: await superValidate(formSchemaRevoke)
   };
 };
 
@@ -197,4 +195,155 @@ export const actions = {
       form,
     };
   },
+  deleteCertificate: async (event) => {
+    await loadUserData(event.cookies, event.params.id);
+
+    let formData = await event.request.formData();
+
+    if (!formData.has("id")) {
+      redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (missing id).'}, event);
+    }
+
+    let cert = await prisma.certificate.findUnique({
+      where: {
+        id: Number.parseInt(formData.get("id")!.toString())
+      }
+    });
+
+    if (!cert) {
+      redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (cert does not exist).'}, event);
+    }
+
+    if (cert.issuedInId != event.params.id) {
+      redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (facility mismatch).'}, event);
+    }
+
+
+
+    // parse the cert
+    let pv2 = parse_position_v2(cert.position);
+
+    if (pv2) {
+      if (pv2.c_typ === C_TYP.Solo && !can(REVOKE_SOLO_CERTIFICATES)) {
+        redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (missing revoke solo permission).'}, event);
+      } else if (pv2.p_typ === P_TYP.OpenSkies && !can(REVOKE_OPENSKIES_CERTIFICATES)) {
+        redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (missing revoke openskies permission).'}, event);
+      } else if (!can(REVOKE_CERTIFICATE)) {
+        redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (missing revoke permission).'}, event);
+      }
+    }
+
+    await prisma.certificate.delete({
+      where: {
+        id: Number.parseInt(formData.get("id")!.toString())
+      }
+    })
+  },
+  revokeCertificate: async (event) => {
+    let { user } = await loadUserData(event.cookies, event.params.id);
+
+    let form = await superValidate(event, formSchemaRevoke);
+
+    if (!form.valid) {
+      return fail(400, {
+        form
+      });
+    }
+
+    console.log(form);
+
+    let cert = await prisma.certificate.findUnique({
+      where: {
+        id: form.data.id
+      }
+    });
+
+    if (!cert) {
+      redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (cert does not exist).'}, event);
+    }
+
+    if (cert.issuedInId != event.params.id) {
+      redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (facility mismatch).'}, event);
+    }
+
+
+
+    // parse the cert
+    let pv2 = parse_position_v2(cert.position);
+
+    let str_name = "";
+    
+    if (pv2) {
+      if (pv2.c_typ === C_TYP.Solo && !can(REVOKE_SOLO_CERTIFICATES)) {
+        redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (missing revoke solo permission).'}, event);
+      } else if (pv2.p_typ === P_TYP.OpenSkies && !can(REVOKE_OPENSKIES_CERTIFICATES)) {
+        redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (missing revoke openskies permission).'}, event);
+      } else if (!can(REVOKE_CERTIFICATE)) {
+        redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (missing revoke permission).'}, event);
+      }
+      if (pv2 !== null) {
+        if (pv2.c_typ === C_TYP.Solo) {
+          str_name = "Solo ";
+        }
+
+        if (pv2.p_typ === P_TYP.Enroute) {
+          str_name += "Enroute";
+        } else if (
+          pv2.p_typ === P_TYP.Unrestricted ||
+          pv2.p_typ === P_TYP.Tier1 ||
+          pv2.p_typ === P_TYP.Tier2 ||
+          pv2.p_typ === P_TYP.Specific ||
+          pv2.p_typ === P_TYP.OpenSkies
+        ) {
+          if (pv2.p_typ === P_TYP.Tier1) {
+            str_name += "Tier 1 ";
+          } else if (pv2.p_typ === P_TYP.Tier2) {
+            str_name += "Tier 2 ";
+          } else if (pv2.p_typ === P_TYP.Specific) {
+          } else if (pv2.p_typ === P_TYP.OpenSkies) {
+            str_name += "OpenSkies ";
+          } else {
+            str_name += "Unrestricted ";
+          }
+
+          if (pv2.position === POS.Delivery) {
+            str_name += "Delivery";
+          } else if (pv2.position === POS.Ground) {
+            str_name += "Ground";
+          } else if (pv2.position === POS.Tower) {
+            str_name += "Tower";
+          } else if (pv2.position === POS.Approach) {
+            str_name += "App/Dep";
+          } else if (pv2.position === POS.OpenskiesEnroute) {
+            str_name += "Enroute";
+          }
+        } else if (pv2.p_typ === P_TYP.SuperCenter) {
+          str_name += "Enroute (SuperCenter)";
+        }
+      }
+    } else {
+      str_name = `#${cert.id}`;
+    }
+
+    await prisma.certificate.delete({
+      where: {
+        id: form.data.id
+      }
+    });
+
+    await prisma.session.create({
+      data: {
+        id: ulid(),
+        studentId: cert.holderId,
+        instructorId: user.id,
+        logType: 'CertificateRevokal',
+        sessionType: str_name,
+        date: new Date(),
+        studentComments: form.data.studentComments,
+        instructorComments: form.data.mentorComments
+      }
+    });
+
+    return { form }
+  }
 } satisfies Actions;
