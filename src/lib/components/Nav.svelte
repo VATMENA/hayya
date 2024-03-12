@@ -12,7 +12,7 @@
     Moon,
     SunMoon,
     ServerCog,
-    BookIcon,
+    BookIcon, ServerIcon
   } from "lucide-svelte";
   import { setMode, resetMode } from "mode-watcher";
   import { can } from "$lib/perms/can";
@@ -144,11 +144,6 @@
               {/each}
             {/if}
           </DropdownMenu.Label>
-          <DropdownMenu.Label class="font-normal text-foreground/60">
-            {$page.data.user.facilityId === null
-              ? "No vACC"
-              : $page.data.user.facilityId}
-          </DropdownMenu.Label>
 
           <DropdownMenu.Separator />
 
@@ -213,6 +208,15 @@
           </DropdownMenu.Group>
 
           <DropdownMenu.Separator />
+
+          {#if $page.data.user.isSiteAdmin}
+            <DropdownMenu.Item href="/admin/">
+              <ServerIcon class="mr-2 h-4 w-4" />
+              <span>Site Administration</span>
+            </DropdownMenu.Item>
+
+            <DropdownMenu.Separator />
+          {/if}
 
           <DropdownMenu.Item href="/logout">
             <LogOut class="mr-2 h-4 w-4" />
