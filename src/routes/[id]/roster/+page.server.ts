@@ -50,6 +50,13 @@ export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
   let altered_roster = [];
 
   for (let roster_user of roster) {
+    if (roster_user.user.ratingShort == "SUS" || roster_user.user.ratingShort == "INAC") {
+      continue;
+    }
+    if (roster_user.user.ratingShort == "OBS" && roster_user.user.heldCertificates.length == 0) {
+      continue;
+    }
+
     if (can(EXTENDED_ROSTER)) {
       // extended. leave as-is
       altered_roster.push(roster_user);
