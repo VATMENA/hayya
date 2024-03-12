@@ -65,6 +65,8 @@ export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
       }
     }
 
+    roster_user.user.heldCertificates = cleaned_certs;
+
     if (can(EXTENDED_ROSTER)) {
       // extended. leave as-is
       altered_roster.push(roster_user);
