@@ -1,4 +1,4 @@
-name: Deploy
+name: migrate_db
 on:
   push:
     branches:
