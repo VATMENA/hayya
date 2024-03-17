@@ -8,7 +8,7 @@ let baseSchema = {
 
 for (let permission of PERMISSIONS) {
   // @ts-ignore
-  baseSchema[permission.id] = z.boolean();
+  baseSchema[permission.id] = z.preprocess((x) => String(x) === 'on', z.any());
 }
 
 export const formSchema = z.object(baseSchema);
