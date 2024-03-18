@@ -7,7 +7,7 @@ export const formSchema = z
     id: z.string(),
     c_typ: z.nativeEnum(C_TYP),
     p_typ: z.nativeEnum(P_TYP),
-    facility: z.string().length(4).optional(),
+    facility: z.string().min(3).max(4).optional(),
     pos: z.nativeEnum(POS).optional(),
     comments: z.string(),
     solo_expires: z.string().optional(),
