@@ -3,5 +3,8 @@
   "crons": [
     { "path": "/api/cron/roster", "schedule": "0 * * * *" },
     { "path": "/api/cron/connections", "schedule": "* * * * *" }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": false
+  }
 }
