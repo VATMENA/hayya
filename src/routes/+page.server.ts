@@ -2,7 +2,6 @@ import { verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { redirect } from "sveltekit-flash-message/server";
 import type { PageServerLoad } from "./$types";
-import type { Role } from "@prisma/client";
 import { loadFlash } from "sveltekit-flash-message/server";
 
 export const load: PageServerLoad = loadFlash(async ({ cookies }) => {
@@ -35,6 +34,4 @@ export const load: PageServerLoad = loadFlash(async ({ cookies }) => {
     { type: "success", message: `Welcome, ${user.name}!` },
     cookies,
   );
-
-  return { user };
 });
