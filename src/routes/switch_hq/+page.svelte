@@ -47,6 +47,9 @@
           href="/switch_hq/rosters">
           Find them here!
         </a>
+        <br>
+        <br>
+        Looking to visit a facility? <a class="underline underline-offset-4" href="/visitor_application">Apply here!</a>
       </Card.Description>
     </Card.Footer>
   </Card.Root>
