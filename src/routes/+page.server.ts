@@ -35,4 +35,6 @@ export const load: PageServerLoad = loadFlash(async ({ cookies }) => {
     { type: "success", message: `Welcome, ${user.name}!` },
     cookies,
   );
+
+  return { user };
 });

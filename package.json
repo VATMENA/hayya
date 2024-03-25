@@ -46,7 +46,7 @@
     "dompurify": "^3.0.8",
     "formsnap": "^0.4.2",
     "jsonwebtoken": "^9.0.2",
-    "lucide-svelte": "^0.294.0",
+    "lucide-svelte": "^0.363.0",
     "marked": "^12.0.0",
     "minimatch": "^9.0.3",
     "mode-watcher": "^0.1.2",
