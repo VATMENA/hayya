@@ -76,7 +76,7 @@
           </Button>
         {/if}
         {#if can(MANAGE_QUEUES) || can(RECOMMEND_FOR_QUEUE)}
-          <Button href="/{$page.params.id}/training/queues/manage">
+          <Button href="/{$page.params.id}/training/queues">
             <SettingsIcon class="mr-2 w-4 h-4" />
             Manage Queues
           </Button>

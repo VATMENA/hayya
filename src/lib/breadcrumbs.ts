@@ -1,9 +1,5 @@
 import { get, writable, type Writable } from "svelte/store";
 
-export let title = '';
-export function setTitle(newTitle: string) {
-  title = newTitle;
-}
 interface Breadcrumb {
   link: string | null,
   display: string

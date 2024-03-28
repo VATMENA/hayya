@@ -4,7 +4,7 @@
   import type { LayoutData } from "./$types";
   import * as Breadcrumb from "$lib/components/ui/breadcrumb";
   import { BreadcrumbItem } from "$lib/components/ui/breadcrumb";
-  import { addItem, clearItems, items, title } from "$lib/breadcrumbs";
+  import { items } from "$lib/breadcrumbs";
   import { page } from "$app/stores";
   export let data: LayoutData;
 
@@ -31,10 +31,6 @@
       {/each}
     </Breadcrumb.List>
   </Breadcrumb.Root>
-
-  <div class="flex items-center justify-between space-y-2">
-    <h2 class="text-3xl font-bold tracking-tight">{title}</h2>
-  </div>
 
   <slot />
 </div>
