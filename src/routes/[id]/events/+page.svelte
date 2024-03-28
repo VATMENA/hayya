@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import { MoreHorizontal, Plus } from "lucide-svelte";
+  import Plus from "lucide-svelte/icons/plus";
+  import Ellipsis from "lucide-svelte/icons/ellipsis";
   import { Button } from "$lib/components/ui/button";
   import { can } from "$lib/perms/can";
   import * as Dialog from "$lib/components/ui/dialog";

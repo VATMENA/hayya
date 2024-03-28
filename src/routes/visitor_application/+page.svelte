@@ -2,7 +2,8 @@
   import * as Card from "$lib/components/ui/card";
   import { Button } from "$lib/components/ui/button";
   import type { PageData } from "./$types";
-  import { CircleCheck, CircleX } from "lucide-svelte";
+  import CircleCheck from "lucide-svelte/icons/circle-check";
+  import CircleX from "lucide-svelte/icons/circle-x";
 
   export let data: PageData;
 </script>
@@ -42,7 +43,7 @@
           {:else}
             <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
           {/if}
-          <span class="text-foreground/90">You have logged 0.0/5.0 hours in the last quarter</span>
+          <span class="text-foreground/90">You have logged {(data.hours_in_last_6mo / 60 / 60).toFixed(1)}/{data.required_hrs_in_last_6mo / 60 / 60} hours in the last 6 months</span>
         </li>
         <li class="flex">
           {#if data.canVisit}

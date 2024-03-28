@@ -8,13 +8,11 @@
     POS,
     type PositionV2,
   } from "$lib/cert";
-  import {
-    Calendar,
-    Clock,
-    FileBadge2,
-    TowerControl,
-    UserRound,
-  } from "lucide-svelte";
+  import Calendar from "lucide-svelte/icons/calendar";
+  import Clock from "lucide-svelte/icons/clock";
+  import FileBadge2 from "lucide-svelte/icons/file-badge-2";
+  import TowerControl from "lucide-svelte/icons/tower-control";
+  import UserRound from "lucide-svelte/icons/user-round";
   import { page } from "$app/stores";
   import { can } from "$lib/perms/can";
   import {

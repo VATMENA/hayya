@@ -2,7 +2,7 @@
   import * as Card from "$lib/components/ui/card";
   import { Button } from "$lib/components/ui/button";
   import type { PageData } from "./$types";
-  import { LogIn } from "lucide-svelte";
+  import LogIn from "lucide-svelte/icons/log-in";
 
   export let data: PageData;
 </script>

@@ -1,7 +1,8 @@
 <script lang="ts">
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import { Button } from "$lib/components/ui/button";
-  import { CalendarIcon, MoreHorizontal } from "lucide-svelte";
+
+  import CalendarIcon from "lucide-svelte/icons/calendar";
   import * as Dialog from "$lib/components/ui/dialog";
   import * as Tabs from "$lib/components/ui/tabs";
   import * as Popover from "$lib/components/ui/popover";
@@ -13,6 +14,7 @@
   import { goto, invalidate, invalidateAll } from "$app/navigation";
   import { ASSIGN_ROLES, ISSUE_CERTIFICATE } from "$lib/perms/permissions";
   import { toast } from "svelte-sonner";
+  import Ellipsis from "lucide-svelte/icons/ellipsis";
 
   export let user: UserFacilityAssignment;
 
@@ -62,7 +64,7 @@
       size="icon"
       class="relative w-8 h-8 p-0">
       <span class="sr-only">Open menu</span>
-      <MoreHorizontal class="w-4 h-4" />
+      <Ellipsis class="w-4 h-4" />
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content>

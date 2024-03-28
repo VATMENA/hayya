@@ -14,7 +14,9 @@
   import DataTableActions from "./data-table-actions.svelte";
   import { addPagination, addTableFilter } from "svelte-headless-table/plugins";
   import { Button } from "$lib/components/ui/button";
-  import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-svelte";
+  import ArrowDown from "lucide-svelte/icons/arrow-down";
+  import ArrowUp from "lucide-svelte/icons/arrow-up";
+  import ArrowUpDown from "lucide-svelte/icons/arrow-up-down";
   import { Input } from "$lib/components/ui/input";
 
   export let data: UserFacilityAssignment[];

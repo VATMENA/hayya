@@ -3,7 +3,7 @@
   import { formSchema, type FormSchema } from "./schema";
   import type { SuperValidated } from "sveltekit-superforms";
   import DatePicker from "./date-picker.svelte";
-  import { Loader2Icon } from "lucide-svelte";
+  import Loader2Icon from "lucide-svelte/icons/loader";
 
   export let form: SuperValidated<FormSchema>;
 
