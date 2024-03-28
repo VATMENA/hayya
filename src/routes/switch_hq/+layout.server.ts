@@ -46,7 +46,10 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
     );
   }
 
+  let all_facilities = await prisma.facility.findMany();
+
   return {
     user: user,
+    facilities: all_facilities
   };
 };

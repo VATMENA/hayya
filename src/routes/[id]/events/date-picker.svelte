@@ -17,7 +17,7 @@
   import type { SuperValidated } from "sveltekit-superforms";
   import { superForm } from "sveltekit-superforms/client";
   import { getForm } from "formsnap";
-  import { CalendarIcon } from "lucide-svelte";
+  import CalendarIcon from "lucide-svelte/icons/calendar";
 
   export let config: any;
   export let name: string;

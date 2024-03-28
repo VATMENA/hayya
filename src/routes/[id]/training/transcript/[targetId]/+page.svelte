@@ -5,8 +5,22 @@
   import Markdown from "$lib/components/Markdown.svelte";
   import { TRAIN } from "$lib/perms/permissions";
   import { can } from "$lib/perms/can";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
+  import { page } from "$app/stores";
 
   export let data: PageData;
+  $: {
+    clearItems($page.data.url);
+    addItem($page.data.url, '/switch_hq', data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, 'Dashboard');
+    addItem($page.data.url, `/${data.facility.id}/training`, 'Training');
+    if (data.targetUser.id === data.user.id) {
+      addPage($page.data.url, 'My Transcript');
+    } else {
+      addItem($page.data.url, `/${data.facility.id}/user/${data.targetUser.id}/`, data.targetUser.name);
+      addPage($page.data.url, 'Training Transcript');
+    }
+  }
 
   function convertDate(date: Date): string {
     return date.toDateString();

@@ -1,7 +1,8 @@
 <script lang="ts">
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import { Button } from "$lib/components/ui/button";
-  import { Copy, MoreHorizontal } from "lucide-svelte";
+  import Copy from "lucide-svelte/icons/copy";
+  import Ellipsis from "lucide-svelte/icons/ellipsis";
   import { page } from "$app/stores";
   import { can } from "$lib/perms/can";
   import { MANAGE_QUEUES, RECOMMEND_FOR_QUEUE } from "$lib/perms/permissions";
@@ -18,7 +19,7 @@
       size="icon"
       class="relative w-8 h-8 p-0">
       <span class="sr-only">Open menu</span>
-      <MoreHorizontal class="w-4 h-4" />
+      <Ellipsis class="w-4 h-4" />
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content>

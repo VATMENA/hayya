@@ -2,14 +2,12 @@
   import * as Card from "$lib/components/ui/card";
   import { Progress } from "$lib/components/ui/progress";
   import { Button, buttonVariants } from "$lib/components/ui/button";
-  import {
-    GiftIcon,
-    LogInIcon,
-    LogOutIcon,
-    PlusIcon,
-    ScrollTextIcon,
-    SettingsIcon,
-  } from "lucide-svelte";
+  import GiftIcon from "lucide-svelte/icons/gift";
+  import LogInIcon from "lucide-svelte/icons/log-in";
+  import LogOutIcon from "lucide-svelte/icons/log-out";
+  import PlusIcon from "lucide-svelte/icons/plus";
+  import ScrollTextIcon from "lucide-svelte/icons/scroll-text";
+  import SettingsIcon from "lucide-svelte/icons/settings";
   import { can } from "$lib/perms/can";
   import { page } from "$app/stores";
   import * as Dialog from "$lib/components/ui/dialog";
@@ -25,8 +23,15 @@
     TRAIN,
   } from "$lib/perms/permissions";
   import RequestForm from "./request-form.svelte";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
 
   export let data: PageData;
+  $: {
+    clearItems($page.data.url);
+    addItem($page.data.url, '/switch_hq', data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, 'Dashboard');
+    addPage($page.data.url, 'Training');
+  }
 
   let sessionOpen = false;
   let viewTranscriptId = "";
@@ -34,9 +39,7 @@
   let requestTrainingOpen = false;
 </script>
 
-<div class="flex items-center justify-between space-y-2">
-  <h2 class="text-3xl font-bold tracking-tight">Training</h2>
-</div>
+
 
 <div class="grid grid-cols-3 gap-4">
   <div class="space-y-4">

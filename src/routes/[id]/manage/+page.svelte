@@ -4,7 +4,7 @@
   import { Badge } from "$lib/components/ui/badge";
   import { color } from "$lib/colors";
   import Button from "$lib/components/ui/button/button.svelte";
-  import { Plus } from "lucide-svelte";
+  import Plus from "lucide-svelte/icons/plus";
 
   export let data: PageData;
 </script>

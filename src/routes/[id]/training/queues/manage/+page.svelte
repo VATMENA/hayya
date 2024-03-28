@@ -3,7 +3,7 @@
   import { page } from "$app/stores";
   import DataTable from "./data-table.svelte";
   import { Button } from "$lib/components/ui/button";
-  import { Plus } from "lucide-svelte";
+  import Plus from "lucide-svelte/icons/plus";
   import type { PageData } from "./$types";
   import { MANAGE_QUEUES } from "$lib/perms/permissions";
 

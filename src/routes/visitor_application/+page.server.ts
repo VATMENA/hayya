@@ -21,6 +21,9 @@ export const load: PageServerLoad = async ({ cookies, fetch }) => {
   let total_time = 0.0;
   let required = 50 * 60 * 60;
 
+  let hours_in_last_6mo = 0.0;
+  let required_hrs_in_last_6mo = 5 * 60 * 60;
+
   let total_atc_sessions = initial_atc_sessions.count;
 
   if (total_atc_sessions !== 0) {
@@ -38,8 +41,14 @@ export const load: PageServerLoad = async ({ cookies, fetch }) => {
 
     let connections_after_promotion = [];
 
+    let six_months_ago = new Date();
+    six_months_ago.setMonth(six_months_ago.getMonth() - 6);
+
     for (let connection of connections) {
       if (connection.start.valueOf() >= last_rating_change.valueOf()) {
+        connections_after_promotion.push(connection);
+      }
+      if (connection.start.valueOf() >= six_months_ago.valueOf()) {
         connections_after_promotion.push(connection);
       }
     }
@@ -64,6 +73,8 @@ export const load: PageServerLoad = async ({ cookies, fetch }) => {
     meetsActivityRequirements,
     canVisit,
     total_time,
-    required
+    required,
+    hours_in_last_6mo,
+    required_hrs_in_last_6mo,
   }
 }

@@ -10,7 +10,7 @@
   import * as Table from "$lib/components/ui/table";
   import * as Dialog from "$lib/components/ui/dialog";
   import * as Form from "$lib/components/ui/form";
-  import { Plus } from "lucide-svelte";
+  import Plus from "lucide-svelte/icons/plus";
   import { Button } from "$lib/components/ui/button";
   import {
     formSchema,

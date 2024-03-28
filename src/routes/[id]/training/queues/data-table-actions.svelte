@@ -1,7 +1,8 @@
 <script lang="ts">
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import { Button } from "$lib/components/ui/button";
-  import { AlertTriangleIcon, LogInIcon } from "lucide-svelte";
+  import LogInIcon from "lucide-svelte/icons/log-in";
+  import AlertTriangleIcon from "lucide-svelte/icons/triangle-alert";
   import { page } from "$app/stores";
 
   export let id: string;

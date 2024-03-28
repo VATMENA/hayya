@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import type { Event } from "@prisma/client";
-  import { MoreHorizontal } from "lucide-svelte";
+  import Ellipsis from "lucide-svelte/icons/ellipsis";
   import { Button } from "$lib/components/ui/button";
   import { toast } from "svelte-sonner";
 
@@ -17,7 +17,7 @@
       size="icon"
       class="relative w-8 h-8 p-0">
       <span class="sr-only">Open menu</span>
-      <MoreHorizontal class="w-4 h-4" />
+      <Ellipsis class="w-4 h-4" />
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content>

@@ -7,7 +7,8 @@
   } from "svelte-headless-table";
   import { readable } from "svelte/store";
   import type { TrainingQueue } from "@prisma/client";
-  import { CheckCircle2, XCircle } from "lucide-svelte";
+  import CircleCheck from "lucide-svelte/icons/circle-check";
+  import CircleX from "lucide-svelte/icons/circle-x";
   import DataTableActions from "./data-table-actions.svelte";
   import * as Table from "$lib/components/ui/table";
   import { addPagination } from "svelte-headless-table/plugins";
@@ -35,9 +36,9 @@
       header: "Able to join?",
       cell: ({ value }) => {
         if (canJoin.includes(value)) {
-          return createRender(CheckCircle2, { class: "text-green-500" });
+          return createRender(CircleCheck, { class: "text-green-500" });
         } else {
-          return createRender(XCircle, { class: "text-red-500" });
+          return createRender(CircleX, { class: "text-red-500" });
         }
       },
     }),
