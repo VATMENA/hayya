@@ -7,7 +7,7 @@ import { loadUserData } from "$lib/auth";
 import { ulid } from "ulid";
 
 export const load: PageServerLoad = async ({ parent }) => {
-  let { user } = await parent();
+  const { user } = await parent();
   if (!user.isSiteAdmin) {
     return {};
   }
@@ -28,13 +28,13 @@ export const load: PageServerLoad = async ({ parent }) => {
 
 export const actions: Actions = {
   create: async (event) => {
-    let form = await superValidate(event, formSchema);
+    const form = await superValidate(event, formSchema);
 
     if (!form.valid) {
       return fail(400, { form });
     }
 
-    let { user } = await loadUserData(event.cookies, null);
+    const { user } = await loadUserData(event.cookies, null);
     if (!user.isSiteAdmin) {
       return fail(400, { form });
     }
@@ -53,20 +53,20 @@ export const actions: Actions = {
     };
   },
   createAll: async (event) => {
-    let form = await superValidate(event, formSchema);
+    const form = await superValidate(event, formSchema);
 
     if (!form.valid) {
       return fail(400, { form });
     }
 
-    let { user } = await loadUserData(event.cookies, null);
+    const { user } = await loadUserData(event.cookies, null);
     if (!user.isSiteAdmin) {
       return fail(400, { form });
     }
 
-    let facilities = await prisma.facility.findMany();
+    const facilities = await prisma.facility.findMany();
 
-    for (let f of facilities) {
+    for (const f of facilities) {
       if (f.dotnetType === "Subdivision") {
         await prisma.userFacilityAssignment.create({
           data: {
@@ -84,7 +84,7 @@ export const actions: Actions = {
     };
   },
   delete: async (event) => {
-    let { user } = await loadUserData(event.cookies, null);
+    const { user } = await loadUserData(event.cookies, null);
     if (!user.isSiteAdmin) {
       return fail(400, {});
     }

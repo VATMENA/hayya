@@ -3,7 +3,11 @@
   import {
     type DateValue,
     DateFormatter,
-    getLocalTimeZone, today, parseDateTime, toCalendarDate, parseAbsolute
+    getLocalTimeZone,
+    today,
+    parseDateTime,
+    toCalendarDate,
+    parseAbsolute,
   } from "@internationalized/date";
   import { cn } from "$lib/utils.js";
   import { Button, buttonVariants } from "$lib/components/ui/button";
@@ -19,7 +23,9 @@
   export let form;
   export let name: string;
 
-  $: value = $form[name] ? toCalendarDate(parseAbsolute($form[name].toISOString(), 'UTC')) : undefined;
+  $: value = $form[name]
+    ? toCalendarDate(parseAbsolute($form[name].toISOString(), "UTC"))
+    : undefined;
 
   let clazz = "";
   // @ts-ignore
@@ -31,15 +37,15 @@
   export let maxValue: DateValue | undefined = undefined;
   export let attrs: any;
 </script>
+
 <Popover.Root>
   <Popover.Trigger
     {...attrs}
     class={cn(
-            buttonVariants({ variant: "outline" }),
-            `${clazz} justify-start pl-4 text-left font-normal`,
-            !value && "text-muted-foreground"
-          )}
-  >
+      buttonVariants({ variant: "outline" }),
+      `${clazz} justify-start pl-4 text-left font-normal`,
+      !value && "text-muted-foreground",
+    )}>
     {value ? df.format(value.toDate(getLocalTimeZone())) : "Pick a date"}
     <CalendarIcon class="ml-auto h-4 w-4 opacity-50" />
   </Popover.Trigger>
@@ -52,13 +58,12 @@
       {calendarLabel}
       initialFocus
       onValueChange={(v) => {
-              if (v) {
-                $form[name] = new Date(v.toString());
-              } else {
-                $form[name] = undefined;
-              }
-            }}
-    />
+        if (v) {
+          $form[name] = new Date(v.toString());
+        } else {
+          $form[name] = undefined;
+        }
+      }} />
   </Popover.Content>
 </Popover.Root>
-<input type="hidden" name={name} value={value} />
+<input type="hidden" {name} {value} />

@@ -26,7 +26,7 @@ export default defineConfig({
       "svelte-headless-table",
       "sveltekit-superforms/server",
       "sveltekit-superforms/client",
-      "ulid"
+      "ulid",
     ],
   },
 });

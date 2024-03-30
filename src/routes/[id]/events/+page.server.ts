@@ -17,7 +17,7 @@ export const config: Config = {
 };
 
 export const load: PageServerLoad = async ({ params }) => {
-  let events = await prisma.event.findMany({
+  const events = await prisma.event.findMany({
     where: {
       hostId: params.id,
     },
@@ -50,17 +50,17 @@ export const actions: Actions = {
 
     // combine the datetimes
 
-    let startDate = form.data.startDate.split("T")[0];
-    let startTime = String(form.data.startTime).padStart(4, "0");
-    let startHour = startTime.slice(0, 2);
-    let startMinute = startTime.slice(2);
-    let start = `${startDate}T${startHour}:${startMinute}:00Z`;
+    const startDate = form.data.startDate.split("T")[0];
+    const startTime = String(form.data.startTime).padStart(4, "0");
+    const startHour = startTime.slice(0, 2);
+    const startMinute = startTime.slice(2);
+    const start = `${startDate}T${startHour}:${startMinute}:00Z`;
 
-    let endDate = form.data.endDate.split("T")[0];
-    let endTime = String(form.data.endTime).padStart(4, "0");
-    let endHour = endTime.slice(0, 2);
-    let endMinute = endTime.slice(2);
-    let end = `${endDate}T${endHour}:${endMinute}:00Z`;
+    const endDate = form.data.endDate.split("T")[0];
+    const endTime = String(form.data.endTime).padStart(4, "0");
+    const endHour = endTime.slice(0, 2);
+    const endMinute = endTime.slice(2);
+    const end = `${endDate}T${endHour}:${endMinute}:00Z`;
 
     // generate the blurhash
 
@@ -100,13 +100,13 @@ export const actions: Actions = {
       );
     }
 
-    let data = await event.request.formData();
+    const data = await event.request.formData();
 
     if (!data.has("eventId") || !data.has("public")) {
       return { success: false };
     } else {
-      let id = data.get("eventId")!.toString();
-      let isPublic = data.get("public")!.toString() === "true";
+      const id = data.get("eventId")!.toString();
+      const isPublic = data.get("public")!.toString() === "true";
       await prisma.event.update({
         where: {
           id,

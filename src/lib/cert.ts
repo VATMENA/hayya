@@ -69,10 +69,10 @@ function enumFromStringValue<T>(
 }
 
 export function parse_position_v2(input: string): PositionV2 | null {
-  let split = input.split("-");
+  const split = input.split("-");
   if (split.length < 2) return null;
-  let c_typ_str = split[0];
-  let p_typ_str = split[1];
+  const c_typ_str = split[0];
+  const p_typ_str = split[1];
 
   const c_typ: C_TYP | undefined = enumFromStringValue(C_TYP, c_typ_str);
   if (c_typ === undefined) return null;
@@ -88,7 +88,7 @@ export function parse_position_v2(input: string): PositionV2 | null {
   if (p_typ === P_TYP.OpenSkies || p_typ == P_TYP.Unrestricted) {
     // next token needs to be the position
     if (split.length < 3) return null;
-    let pos_str = split[2];
+    const pos_str = split[2];
     const pos: POS | undefined = enumFromStringValue(POS, pos_str);
     if (pos === undefined) return null;
 
@@ -102,9 +102,9 @@ export function parse_position_v2(input: string): PositionV2 | null {
   ) {
     if (split.length < 4) return null;
 
-    let facility_icao = split[2];
+    const facility_icao = split[2];
 
-    let pos_str = split[3];
+    const pos_str = split[3];
     const pos: POS | undefined = enumFromStringValue(POS, pos_str);
     if (pos === undefined) return null;
 

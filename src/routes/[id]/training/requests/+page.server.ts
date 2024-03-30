@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
     );
   }
 
-  let unassigned = await prisma.trainingRequest.findMany({
+  const unassigned = await prisma.trainingRequest.findMany({
     where: {
       facilityId: params.id,
       endDate: {
@@ -37,7 +37,7 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
       instructor: true,
     },
   });
-  let expired = await prisma.trainingRequest.findMany({
+  const expired = await prisma.trainingRequest.findMany({
     where: {
       facilityId: params.id,
       endDate: {
@@ -49,7 +49,7 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
       instructor: true,
     },
   });
-  let assigned = await prisma.trainingRequest.findMany({
+  const assigned = await prisma.trainingRequest.findMany({
     where: {
       facilityId: params.id,
       endDate: {
@@ -93,7 +93,7 @@ export const actions: Actions = {
     });
   },
   selfAssign: async (event) => {
-    let { user } = await loadUserData(event.cookies, event.params.id);
+    const { user } = await loadUserData(event.cookies, event.params.id);
 
     if (!can(SELF_ASSIGN_TO_REQUEST)) {
       redirect(
@@ -104,7 +104,7 @@ export const actions: Actions = {
       );
     }
 
-    let form = await superValidate(event, formSchema);
+    const form = await superValidate(event, formSchema);
 
     if (!form.valid) {
       return fail(400, {
@@ -112,7 +112,7 @@ export const actions: Actions = {
       });
     }
 
-    let existingModel = await prisma.trainingRequest.findUnique({
+    const existingModel = await prisma.trainingRequest.findUnique({
       where: {
         id: form.data.requestId,
       },
@@ -150,7 +150,7 @@ export const actions: Actions = {
     };
   },
   assign: async (event) => {
-    let { user } = await loadUserData(event.cookies, event.params.id);
+    const { user } = await loadUserData(event.cookies, event.params.id);
 
     if (!can(SELF_ASSIGN_TO_REQUEST)) {
       redirect(
@@ -161,7 +161,7 @@ export const actions: Actions = {
       );
     }
 
-    let form = await superValidate(event, formSchema);
+    const form = await superValidate(event, formSchema);
 
     if (!form.valid) {
       return fail(400, {
@@ -169,7 +169,7 @@ export const actions: Actions = {
       });
     }
 
-    let existingModel = await prisma.trainingRequest.findUnique({
+    const existingModel = await prisma.trainingRequest.findUnique({
       where: {
         id: form.data.requestId,
       },

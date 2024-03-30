@@ -6,7 +6,7 @@ import { loadUserData } from "$lib/auth";
 export const load: LayoutServerLoad = async ({ cookies }) => {
   await loadUserData(cookies, null);
 
-  let facils = await prisma.facility.findMany();
+  const facils = await prisma.facility.findMany();
 
   return {
     facilities: facils,

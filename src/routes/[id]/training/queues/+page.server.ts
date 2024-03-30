@@ -10,20 +10,20 @@ import { MANAGE_QUEUES } from "$lib/perms/permissions";
 import { redirect } from "sveltekit-flash-message/server";
 
 export const load: PageServerLoad = async ({ params, parent }) => {
-  let { user, memberOfQueue } = await parent();
+  const { user, memberOfQueue } = await parent();
 
-  let all_queues = await prisma.trainingQueue.findMany({
+  const all_queues = await prisma.trainingQueue.findMany({
     where: {
       facilityId: params.id,
     },
   });
 
-  let recommended_for = user!.recommendedTrainingQueues;
-  let completed = user!.completedTrainingQueues;
+  const recommended_for = user!.recommendedTrainingQueues;
+  const completed = user!.completedTrainingQueues;
 
-  let canJoin = [];
+  const canJoin = [];
 
-  for (let queue of all_queues) {
+  for (const queue of all_queues) {
     if (
       (queue.joinableByDefault || recommended_for.includes(queue.id)) &&
       memberOfQueue === null &&
@@ -36,7 +36,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
   return {
     queues: all_queues,
     canJoin,
-    createForm: await superValidate(zod(createSchema))
+    createForm: await superValidate(zod(createSchema)),
   };
 };
 
@@ -52,11 +52,16 @@ export const actions: Actions = {
     await loadUserData(event.cookies, event.params.id);
 
     if (!can(MANAGE_QUEUES)) {
-      redirect(307, '/training', {type: 'error', message: 'You don\'t have permission to do that.'}, event.cookies);
+      redirect(
+        307,
+        "/training",
+        { type: "error", message: "You don't have permission to do that." },
+        event.cookies,
+      );
     }
 
     return {
       createForm: form,
     };
-  }
-}
+  },
+};

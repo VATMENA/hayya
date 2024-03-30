@@ -25,7 +25,9 @@
       </Card.Header>
       <Card.Content class="space-y-1.5">
         {#each data.facility.roles as role}
-          <Badge href="/{data.facility.id}/manage/editrole/{role.id}" style="background-color: {color(role.color)};">
+          <Badge
+            href="/{data.facility.id}/manage/editrole/{role.id}"
+            style="background-color: {color(role.color)};">
             {role.name}
           </Badge>
         {/each}

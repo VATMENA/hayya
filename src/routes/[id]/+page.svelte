@@ -7,8 +7,8 @@
 
   $: {
     clearItems($page.data.url);
-    addItem($page.data.url, '/switch_hq', data.facility.name);
-    addPage($page.data.url, 'Dashboard');
+    addItem($page.data.url, "/switch_hq", data.facility.name);
+    addPage($page.data.url, "Dashboard");
   }
 </script>
 

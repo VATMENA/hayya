@@ -26,12 +26,12 @@
     for (let facility of data.facilities) {
       all_facilities.push({
         value: facility.id,
-        label: facility.name
+        label: facility.name,
       });
       if (user_facility_ids.includes(facility.id)) {
         visible_facilities.push({
           value: facility.id,
-          label: facility.name
+          label: facility.name,
         });
       }
     }
@@ -75,17 +75,22 @@
   }
 </script>
 
-<div class="h-screen w-1/2 min-w-[40rem] flex flex-col p-6 space-y-4 items-center justify-center">
+<div
+  class="h-screen w-1/2 min-w-[40rem] flex flex-col p-6 space-y-4 items-center justify-center">
   <Card.Root class="justify-center content-center">
     <Card.Header>
-      <Card.Title>Hi, {data.user.name}! What are you looking to do today?</Card.Title>
+      <Card.Title>
+        Hi, {data.user.name}! What are you looking to do today?
+      </Card.Title>
     </Card.Header>
     <Card.Content class="grid space-y-4">
       <div class="grid grid-rows-2 gap-4">
         <div class="grid grid-cols-3 gap-4">
           <h3 class="font-bold text-lg mb-2">Log into a facility HQ</h3>
           <h3 class="font-bold text-lg mb-2">View the roster of a facility</h3>
-          <h3 class="font-bold text-lg">Apply to visit or transfer to a facility</h3>
+          <h3 class="font-bold text-lg">
+            Apply to visit or transfer to a facility
+          </h3>
         </div>
         <div class="grid grid-cols-3 gap-4">
           <Popover.Root bind:open={hqopen} let:ids>
@@ -95,8 +100,7 @@
                 variant="outline"
                 role="combobox"
                 aria-expanded={hqopen}
-                class="w-full justify-between"
-              >
+                class="w-full justify-between">
                 {hqselectedValue}
                 <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
@@ -110,17 +114,15 @@
                     <Command.Item
                       value={facility.value}
                       onSelect={(currentValue) => {
-              hqvalue = currentValue;
-              hqcloseAndFocusTrigger(ids.trigger);
-              goto(`/${currentValue}/`);
-            }}
-                    >
+                        hqvalue = currentValue;
+                        hqcloseAndFocusTrigger(ids.trigger);
+                        goto(`/${currentValue}/`);
+                      }}>
                       <Check
                         class={cn(
-                "mr-2 h-4 w-4",
-                hqvalue !== facility.value && "text-transparent"
-              )}
-                      />
+                          "mr-2 h-4 w-4",
+                          hqvalue !== facility.value && "text-transparent",
+                        )} />
                       {facility.label}
                     </Command.Item>
                   {/each}
@@ -136,8 +138,7 @@
                 variant="outline"
                 role="combobox"
                 aria-expanded={rosteropen}
-                class="w-full justify-between"
-              >
+                class="w-full justify-between">
                 {rosterselectedValue}
                 <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
@@ -151,17 +152,15 @@
                     <Command.Item
                       value={facility.value}
                       onSelect={(currentValue) => {
-              rostervalue = currentValue;
-              rostercloseAndFocusTrigger(ids.trigger);
-              goto(`/${currentValue}/roster/`);
-            }}
-                    >
+                        rostervalue = currentValue;
+                        rostercloseAndFocusTrigger(ids.trigger);
+                        goto(`/${currentValue}/roster/`);
+                      }}>
                       <Check
                         class={cn(
-                "mr-2 h-4 w-4",
-                rostervalue !== facility.value && "text-transparent"
-              )}
-                      />
+                          "mr-2 h-4 w-4",
+                          rostervalue !== facility.value && "text-transparent",
+                        )} />
                       {facility.label}
                     </Command.Item>
                   {/each}
@@ -169,7 +168,10 @@
               </Command.Root>
             </Popover.Content>
           </Popover.Root>
-          <Button variant="outline" href="/tvc/" class="w-full">T&V Dashboard <ChevronRight class="w-5 h-5 font-light"/></Button>
+          <Button variant="outline" href="/tvc/" class="w-full">
+            T&V Dashboard <ChevronRight class="w-5 h-5 font-light" />
+          </Button>
+        </div>
       </div>
     </Card.Content>
   </Card.Root>

@@ -8,10 +8,10 @@
   export let data: PageData;
   $: {
     clearItems($page.data.url);
-    addItem($page.data.url, '/switch_hq', data.facility.name);
-    addItem($page.data.url, `/${data.facility.id}`, 'Dashboard');
-    addItem($page.data.url, `/${data.facility.id}/training`, 'Training');
-    addPage($page.data.url, 'Training Requests');
+    addItem($page.data.url, "/switch_hq", data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, "Dashboard");
+    addItem($page.data.url, `/${data.facility.id}/training`, "Training");
+    addPage($page.data.url, "Training Requests");
   }
 </script>
 

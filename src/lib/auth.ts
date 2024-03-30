@@ -13,7 +13,7 @@ export function makeToken(cid: string): string {
 
 export function verifyToken(token: string): string | null {
   try {
-    let decoded = jwt.verify(token, JWT_HMAC_KEY) as { cid: string };
+    const decoded = jwt.verify(token, JWT_HMAC_KEY) as { cid: string };
     return decoded.cid;
   } catch {
     return null;
@@ -37,8 +37,8 @@ export async function loadUserData(
       cookies,
     );
   }
-  let token = cookies.get("hq_token")!;
-  let maybe_cid = verifyToken(token);
+  const token = cookies.get("hq_token")!;
+  const maybe_cid = verifyToken(token);
   if (maybe_cid === null) {
     redirect(
       307,
@@ -47,7 +47,7 @@ export async function loadUserData(
       cookies,
     );
   }
-  let user = await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       id: maybe_cid,
     },
@@ -70,7 +70,7 @@ export async function loadUserData(
 
   let roles: Role[] = [];
 
-  for (let facility of user.facilities) {
+  for (const facility of user.facilities) {
     if (facility.facilityId === inFacility) {
       roles = facility.roles;
       if (facility.assignmentType === "DivisionalStaff") {

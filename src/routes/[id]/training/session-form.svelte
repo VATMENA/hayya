@@ -54,18 +54,40 @@
       <Form.Field {form} name="studentComments" class="flex flex-col">
         <Form.Control let:attrs>
           <Form.Label>Student Comments</Form.Label>
-          <Textarea class="resize-none" {...attrs} bind:value={$formData.studentComments} />
-          <Form.Description class="text-xs">Insert rich text with <a class="underline underline-offset-4" href="https://commonmark.org/help/">Markdown</a></Form.Description>
+          <Textarea
+            class="resize-none"
+            {...attrs}
+            bind:value={$formData.studentComments} />
+          <Form.Description class="text-xs">
+            Insert rich text with <a
+              class="underline underline-offset-4"
+              href="https://commonmark.org/help/">
+              Markdown
+            </a>
+          </Form.Description>
         </Form.Control>
-        <Form.Description>These comments will be visible to the student and other mentors.</Form.Description>
+        <Form.Description>
+          These comments will be visible to the student and other mentors.
+        </Form.Description>
       </Form.Field>
       <Form.Field {form} name="mentorComments" class="flex flex-col">
         <Form.Control let:attrs>
           <Form.Label>Student Comments</Form.Label>
-          <Textarea class="resize-none" {...attrs} bind:value={$formData.mentorComments}></Textarea>
-          <Form.Description class="text-xs">Insert rich text with <a class="underline underline-offset-4" href="https://commonmark.org/help/">Markdown</a></Form.Description>
+          <Textarea
+            class="resize-none"
+            {...attrs}
+            bind:value={$formData.mentorComments}></Textarea>
+          <Form.Description class="text-xs">
+            Insert rich text with <a
+              class="underline underline-offset-4"
+              href="https://commonmark.org/help/">
+              Markdown
+            </a>
+          </Form.Description>
         </Form.Control>
-        <Form.Description>These comments will be visible only for other mentors.</Form.Description>
+        <Form.Description>
+          These comments will be visible only for other mentors.
+        </Form.Description>
       </Form.Field>
     </div>
     <Form.Button class="w-full">
@@ -75,7 +97,7 @@
         Log Session
       {/if}
     </Form.Button>
-    <SuperDebug data={$formData}/>
+    <SuperDebug data={$formData} />
   </div>
 </form>
 <!--
@@ -136,4 +158,3 @@
   <Form.Button class="float-right">Log Session</Form.Button>
 </Form.Root>
 -->
-

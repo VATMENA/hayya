@@ -1,50 +1,56 @@
-import type {PageServerLoad} from "./$types";
+import type { PageServerLoad } from "./$types";
 import { loadUserData } from "$lib/auth";
 
 export const load: PageServerLoad = async ({ cookies, fetch }) => {
-  let { user } = await loadUserData(cookies, null);
+  const { user } = await loadUserData(cookies, null);
 
-  let rating = user.ratingId;
-  let home = `${user.region}/${user.division}`;
+  const rating = user.ratingId;
+  const home = `${user.region}/${user.division}`;
 
   // https://api.vatsim.net/v2/members/:id/atc
   // https://api.vatsim.net/v2/members/1710004/ <- lastratingchange
 
-  let user_info_resp = await fetch(`https://api.vatsim.net/v2/members/${user.id}`);
-  let user_info = await user_info_resp.json();
+  const user_info_resp = await fetch(
+    `https://api.vatsim.net/v2/members/${user.id}`,
+  );
+  const user_info = await user_info_resp.json();
 
-  let last_rating_change = new Date(user_info.lastratingchange);
+  const last_rating_change = new Date(user_info.lastratingchange);
 
-  let initial_atc_sessions_resp = await fetch(`https://api.vatsim.net/v2/members/${user.id}/atc?limit=1`);
-  let initial_atc_sessions = await initial_atc_sessions_resp.json();
+  const initial_atc_sessions_resp = await fetch(
+    `https://api.vatsim.net/v2/members/${user.id}/atc?limit=1`,
+  );
+  const initial_atc_sessions = await initial_atc_sessions_resp.json();
 
   let total_time = 0.0;
-  let required = 50 * 60 * 60;
+  const required = 50 * 60 * 60;
 
-  let hours_in_last_6mo = 0.0;
-  let required_hrs_in_last_6mo = 5 * 60 * 60;
+  const hours_in_last_6mo = 0.0;
+  const required_hrs_in_last_6mo = 5 * 60 * 60;
 
-  let total_atc_sessions = initial_atc_sessions.count;
+  const total_atc_sessions = initial_atc_sessions.count;
 
   if (total_atc_sessions !== 0) {
-    let atc_sessions_resp = await fetch(`https://api.vatsim.net/v2/members/${user.id}/atc?limit=${total_atc_sessions}`);
-    let atc_sessions = await atc_sessions_resp.json();
+    const atc_sessions_resp = await fetch(
+      `https://api.vatsim.net/v2/members/${user.id}/atc?limit=${total_atc_sessions}`,
+    );
+    const atc_sessions = await atc_sessions_resp.json();
 
-    let connections = [];
+    const connections = [];
 
-    for (let session of atc_sessions.items) {
+    for (const session of atc_sessions.items) {
       connections.push({
         start: new Date(session.connection_id.start),
-        end: new Date(session.connection_id.end)
+        end: new Date(session.connection_id.end),
       });
     }
 
-    let connections_after_promotion = [];
+    const connections_after_promotion = [];
 
-    let six_months_ago = new Date();
+    const six_months_ago = new Date();
     six_months_ago.setMonth(six_months_ago.getMonth() - 6);
 
-    for (let connection of connections) {
+    for (const connection of connections) {
       if (connection.start.valueOf() >= last_rating_change.valueOf()) {
         connections_after_promotion.push(connection);
       }
@@ -53,17 +59,17 @@ export const load: PageServerLoad = async ({ cookies, fetch }) => {
       }
     }
 
-
-    for (let connection of connections_after_promotion) {
-      total_time += connection.end.valueOf() / 1000 - connection.start.valueOf() / 1000;
+    for (const connection of connections_after_promotion) {
+      total_time +=
+        connection.end.valueOf() / 1000 - connection.start.valueOf() / 1000;
     }
   }
 
-  let hasNeededRating = rating >= (home === 'EMEA/MENA' ? 3 : 4);
-  let fiftyHours = total_time >= required;
-  let meetsActivityRequirements = true;
+  const hasNeededRating = rating >= (home === "EMEA/MENA" ? 3 : 4);
+  const fiftyHours = total_time >= required;
+  const meetsActivityRequirements = true;
 
-  let canVisit = hasNeededRating && fiftyHours && meetsActivityRequirements;
+  const canVisit = hasNeededRating && fiftyHours && meetsActivityRequirements;
 
   return {
     rating,
@@ -76,5 +82,5 @@ export const load: PageServerLoad = async ({ cookies, fetch }) => {
     required,
     hours_in_last_6mo,
     required_hrs_in_last_6mo,
-  }
-}
+  };
+};

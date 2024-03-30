@@ -33,8 +33,8 @@
             placeholder="I watched you crash a plane into a mountain. Please get more practice with this and try again."
             class="resize-none" />
           <Form.Description>
-            These comments will be visible to the student <b>and</b> other mentors. You
-            can use Markdown to add links and styles.
+            These comments will be visible to the student <b>and</b>
+            other mentors. You can use Markdown to add links and styles.
           </Form.Description>
           <Form.Validation />
         </Form.Item>
@@ -54,5 +54,7 @@
       </Form.Field>
     </div>
   </div>
-  <Form.Button class="float-right bg-red-500 text-red-950 hover:bg-red-600">Revoke Certificate</Form.Button>
+  <Form.Button class="float-right bg-red-500 text-red-950 hover:bg-red-600">
+    Revoke Certificate
+  </Form.Button>
 </Form.Root>

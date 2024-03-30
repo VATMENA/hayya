@@ -29,7 +29,7 @@ export const GET: RequestHandler = async () => {
 
   const req = await fetch("https://data.vatsim.net/v3/vatsim-data.json");
 
-  let datafeed: Datafeed = await req.json();
+  const datafeed: Datafeed = await req.json();
 
   const activeConnections = datafeed.controllers.filter((c) => {
     return Object.entries(callsigns).some(([_, r]) => c.callsign.match(r));

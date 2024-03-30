@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 
   let token_resp;
   try {
-    let params = new URLSearchParams();
+    const params = new URLSearchParams();
 
     params.set("grant_type", "authorization_code");
     params.set("client_id", PUBLIC_VATSIM_OAUTH_CLIENT_ID);
@@ -41,7 +41,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
     };
   }
 
-  let token_body = await token_resp.json();
+  const token_body = await token_resp.json();
 
   if (!token_resp.ok) {
     console.error(`VATSIM error: ${JSON.stringify(token_body)}`);
@@ -50,7 +50,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
     };
   }
 
-  let vatsim_token = token_body.access_token;
+  const vatsim_token = token_body.access_token;
 
   let user_details_resp;
   try {
@@ -69,7 +69,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
     };
   }
 
-  let user_details = (await user_details_resp.json()).data;
+  const user_details = (await user_details_resp.json()).data;
 
   await prisma.user.upsert({
     where: { id: user_details.cid },
@@ -94,7 +94,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
     },
   });
 
-  let token = makeToken(user_details.cid);
+  const token = makeToken(user_details.cid);
 
   cookies.set("hq_token", token, { path: "/" });
 

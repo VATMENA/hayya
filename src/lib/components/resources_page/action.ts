@@ -21,7 +21,7 @@ export async function handleResourceSubmit(
 
   await loadUserData(event.cookies, event.params.id);
 
-  let hasEdit = can(MANAGE_RESOURCES);
+  const hasEdit = can(MANAGE_RESOURCES);
 
   if (!hasEdit) {
     return fail(403, {

@@ -31,8 +31,8 @@ export function can(permission: Permission): boolean {
     return true;
   }
 
-  for (let role of roles) {
-    for (let rPermission of role.permissions) {
+  for (const role of roles) {
+    for (const rPermission of role.permissions) {
       if (minimatch(permission.id, rPermission)) {
         return true;
       }

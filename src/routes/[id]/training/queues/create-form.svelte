@@ -11,7 +11,7 @@
   export let data: SuperValidated<Infer<CreateSchema>>;
 
   const form = superForm(data, {
-    validators: zodClient(createSchema)
+    validators: zodClient(createSchema),
   });
 
   const { form: formData, enhance } = form;
@@ -24,33 +24,36 @@
       <Input {...attrs} bind:value={$formData.name} placeholder="OBS -> S1" />
     </Form.Control>
     <Form.Description>A short name describing the queue.</Form.Description>
-    <Form.FieldErrors/>
+    <Form.FieldErrors />
   </Form.Field>
   <Form.Field {form} name="description">
     <Form.Control let:attrs>
       <Form.Label>Description</Form.Label>
-      <Textarea class="resize-none" {...attrs} bind:value={$formData.description} placeholder="Training track that will take you from OBS (Observer) to S1 (Developing Controller)." />
+      <Textarea
+        class="resize-none"
+        {...attrs}
+        bind:value={$formData.description}
+        placeholder="Training track that will take you from OBS (Observer) to S1 (Developing Controller)." />
     </Form.Control>
     <Form.Description>A longer description of the queue.</Form.Description>
-    <Form.FieldErrors/>
+    <Form.FieldErrors />
   </Form.Field>
   <Form.Field
     {form}
     name="openRegistration"
-    class="flex flex-row items-center justify-between rounded-lg"
-  >
+    class="flex flex-row items-center justify-between rounded-lg">
     <Form.Control let:attrs>
       <div class="space-y-0.5">
         <Form.Label>Open registration?</Form.Label>
         <Form.Description>
-          Switch on to allow anyone to join this queue without an instructor recommendation.
+          Switch on to allow anyone to join this queue without an instructor
+          recommendation.
         </Form.Description>
       </div>
       <Switch
         {...attrs}
         includeInput
-        bind:checked={$formData.openRegistration}
-      />
+        bind:checked={$formData.openRegistration} />
     </Form.Control>
   </Form.Field>
 

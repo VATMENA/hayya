@@ -1,10 +1,10 @@
 import { get, writable, type Writable } from "svelte/store";
 
 interface Breadcrumb {
-  link: string | null,
-  display: string
+  link: string | null;
+  display: string;
 }
-export let items: Writable<Breadcrumb[]> = writable([]);
+export const items: Writable<Breadcrumb[]> = writable([]);
 export function clearItems(_url: URL) {
   items.set([]);
 }

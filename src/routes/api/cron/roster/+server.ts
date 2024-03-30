@@ -15,7 +15,7 @@ export const GET: RequestHandler = async () => {
 
   console.log("[RosterUpdate] Pulling member count from VATSIM");
 
-  let initial_vatsim_resp = await fetch(
+  const initial_vatsim_resp = await fetch(
     "https://api.vatsim.net/v2/orgs/division/MENA?limit=1",
     {
       headers: {
@@ -24,19 +24,19 @@ export const GET: RequestHandler = async () => {
     },
   );
 
-  let initial_json = await initial_vatsim_resp.json();
+  const initial_json = await initial_vatsim_resp.json();
 
   if (!initial_vatsim_resp.ok) {
     throw new Error(JSON.stringify(initial_json));
   }
 
-  let need_to_pull = initial_json.count;
+  const need_to_pull = initial_json.count;
 
   console.log(
     `[RosterUpdate] Loading information about ${need_to_pull} members`,
   );
 
-  let real_roster_resp = await fetch(
+  const real_roster_resp = await fetch(
     `https://api.vatsim.net/v2/orgs/division/MENA?limit=${need_to_pull}`,
     {
       headers: {
@@ -47,23 +47,23 @@ export const GET: RequestHandler = async () => {
 
   console.log("[RosterUpdate] Planning");
 
-  let roster_json = await real_roster_resp.json();
+  const roster_json = await real_roster_resp.json();
 
   if (!real_roster_resp.ok) {
     throw new Error(JSON.stringify(roster_json));
   }
 
-  let roster = roster_json.items;
+  const roster = roster_json.items;
 
-  let existing_roster: Record<string, any> = {};
-  let existing_roster_arr = await prisma.user.findMany();
-  for (let existing_user of existing_roster_arr) {
+  const existing_roster: Record<string, any> = {};
+  const existing_roster_arr = await prisma.user.findMany();
+  for (const existing_user of existing_roster_arr) {
     existing_roster[existing_user.id.toString()] = existing_user;
   }
 
-  let vaccs: Record<string, any> = {};
-  let vaccs_arr = await prisma.facility.findMany();
-  for (let vacc of vaccs_arr) {
+  const vaccs: Record<string, any> = {};
+  const vaccs_arr = await prisma.facility.findMany();
+  for (const vacc of vaccs_arr) {
     vaccs[vacc.id] = vacc;
   }
 
@@ -76,11 +76,11 @@ export const GET: RequestHandler = async () => {
   let askipped = 0;
   let atotal = 0;
 
-  let userAssignments: Record<string, any> = {};
+  const userAssignments: Record<string, any> = {};
 
-  let all_assignments: UserFacilityAssignment[] =
+  const all_assignments: UserFacilityAssignment[] =
     await prisma.userFacilityAssignment.findMany();
-  for (let assignment of all_assignments) {
+  for (const assignment of all_assignments) {
     if (!userAssignments[assignment.userId]) {
       userAssignments[assignment.userId] = {
         primary: null,
@@ -97,7 +97,7 @@ export const GET: RequestHandler = async () => {
 
   console.log("[RosterUpdate] Start updating users");
 
-  for (let roster_user of roster) {
+  for (const roster_user of roster) {
     total += 1;
 
     let vacc = "";
@@ -110,11 +110,11 @@ export const GET: RequestHandler = async () => {
     }
 
     if (Object.keys(existing_roster).includes(roster_user.id.toString())) {
-      let existing = existing_roster[roster_user.id.toString()];
+      const existing = existing_roster[roster_user.id.toString()];
 
       // Janky bizzaro way of not updating unchanged users
 
-      let new_data = {
+      const new_data = {
         name: `${roster_user.name_first} ${roster_user.name_last}`,
         ratingId: roster_user.rating,
         ratingShort: RATINGS[roster_user.rating][0],
@@ -123,7 +123,7 @@ export const GET: RequestHandler = async () => {
         division: roster_user.division_id,
       };
 
-      let compare_array = [
+      const compare_array = [
         [existing.name, new_data.name],
         [existing.ratingId, new_data.ratingId],
         [existing.ratingShort, new_data.ratingShort],
@@ -131,7 +131,7 @@ export const GET: RequestHandler = async () => {
         [existing.region, new_data.region],
         [existing.division, new_data.division],
       ];
-      for (let [before, after] of compare_array) {
+      for (const [before, after] of compare_array) {
         if (before !== after) {
           await prisma.user.update({
             where: { id: roster_user.id.toString() },
@@ -169,7 +169,7 @@ export const GET: RequestHandler = async () => {
     }
 
     // get the user's primary assignment
-    let userRecord = userAssignments[roster_user.id.toString()];
+    const userRecord = userAssignments[roster_user.id.toString()];
 
     let needsCreateDivisional = true;
     let needsVacc: "create" | "update" | "leavealone" = "leavealone";
@@ -188,7 +188,7 @@ export const GET: RequestHandler = async () => {
         needsVacc = "leavealone";
       }
 
-      for (let otherA of userRecord.other) {
+      for (const otherA of userRecord.other) {
         if (otherA.facilityId === "MENA") {
           needsCreateDivisional = false;
         }

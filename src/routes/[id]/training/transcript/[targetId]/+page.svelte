@@ -11,14 +11,18 @@
   export let data: PageData;
   $: {
     clearItems($page.data.url);
-    addItem($page.data.url, '/switch_hq', data.facility.name);
-    addItem($page.data.url, `/${data.facility.id}`, 'Dashboard');
-    addItem($page.data.url, `/${data.facility.id}/training`, 'Training');
+    addItem($page.data.url, "/switch_hq", data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, "Dashboard");
+    addItem($page.data.url, `/${data.facility.id}/training`, "Training");
     if (data.targetUser.id === data.user.id) {
-      addPage($page.data.url, 'My Transcript');
+      addPage($page.data.url, "My Transcript");
     } else {
-      addItem($page.data.url, `/${data.facility.id}/user/${data.targetUser.id}/`, data.targetUser.name);
-      addPage($page.data.url, 'Training Transcript');
+      addItem(
+        $page.data.url,
+        `/${data.facility.id}/user/${data.targetUser.id}/`,
+        data.targetUser.name,
+      );
+      addPage($page.data.url, "Training Transcript");
     }
   }
 
@@ -38,10 +42,11 @@
     <Accordion.Item value={session.id}>
       <Accordion.Trigger>
         {#if session.logType === "Training"}
-        {convertDate(session.date)} - {session.sessionType} session with {session
-          .instructor.name}
+          {convertDate(session.date)} - {session.sessionType} session with {session
+            .instructor.name}
         {:else if session.logType === "CertificateRevokal"}
-          {convertDate(session.date)} - {session.sessionType} certificate revoked by {session.instructor.name}
+          {convertDate(session.date)} - {session.sessionType} certificate revoked
+          by {session.instructor.name}
         {/if}
       </Accordion.Trigger>
       <Accordion.Content>

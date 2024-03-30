@@ -33,7 +33,7 @@ export const actions: Actions = {
         });
 
  */
-    let res = {
+    const res = {
       ok: false,
     };
 

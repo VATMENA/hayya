@@ -27,9 +27,9 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
-    let { user } = await loadUserData(event.cookies, event.params.id!);
+    const { user } = await loadUserData(event.cookies, event.params.id!);
 
-    let targetUser = await prisma.user.findUnique({
+    const targetUser = await prisma.user.findUnique({
       where: {
         id: form.data.cid,
       },
@@ -67,12 +67,12 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
-    let { user } = await loadUserData(event.cookies, event.params.id!);
+    const { user } = await loadUserData(event.cookies, event.params.id!);
 
-    let startDate = parseDateTime(form.data.dateStart.replace("Z", "")).toDate(
+    const startDate = parseDateTime(form.data.dateStart.replace("Z", "")).toDate(
       "UTC",
     );
-    let endDate = parseDateTime(form.data.dateEnd.replace("Z", "")).toDate(
+    const endDate = parseDateTime(form.data.dateEnd.replace("Z", "")).toDate(
       "UTC",
     );
 

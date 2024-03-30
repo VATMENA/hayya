@@ -7,17 +7,17 @@
   import PageHeader from "$lib/components/PageHeader.svelte";
   import { can } from "$lib/perms/can";
   import { MANAGE_QUEUES } from "$lib/perms/permissions";
-  import Plus from "lucide-svelte/icons/plus"
+  import Plus from "lucide-svelte/icons/plus";
   import * as Dialog from "$lib/components/ui/dialog";
   import CreateForm from "./create-form.svelte";
 
   export let data: PageData;
   $: {
     clearItems($page.data.url);
-    addItem($page.data.url, '/switch_hq', data.facility.name);
-    addItem($page.data.url, `/${data.facility.id}`, 'Dashboard');
-    addItem($page.data.url, `/${data.facility.id}/training`, 'Training');
-    addPage($page.data.url, 'Training Queues');
+    addItem($page.data.url, "/switch_hq", data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, "Dashboard");
+    addItem($page.data.url, `/${data.facility.id}/training`, "Training");
+    addPage($page.data.url, "Training Queues");
   }
 
   let createDialogOpen = false;

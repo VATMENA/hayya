@@ -7,13 +7,13 @@ export async function POST({ request }) {
     return json({}, { status: 403 });
   }
 
-  let key = request.headers.get("authorization")!.split(" ")[1];
+  const key = request.headers.get("authorization")!.split(" ")[1];
 
   if (key !== API_SUPERKEY) {
     return json({}, { status: 403 });
   }
 
-  let jv = await request.json();
+  const jv = await request.json();
 
   await prisma.certificate.create({
     data: jv,

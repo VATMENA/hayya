@@ -19,7 +19,7 @@
     <Breadcrumb.List>
       {#each $items as item, i}
         {#if i !== 0}
-          <Breadcrumb.Separator/>
+          <Breadcrumb.Separator />
         {/if}
         <Breadcrumb.Item>
           {#if item.link !== null}

@@ -41,9 +41,9 @@ export const actions: Actions = {
       });
     }
 
-    let permissions = [];
+    const permissions = [];
 
-    for (let permission of PERMISSIONS) {
+    for (const permission of PERMISSIONS) {
       if (Object.keys(form.data).includes(permission.id)) {
         if (form.data[permission.id] && can(permission)) {
           permissions.push(permission.id);

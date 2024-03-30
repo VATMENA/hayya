@@ -14,8 +14,8 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
     );
   }
 
-  let token = cookies.get("hq_token")!;
-  let maybe_cid = verifyToken(token);
+  const token = cookies.get("hq_token")!;
+  const maybe_cid = verifyToken(token);
   if (maybe_cid === null) {
     redirect(
       301,
@@ -25,7 +25,7 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
     );
   }
 
-  let user = await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: {
       id: maybe_cid,
     },
@@ -46,10 +46,10 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
     );
   }
 
-  let all_facilities = await prisma.facility.findMany();
+  const all_facilities = await prisma.facility.findMany();
 
   return {
     user: user,
-    facilities: all_facilities
+    facilities: all_facilities,
   };
 };

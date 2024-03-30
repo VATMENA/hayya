@@ -25,6 +25,12 @@
   import { onMount } from "svelte";
 
   export let data: PageData;
+  $: {
+    clearItems($page.data.url);
+    addItem($page.data.url, "/switch_hq", data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, "Dashboard");
+    addPage($page.data.url, "Training");
+  }
 
   let sessionOpen = false;
   let viewTranscriptId = "";
