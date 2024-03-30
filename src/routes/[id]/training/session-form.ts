@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const formSchema = z.object({
   cid: z.string().min(1, { message: "You need to provide a CID" }),
-  date: z.string().datetime({ offset: true }),
+  date: z.date(),
   sessionType: z
     .string()
     .min(1, { message: "You need to provide a session type" }),

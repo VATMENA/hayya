@@ -10,17 +10,18 @@ import { can } from "$lib/perms/can";
 import { ulid } from "ulid";
 import { parseDate, parseDateTime } from "@internationalized/date";
 import { TRAIN } from "$lib/perms/permissions";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async () => {
   return {
-    form: await superValidate(formSchema),
-    requestForm: await superValidate(requestFormSchema),
+    form: await superValidate(zod(formSchema)),
+    requestForm: await superValidate(zod(requestFormSchema)),
   };
 };
 
 export const actions: Actions = {
   logSession: async (event) => {
-    const form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
 
     if (!form.valid) {
       return fail(400, { form });
@@ -43,8 +44,6 @@ export const actions: Actions = {
       );
     }
 
-    let date = parseDateTime(form.data.date.replace("Z", "")).toDate("UTC");
-
     await prisma.session.create({
       data: {
         id: ulid(),
@@ -53,7 +52,7 @@ export const actions: Actions = {
         sessionType: form.data.sessionType,
         studentComments: form.data.studentComments,
         instructorComments: form.data.mentorComments,
-        date: date,
+        date: form.data.date,
       },
     });
 
@@ -62,7 +61,7 @@ export const actions: Actions = {
     };
   },
   requestTraining: async (event) => {
-    const form = await superValidate(event, requestFormSchema);
+    const form = await superValidate(event, zod(requestFormSchema));
 
     if (!form.valid) {
       return fail(400, { form });

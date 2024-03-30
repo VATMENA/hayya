@@ -1,14 +1,13 @@
 <script lang="ts">
   import * as Card from "$lib/components/ui/card";
+  import { Progress } from "$lib/components/ui/progress";
   import { Button, buttonVariants } from "$lib/components/ui/button";
-  import {
-    GiftIcon,
-    LogInIcon,
-    LogOutIcon,
-    PlusIcon,
-    ScrollTextIcon,
-    SettingsIcon,
-  } from "lucide-svelte";
+  import GiftIcon from "lucide-svelte/icons/gift";
+  import LogInIcon from "lucide-svelte/icons/log-in";
+  import LogOutIcon from "lucide-svelte/icons/log-out";
+  import PlusIcon from "lucide-svelte/icons/plus";
+  import ScrollTextIcon from "lucide-svelte/icons/scroll-text";
+  import SettingsIcon from "lucide-svelte/icons/settings";
   import { can } from "$lib/perms/can";
   import { page } from "$app/stores";
   import * as Dialog from "$lib/components/ui/dialog";
@@ -175,14 +174,14 @@
         <Dialog.Title>Log Training Session</Dialog.Title>
       </Dialog.Header>
       <SessionForm
-        form={data.form}
+        data={data.form}
         onsubmit={() => {
           sessionOpen = false;
           toast.success("Session has been saved to the student's transcript");
         }} />
     </Dialog.Content>
   </Dialog.Root>
-{/if}
+{/if}<!--
 
 <Dialog.Root bind:open={requestTrainingOpen}>
   <Dialog.Content class="max-w-[50vw]">
@@ -197,3 +196,5 @@
       }} />
   </Dialog.Content>
 </Dialog.Root>
+
+-->

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import { addItem, addPage, clearItems, title } from "$lib/breadcrumbs";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
   import { page } from "$app/stores";
 
   export let data: PageData;
