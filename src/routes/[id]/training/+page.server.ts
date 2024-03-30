@@ -69,9 +69,9 @@ export const actions: Actions = {
 
     const { user } = await loadUserData(event.cookies, event.params.id!);
 
-    const startDate = parseDateTime(form.data.dateStart.replace("Z", "")).toDate(
-      "UTC",
-    );
+    const startDate = parseDateTime(
+      form.data.dateStart.replace("Z", ""),
+    ).toDate("UTC");
     const endDate = parseDateTime(form.data.dateEnd.replace("Z", "")).toDate(
       "UTC",
     );
