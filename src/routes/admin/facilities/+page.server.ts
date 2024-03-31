@@ -4,6 +4,7 @@ import { superValidate } from "sveltekit-superforms/server";
 import { formSchema } from "./schema";
 import { fail } from "@sveltejs/kit";
 import { loadUserData } from "$lib/auth";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async ({ parent }) => {
   const { user } = await parent();
@@ -13,13 +14,13 @@ export const load: PageServerLoad = async ({ parent }) => {
 
   return {
     facilities: await prisma.facility.findMany()!,
-    form: await superValidate(formSchema),
+    form: await superValidate(zod(formSchema)),
   };
 };
 
 export const actions: Actions = {
   create: async (event) => {
-    const form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
 
     if (!form.valid) {
       return fail(400, { form });

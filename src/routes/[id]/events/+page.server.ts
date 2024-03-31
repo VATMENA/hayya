@@ -11,6 +11,7 @@ import { encode } from "blurhash";
 import { ulid } from "ulid";
 import type { Config } from "@sveltejs/adapter-vercel";
 import { MANAGE_EVENTS } from "$lib/perms/permissions";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const config: Config = {
   maxDuration: 300,
@@ -25,13 +26,13 @@ export const load: PageServerLoad = async ({ params }) => {
 
   return {
     events,
-    form: await superValidate(formSchema),
+    form: await superValidate(zod(formSchema)),
   };
 };
 
 export const actions: Actions = {
   create: async (event) => {
-    const form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
 
     if (!form.valid) {
       return fail(400, { form });

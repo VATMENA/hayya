@@ -7,12 +7,13 @@ import { loadUserData, verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { ulid } from "ulid";
 import { MANAGE_RESOURCES } from "$lib/perms/permissions";
+import { zod } from "sveltekit-superforms/adapters";
 
 export async function handleResourceSubmit(
   event: any,
   facilityId: string | null,
 ) {
-  const form = await superValidate(event, formSchema);
+  const form = await superValidate(event, zod(formSchema));
   if (!form.valid) {
     return fail(400, {
       form,

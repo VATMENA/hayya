@@ -5,6 +5,7 @@ import { formSchema } from "./schema";
 import { fail } from "@sveltejs/kit";
 import { loadUserData } from "$lib/auth";
 import { ulid } from "ulid";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async ({ parent }) => {
   const { user } = await parent();
@@ -22,13 +23,13 @@ export const load: PageServerLoad = async ({ parent }) => {
         user: true,
       },
     }),
-    form: await superValidate(formSchema),
+    form: await superValidate(zod(formSchema)),
   };
 };
 
 export const actions: Actions = {
   create: async (event) => {
-    const form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
 
     if (!form.valid) {
       return fail(400, { form });
@@ -53,7 +54,7 @@ export const actions: Actions = {
     };
   },
   createAll: async (event) => {
-    const form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
 
     if (!form.valid) {
       return fail(400, { form });

@@ -97,7 +97,6 @@
         Log Session
       {/if}
     </Form.Button>
-    <SuperDebug data={$formData} />
   </div>
 </form>
 <!--

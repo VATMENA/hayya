@@ -27,6 +27,7 @@ export const formSchema = z
         path: ["solo_expires"],
       });
     }
+
     if (
       (data.p_typ === P_TYP.SuperCenter || data.p_typ === P_TYP.Enroute) &&
       data.pos
@@ -38,12 +39,15 @@ export const formSchema = z
       });
     }
     if (
-      (data.p_typ === P_TYP.SuperCenter || data.p_typ === P_TYP.Enroute) &&
+      (data.p_typ === P_TYP.SuperCenter ||
+        data.p_typ === P_TYP.Enroute ||
+        data.p_typ === P_TYP.Tier2) &&
       data.facility
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "SuperCenter & Enroute certificates cannot specify a Facility",
+        message:
+          "SuperCenter, Tier 2 & Enroute certificates cannot specify a Facility",
         path: ["facility"],
       });
     }
@@ -59,37 +63,35 @@ export const formSchema = z
       });
     }
     if (
-      (data.p_typ === P_TYP.OpenSkies || data.p_typ === P_TYP.Unrestricted) &&
+      (data.p_typ === P_TYP.OpenSkies ||
+        data.p_typ === P_TYP.Unrestricted ||
+        data.p_typ === P_TYP.Tier2) &&
       !data.pos
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message:
-          "OpenSkies & Unrestricted certificates must specify a Position",
+          "OpenSkies, Tier2 & Unrestricted certificates must specify a Position",
         path: ["pos"],
       });
     }
     if (
-      (data.p_typ === P_TYP.Tier1 ||
-        data.p_typ === P_TYP.Tier2 ||
-        data.p_typ === P_TYP.Specific) &&
+      (data.p_typ === P_TYP.Tier1 || data.p_typ === P_TYP.Specific) &&
       !data.pos
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Tier 1 & Tier 2 certificates must specify a Position",
+        message: "Tier 1 & Specific certificates must specify a Position",
         path: ["pos"],
       });
     }
     if (
-      (data.p_typ === P_TYP.Tier1 ||
-        data.p_typ === P_TYP.Tier2 ||
-        data.p_typ === P_TYP.Specific) &&
+      (data.p_typ === P_TYP.Tier1 || data.p_typ === P_TYP.Specific) &&
       !data.facility
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Tier 1 & Tier 2 certificates must specify a Facility",
+        message: "Tier 1 & Specific certificates must specify a Facility",
         path: ["facility"],
       });
     }

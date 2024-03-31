@@ -76,7 +76,7 @@
 </script>
 
 <div
-  class="h-screen w-1/2 min-w-[40rem] flex flex-col p-6 space-y-4 items-center justify-center">
+  class="h-screen min-w-[40rem] flex flex-col p-6 space-y-4 items-center justify-center">
   <Card.Root class="justify-center content-center">
     <Card.Header>
       <Card.Title>
@@ -94,17 +94,28 @@
         </div>
         <div class="grid grid-cols-3 gap-4">
           <Popover.Root bind:open={hqopen} let:ids>
-            <Popover.Trigger asChild let:builder>
+            <div class="grid grid-cols-4 gap-2">
+              <Popover.Trigger asChild let:builder>
+                <Button
+                  builders={[builder]}
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={hqopen}
+                  class="w-full justify-between col-span-3">
+                  {hqselectedValue}
+                  <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </Popover.Trigger>
               <Button
-                builders={[builder]}
                 variant="outline"
-                role="combobox"
-                aria-expanded={hqopen}
-                class="w-full justify-between">
-                {hqselectedValue}
-                <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                on:click={() => {
+                  goto(`/${hqvalue}`);
+                }}>
+                Go
+                <ChevronRight class="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
-            </Popover.Trigger>
+            </div>
+
             <Popover.Content class="w-[200px] p-0">
               <Command.Root>
                 <Command.Input placeholder="Search facilities..." />
@@ -116,7 +127,6 @@
                       onSelect={(currentValue) => {
                         hqvalue = currentValue;
                         hqcloseAndFocusTrigger(ids.trigger);
-                        goto(`/${currentValue}/`);
                       }}>
                       <Check
                         class={cn(
@@ -132,17 +142,27 @@
           </Popover.Root>
 
           <Popover.Root bind:open={rosteropen} let:ids>
-            <Popover.Trigger asChild let:builder>
+            <div class="grid grid-cols-4 gap-2">
+              <Popover.Trigger asChild let:builder>
+                <Button
+                  builders={[builder]}
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={rosteropen}
+                  class="w-full justify-between col-span-3">
+                  {rosterselectedValue}
+                  <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </Popover.Trigger>
               <Button
-                builders={[builder]}
                 variant="outline"
-                role="combobox"
-                aria-expanded={rosteropen}
-                class="w-full justify-between">
-                {rosterselectedValue}
-                <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                on:click={() => {
+                  goto(`/${rostervalue}/roster`);
+                }}>
+                Go <ChevronRight
+                  class="ml-2 h-4 w-4 shrink-0 opacity-50 align-middle" />
               </Button>
-            </Popover.Trigger>
+            </div>
             <Popover.Content class="w-[200px] p-0">
               <Command.Root>
                 <Command.Input placeholder="Search facilities..." />
@@ -154,7 +174,6 @@
                       onSelect={(currentValue) => {
                         rostervalue = currentValue;
                         rostercloseAndFocusTrigger(ids.trigger);
-                        goto(`/${currentValue}/roster/`);
                       }}>
                       <Check
                         class={cn(

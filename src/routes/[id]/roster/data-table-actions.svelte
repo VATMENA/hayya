@@ -124,7 +124,7 @@
   <Dialog.Root bind:open={cert_issue_open}>
     <Dialog.Content class="max-w-[40rem]">
       <Dialog.Header>
-        <Dialog.Title>Issue certificate for {user.name}</Dialog.Title>
+        <Dialog.Title>Issue certificate for {user.user.name}</Dialog.Title>
         <Dialog.Description>
           Make sure the user has completed the needed training and certificates
           are issued according to vACC policy. Certificates can only be revoked
@@ -136,8 +136,8 @@
         onsubmit={async () => {
           cert_issue_open = false;
         }}
-        theForm={$page.data.form}
-        {user} />
+        data={$page.data.form}
+        userId={user.userId} />
     </Dialog.Content>
   </Dialog.Root>
 {/if}

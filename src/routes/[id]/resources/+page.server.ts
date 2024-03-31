@@ -6,6 +6,7 @@ import { formSchema } from "$lib/components/resources_page/schema";
 import { handleResourceSubmit } from "$lib/components/resources_page/action";
 import type { Actions } from "@sveltejs/kit";
 import { VIEW_PRIVATE_RESOURCES } from "$lib/perms/permissions";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async ({ params, parent }) => {
   if (can(VIEW_PRIVATE_RESOURCES)) {
@@ -15,7 +16,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
           facilityId: params.id,
         },
       }),
-      form: await superValidate(formSchema),
+      form: await superValidate(zod(formSchema)),
     };
   } else {
     return {
@@ -25,7 +26,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
           isStaffOnly: false,
         },
       }),
-      form: await superValidate(formSchema),
+      form: await superValidate(zod(formSchema)),
     };
   }
 };

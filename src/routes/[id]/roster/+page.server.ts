@@ -28,6 +28,7 @@ import {
 } from "$lib/perms/permissions";
 import { ulid } from "ulid";
 import { formSchema as formSchemaRevoke } from "./revoke-form";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
   const { user } = await loadUserData(cookies, params.id);
@@ -100,8 +101,8 @@ export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
 
   return {
     users: altered_roster,
-    form: await superValidate(formSchema),
-    formRevoke: await superValidate(formSchemaRevoke),
+    form: await superValidate(zod(formSchema)),
+    formRevoke: await superValidate(zod(formSchemaRevoke)),
   };
 };
 
@@ -147,7 +148,7 @@ export const actions = {
     return { success: true };
   },
   issue_certificate: async (event) => {
-    const form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
     if (!form.valid) {
       return fail(400, {
         form,
@@ -327,15 +328,13 @@ export const actions = {
   revokeCertificate: async (event) => {
     const { user } = await loadUserData(event.cookies, event.params.id);
 
-    const form = await superValidate(event, formSchemaRevoke);
+    const form = await superValidate(event, zod(formSchemaRevoke));
 
     if (!form.valid) {
       return fail(400, {
         form,
       });
     }
-
-    console.log(form);
 
     const cert = await prisma.certificate.findUnique({
       where: {

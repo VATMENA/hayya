@@ -11,6 +11,7 @@ import prisma from "$lib/prisma";
 import { superValidate } from "sveltekit-superforms/server";
 import { formSchema } from "./assign";
 import { fail } from "@sveltejs/kit";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async ({ cookies, params }) => {
   await loadUserData(cookies, params.id);
@@ -69,7 +70,7 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
     unassigned,
     assigned,
     expired,
-    form: await superValidate(formSchema),
+    form: await superValidate(zod(formSchema)),
   };
 };
 
@@ -104,7 +105,7 @@ export const actions: Actions = {
       );
     }
 
-    const form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
 
     if (!form.valid) {
       return fail(400, {
@@ -161,7 +162,7 @@ export const actions: Actions = {
       );
     }
 
-    const form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
 
     if (!form.valid) {
       return fail(400, {

@@ -8,6 +8,7 @@ import { fail } from "@sveltejs/kit";
 import { loadUserData } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { ulid } from "ulid";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
   if (!can(EDIT_DETAILS)) {
@@ -35,7 +36,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
     );
   }
 
-  const form = await superValidate(formSchema);
+  const form = await superValidate(zod(formSchema));
 
   form.data.color = role.color;
   form.data.name = role.name;
@@ -54,7 +55,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 
 export const actions: Actions = {
   default: async (event) => {
-    const form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
     if (!form.valid) {
       return fail(400, {
         form,
