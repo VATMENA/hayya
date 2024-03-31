@@ -209,16 +209,15 @@ export const actions = {
     };
     const position_specifier = serialize_position_v2(pv2)!;
 
-    const date = form.data.solo_expires
-      ? parseDate(form.data.solo_expires).toDate("UTC")
-      : undefined;
+    console.log(position_specifier);
+    console.log(pv2);
 
     await prisma.certificate.create({
       data: {
         holderId: targetUser!.id,
         instructorId: user!.id,
         position: position_specifier,
-        expires: date,
+        expires: form.data.solo_expires ? form.data.solo_expires : null,
         instructorComments: form.data.comments,
         issuedInId: event.params.id,
       },

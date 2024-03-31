@@ -10,7 +10,7 @@ export const formSchema = z
     facility: z.string().min(3).max(4).optional(),
     pos: z.nativeEnum(POS).optional(),
     comments: z.string(),
-    solo_expires: z.string().optional(),
+    solo_expires: z.date().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.c_typ === C_TYP.Solo && !data.solo_expires) {
@@ -39,15 +39,14 @@ export const formSchema = z
       });
     }
     if (
-      (data.p_typ === P_TYP.SuperCenter ||
-        data.p_typ === P_TYP.Enroute ||
+      (data.p_typ === P_TYP.Enroute ||
         data.p_typ === P_TYP.Tier2) &&
       data.facility
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message:
-          "SuperCenter, Tier 2 & Enroute certificates cannot specify a Facility",
+          "Tier 2 & Enroute certificates cannot specify a Facility",
         path: ["facility"],
       });
     }

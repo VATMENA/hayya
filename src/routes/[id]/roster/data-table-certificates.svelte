@@ -6,7 +6,7 @@
   export let holder: User;
 </script>
 
-<div class="space-x-1">
+<div class="space-x-1 space-y-2 leading-3">
   {#each heldCertificates as cert}
     <CertificateBadge {cert} {holder} />
   {/each}

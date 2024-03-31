@@ -189,7 +189,7 @@
       <Textarea
         class="resize-none"
         {...attrs}
-        bind:value={$formData.facility} />
+        bind:value={$formData.comments} />
     </Form.Control>
     <Form.Description>
       Any additional information or restrictions

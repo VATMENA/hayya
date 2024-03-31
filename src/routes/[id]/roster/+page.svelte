@@ -2,10 +2,19 @@
   import type { PageData } from "./$types";
   import { page } from "$app/stores";
   import DataTable from "./data-table.svelte";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
 
   export let data: PageData;
+  $: {
+    clearItems($page.data.url);
+    addItem($page.data.url, "/switch_hq", data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, "Dashboard");
+    addPage($page.data.url, "Roster");
+  }
 
   let error: string | null = null;
+
+
 
   async function toggleRole(
     cid: string,
