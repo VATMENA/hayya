@@ -39,14 +39,12 @@ export const formSchema = z
       });
     }
     if (
-      (data.p_typ === P_TYP.Enroute ||
-        data.p_typ === P_TYP.Tier2) &&
+      (data.p_typ === P_TYP.Enroute || data.p_typ === P_TYP.Tier2) &&
       data.facility
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message:
-          "Tier 2 & Enroute certificates cannot specify a Facility",
+        message: "Tier 2 & Enroute certificates cannot specify a Facility",
         path: ["facility"],
       });
     }

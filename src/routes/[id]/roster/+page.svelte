@@ -14,8 +14,6 @@
 
   let error: string | null = null;
 
-
-
   async function toggleRole(
     cid: string,
     existing_roles: string[],

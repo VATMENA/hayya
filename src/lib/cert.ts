@@ -27,7 +27,7 @@ export interface PositionV2 {
 export function validate_position_v2(pos: PositionV2): boolean {
   // Enroute must not have a facility or position specified
   if (
-    (pos.p_typ === P_TYP.Enroute) &&
+    pos.p_typ === P_TYP.Enroute &&
     (pos.facility !== null || pos.position !== null)
   ) {
     return false;
@@ -40,15 +40,16 @@ export function validate_position_v2(pos: PositionV2): boolean {
 
   // OpenSkies, Tier2 & Unrestricted must have a position set and must not have a facility set
   if (
-    (pos.p_typ === P_TYP.OpenSkies || pos.p_typ == P_TYP.Unrestricted || pos.p_typ == P_TYP.Tier2) &&
+    (pos.p_typ === P_TYP.OpenSkies ||
+      pos.p_typ == P_TYP.Unrestricted ||
+      pos.p_typ == P_TYP.Tier2) &&
     (pos.position === null || pos.facility !== null)
   ) {
     return false;
   }
   // T1 & Specific must have a position and facility set
   return !(
-    (pos.p_typ === P_TYP.Tier1 ||
-      pos.p_typ === P_TYP.Specific) &&
+    (pos.p_typ === P_TYP.Tier1 || pos.p_typ === P_TYP.Specific) &&
     (pos.position === null || pos.facility === null)
   );
 }
@@ -85,7 +86,6 @@ export function parse_position_v2(input: string): PositionV2 | null {
   const p_typ: P_TYP | undefined = enumFromStringValue(P_TYP, p_typ_str);
   if (p_typ === undefined) return null;
 
-
   // {SOLO,PERM}-{ENRT}
   if (p_typ === P_TYP.Enroute) {
     return { c_typ, p_typ, facility: null, position: null };
@@ -101,7 +101,11 @@ export function parse_position_v2(input: string): PositionV2 | null {
   }
 
   // {SOLO,PERM}-{OSKY,AFUR,AFT2}-{DEL,GND,TWR,APP}
-  if (p_typ === P_TYP.OpenSkies || p_typ == P_TYP.Unrestricted || p_typ == P_TYP.Tier2) {
+  if (
+    p_typ === P_TYP.OpenSkies ||
+    p_typ == P_TYP.Unrestricted ||
+    p_typ == P_TYP.Tier2
+  ) {
     // next token needs to be the position
     if (split.length < 3) return null;
     const pos_str = split[2];
@@ -112,10 +116,7 @@ export function parse_position_v2(input: string): PositionV2 | null {
   }
 
   // {SOLO,PERM}-{AFT1,AFSP}-ICAO-{DEL,GND,TWR,APP}
-  if (
-    p_typ === P_TYP.Tier1 ||
-    p_typ === P_TYP.Specific
-  ) {
+  if (p_typ === P_TYP.Tier1 || p_typ === P_TYP.Specific) {
     if (split.length < 4) return null;
 
     const facility_icao = split[2];

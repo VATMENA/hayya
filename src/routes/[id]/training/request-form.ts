@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const formSchema = z.object({
   trainingType: z.string(),
-  dateStart: z.string().datetime({ offset: true }),
-  dateEnd: z.string().datetime({ offset: true }),
+  dateStart: z.date(),
+  dateEnd: z.date(),
   times: z.string(),
 });
 

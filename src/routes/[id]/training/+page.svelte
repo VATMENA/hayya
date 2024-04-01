@@ -22,6 +22,7 @@
     TRAIN,
   } from "$lib/perms/permissions";
   import RequestForm from "./request-form.svelte";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
   import { onMount } from "svelte";
 
   export let data: PageData;
@@ -187,7 +188,7 @@
         }} />
     </Dialog.Content>
   </Dialog.Root>
-{/if}<!--
+{/if}
 
 <Dialog.Root bind:open={requestTrainingOpen}>
   <Dialog.Content class="max-w-[50vw]">
@@ -195,12 +196,10 @@
       <Dialog.Title>Request Training Session</Dialog.Title>
     </Dialog.Header>
     <RequestForm
-      form={data.requestForm}
+      data={data.requestForm}
       onsubmit={() => {
         requestTrainingOpen = false;
         toast.success("Training request submitted!");
       }} />
   </Dialog.Content>
 </Dialog.Root>
-
--->

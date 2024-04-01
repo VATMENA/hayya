@@ -1,7 +1,13 @@
 <script lang="ts">
   import type { Certificate, User } from "@prisma/client";
   import { Badge } from "$lib/components/ui/badge";
-  import { C_TYP, P_TYP, parse_position_v2, POS, type PositionV2 } from "$lib/cert";
+  import {
+    C_TYP,
+    P_TYP,
+    parse_position_v2,
+    POS,
+    type PositionV2,
+  } from "$lib/cert";
   import Calendar from "lucide-svelte/icons/calendar";
   import Clock from "lucide-svelte/icons/clock";
   import FileBadge2 from "lucide-svelte/icons/file-badge-2";
@@ -9,7 +15,11 @@
   import UserRound from "lucide-svelte/icons/user-round";
   import { page } from "$app/stores";
   import { can } from "$lib/perms/can";
-  import { REVOKE_CERTIFICATE, REVOKE_OPENSKIES_CERTIFICATES, REVOKE_SOLO_CERTIFICATES } from "$lib/perms/permissions";
+  import {
+    REVOKE_CERTIFICATE,
+    REVOKE_OPENSKIES_CERTIFICATES,
+    REVOKE_SOLO_CERTIFICATES,
+  } from "$lib/perms/permissions";
   import { Button } from "$lib/components/ui/button";
   import { invalidateAll } from "$app/navigation";
   import { toast } from "svelte-sonner";
@@ -114,7 +124,7 @@
 
         let styles = new Map([
           [P_TYP.Tier1, "border border-2 border-dashed border-red-400"],
-          [P_TYP.Tier2, "border border-2 border-dashed border-green-400"]
+          [P_TYP.Tier2, "border border-2 border-dashed border-green-400"],
         ]);
 
         if (parsed_position.position === POS.Delivery) {
@@ -162,8 +172,8 @@
       body: data.toString(),
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      }
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
     });
     revokeViaDeleteOpen = false;
     toast.success("Certificate has been deleted!");
@@ -191,12 +201,12 @@
         <Clock class="mr-2 h-4 w-4 opacity-70" />{" "}
         <span class="text-xs text-muted-foreground">
           Expires: {cert.expires
-          ? cert.expires.toLocaleDateString("en-US", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          })
-          : "Never"}
+            ? cert.expires.toLocaleDateString("en-US", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })
+            : "Never"}
         </span>
       </div>
       <div class="flex items-center pt-2">
@@ -215,10 +225,10 @@
         <Calendar class="mr-2 h-4 w-4 opacity-70" />{" "}
         <span class="text-xs text-muted-foreground">
           Issued: {cert.createdAt.toLocaleDateString("en-US", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        })}
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          })}
         </span>
       </div>
       <div class="flex items-center pt-2">

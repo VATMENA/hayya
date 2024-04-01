@@ -1,6 +1,14 @@
 <script lang="ts">
-  import { type Certificate, type UserFacilityAssignment } from "@prisma/client";
-  import { createRender, createTable, Render, Subscribe } from "svelte-headless-table";
+  import {
+    type Certificate,
+    type UserFacilityAssignment,
+  } from "@prisma/client";
+  import {
+    createRender,
+    createTable,
+    Render,
+    Subscribe,
+  } from "svelte-headless-table";
   import { writable } from "svelte/store";
   import DataTableUser from "./data-table-user.svelte";
   import DataTableRating from "./data-table-rating.svelte";
@@ -102,7 +110,7 @@
       c_typ: C_TYP.Permanent,
       p_typ: P_TYP.Unrestricted,
       position: POS.Tower,
-      facility: null
+      facility: null,
     })!,
     expires: null,
     instructorComments: "Instructor comments will appear here!",
@@ -111,7 +119,7 @@
     issuedInId: $page.params.id,
     createdAt: new Date(),
     // @ts-ignore
-    instructor: $page.data.user
+    instructor: $page.data.user,
   };
   let tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -121,7 +129,7 @@
       c_typ: C_TYP.Solo,
       p_typ: P_TYP.Unrestricted,
       position: POS.Ground,
-      facility: null
+      facility: null,
     })!,
     expires: tomorrow,
     instructorComments: "Instructor comments will appear here!",
@@ -130,7 +138,7 @@
     issuedInId: $page.params.id,
     createdAt: new Date(),
     // @ts-ignore
-    instructor: $page.data.user
+    instructor: $page.data.user,
   };
   let tier2ExampleCert: Certificate = {
     id: BigInt(1),
@@ -138,7 +146,7 @@
       c_typ: C_TYP.Permanent,
       p_typ: P_TYP.Tier2,
       position: POS.Approach,
-      facility: null
+      facility: null,
     })!,
     expires: null,
     instructorComments: "Instructor comments will appear here!",
@@ -147,7 +155,7 @@
     issuedInId: $page.params.id,
     createdAt: new Date(),
     // @ts-ignore
-    instructor: $page.data.user
+    instructor: $page.data.user,
   };
   let tier1ExampleCert: Certificate = {
     id: BigInt(1),
@@ -155,7 +163,7 @@
       c_typ: C_TYP.Permanent,
       p_typ: P_TYP.Tier1,
       position: POS.Delivery,
-      facility: "OTHH"
+      facility: "OTHH",
     })!,
     expires: null,
     instructorComments: "Instructor comments will appear here!",
@@ -164,7 +172,7 @@
     issuedInId: $page.params.id,
     createdAt: new Date(),
     // @ts-ignore
-    instructor: $page.data.user
+    instructor: $page.data.user,
   };
   let afspExampleCert: Certificate = {
     id: BigInt(1),
@@ -172,7 +180,7 @@
       c_typ: C_TYP.Permanent,
       p_typ: P_TYP.Specific,
       position: POS.Tower,
-      facility: "OMDB"
+      facility: "OMDB",
     })!,
     expires: null,
     instructorComments: "Instructor comments will appear here!",
@@ -181,7 +189,7 @@
     issuedInId: $page.params.id,
     createdAt: new Date(),
     // @ts-ignore
-    instructor: $page.data.user
+    instructor: $page.data.user,
   };
   let openskiesExampleCert: Certificate = {
     id: BigInt(1),
@@ -189,7 +197,7 @@
       c_typ: C_TYP.Permanent,
       p_typ: P_TYP.OpenSkies,
       position: POS.OpenskiesEnroute,
-      facility: null
+      facility: null,
     })!,
     expires: null,
     instructorComments: "Instructor comments will appear here!",
@@ -198,7 +206,7 @@
     issuedInId: $page.params.id,
     createdAt: new Date(),
     // @ts-ignore
-    instructor: $page.data.user
+    instructor: $page.data.user,
   };
   let supercenterExampleCert: Certificate = {
     id: BigInt(1),
@@ -206,7 +214,7 @@
       c_typ: C_TYP.Permanent,
       p_typ: P_TYP.SuperCenter,
       position: null,
-      facility: "GULF"
+      facility: "GULF",
     })!,
     expires: null,
     instructorComments: "Instructor comments will appear here!",
@@ -215,7 +223,7 @@
     issuedInId: $page.params.id,
     createdAt: new Date(),
     // @ts-ignore
-    instructor: $page.data.user
+    instructor: $page.data.user,
   };
 </script>
 
@@ -227,7 +235,8 @@
       type="text"
       bind:value={$filterValue} />
     <Dialog.Root>
-      <Dialog.Trigger class="{buttonVariants({ variant: 'outline' })} float-right">
+      <Dialog.Trigger
+        class="{buttonVariants({ variant: 'outline' })} float-right">
         <Info class="align-middle mr-2 w-4 h-4" />
         How to read this page
       </Dialog.Trigger>
@@ -235,22 +244,70 @@
         <Dialog.Header>
           <Dialog.Title>Understanding the certificates listing</Dialog.Title>
           <Dialog.Description>
-            The certificates view can be a little confusing. Here's a key for reading the badges.
+            The certificates view can be a little confusing. Here's a key for
+            reading the badges.
           </Dialog.Description>
           <div class="text-sm text-muted-foreground leading-6">
-            <p>A regular certificate will look like this: <CertificateBadge holder={$page.data.user} cert={basicExampleCert} /></p>
-            <p>You can hover over the certificate to get additional details, like who issued it, when it was issued, and any additional restrictions or comments the instructor may have added. Try it out!</p>
-            <hr class="my-2">
-            <p>There are also a few other types of certificates. What you saw above is an "unrestricted" certificate, which authorizes the holder to connect to any position of that type that doesn't have additional restrictions.</p>
-            <p>Another type of certificate you will encounter often is a Solo certificate. This is a temporary certificate, with an expiry date. These will show with a <b>dashed yellow border:</b> <CertificateBadge holder={$page.data.user} cert={soloExampleCert} /></p>
-            <hr class="my-2">
-            <p>A Tier 2 authorization allows the controller to work any Tier 2 designated position of the same type as the authorization. Tier 2 certificates appear as a <b>solid yellow border:</b> <CertificateBadge holder={$page.data.user} cert={tier2ExampleCert} /></p>
-            <hr class="my-2">
-            <p>You may also encounter a certificate for a Tier 1 facility, which appears with a <b>dotted yellow border:</b> <CertificateBadge holder={$page.data.user} cert={tier1ExampleCert} /></p>
-            <hr class="my-2">
-            <p>There are a few other types of certificates, like <b>specific airfield certificates:</b> <CertificateBadge holder={$page.data.user} cert={afspExampleCert} /><b>OpenSkies endorsements</b>: <CertificateBadge holder={$page.data.user} cert={openskiesExampleCert} />and <b>SuperCenter endorsements</b> <CertificateBadge holder={$page.data.user} cert={supercenterExampleCert} /></p>
+            <p>
+              A regular certificate will look like this: <CertificateBadge
+                holder={$page.data.user}
+                cert={basicExampleCert} />
+            </p>
+            <p>
+              You can hover over the certificate to get additional details, like
+              who issued it, when it was issued, and any additional restrictions
+              or comments the instructor may have added. Try it out!
+            </p>
+            <hr class="my-2" />
+            <p>
+              There are also a few other types of certificates. What you saw
+              above is an "unrestricted" certificate, which authorizes the
+              holder to connect to any position of that type that doesn't have
+              additional restrictions.
+            </p>
+            <p>
+              Another type of certificate you will encounter often is a Solo
+              certificate. This is a temporary certificate, with an expiry date.
+              These will show with a <b>dashed yellow border:</b>
+              <CertificateBadge
+                holder={$page.data.user}
+                cert={soloExampleCert} />
+            </p>
+            <hr class="my-2" />
+            <p>
+              A Tier 2 authorization allows the controller to work any Tier 2
+              designated position of the same type as the authorization. Tier 2
+              certificates appear as a <b>solid yellow border:</b>
+              <CertificateBadge
+                holder={$page.data.user}
+                cert={tier2ExampleCert} />
+            </p>
+            <hr class="my-2" />
+            <p>
+              You may also encounter a certificate for a Tier 1 facility, which
+              appears with a <b>dotted yellow border:</b>
+              <CertificateBadge
+                holder={$page.data.user}
+                cert={tier1ExampleCert} />
+            </p>
+            <hr class="my-2" />
+            <p>
+              There are a few other types of certificates, like <b>
+                specific airfield certificates:
+              </b>
+              <CertificateBadge
+                holder={$page.data.user}
+                cert={afspExampleCert} />
+              <b>OpenSkies endorsements</b>
+              : <CertificateBadge
+                holder={$page.data.user}
+                cert={openskiesExampleCert} />and
+              <b>SuperCenter endorsements</b>
+              <CertificateBadge
+                holder={$page.data.user}
+                cert={supercenterExampleCert} />
+            </p>
           </div>
-
         </Dialog.Header>
       </Dialog.Content>
     </Dialog.Root>

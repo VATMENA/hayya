@@ -69,13 +69,6 @@ export const actions: Actions = {
 
     const { user } = await loadUserData(event.cookies, event.params.id!);
 
-    const startDate = parseDateTime(
-      form.data.dateStart.replace("Z", ""),
-    ).toDate("UTC");
-    const endDate = parseDateTime(form.data.dateEnd.replace("Z", "")).toDate(
-      "UTC",
-    );
-
     await prisma.trainingRequest.create({
       data: {
         id: ulid(),
@@ -83,8 +76,8 @@ export const actions: Actions = {
         studentId: user.id,
         instructorId: null,
         trainingType: form.data.trainingType,
-        startDate: startDate,
-        endDate: endDate,
+        startDate: form.data.dateStart,
+        endDate: form.data.dateEnd,
         availability: form.data.times,
       },
     });
