@@ -1,5 +1,11 @@
 import prisma from '$lib/prisma';
+import { superValidate } from 'sveltekit-superforms/server';
 import type { PageServerLoad } from './$types';
+import { formSchema } from './add-form';
+import type { Actions } from '@sveltejs/kit';
+import { can } from '$lib/perms/can';
+import { MANAGE_QUEUES } from '$lib/perms/permissions';
+import { redirect } from 'sveltekit-flash-message/server';
 
 export const load: PageServerLoad = async ({ params, depends }) => {
     depends("queue:data");
@@ -19,5 +25,47 @@ export const load: PageServerLoad = async ({ params, depends }) => {
 
     return {
         queue,
+        form: await superValidate(formSchema),
     };
+}
+
+export const actions: Actions = {
+    addStudent: async (event) => {
+        const form = await superValidate(event, formSchema);
+
+        if (!can(MANAGE_QUEUES)) {
+            redirect(307, event.url.pathname, {
+                type: "error",
+                message: "You do not have permission to do that"
+            }, event.cookies);
+        }
+
+        const queueMembership = await prisma.trainingQueueMembership.findMany({
+            where: {
+                queueId: event.params.queueId,
+                userId: form.data.id,
+            }
+        });
+
+        if (queueMembership.length > 0) {
+            redirect(307, event.url.pathname, {
+                type: "error",
+                message: "Student is already a member of this queue"
+            }, event.cookies);
+        }
+
+        if (event.params.queueId) {
+            await prisma.trainingQueueMembership.create({
+                data: {
+                    queueId: event.params.queueId,
+                    userId: form.data.id,
+                    joinedAt: new Date(),
+                }
+            });
+        }
+
+        return {
+            form,
+        };
+    }
 }
