@@ -44,11 +44,15 @@
       <Card.Header>
         <Card.Title>Training Queues</Card.Title>
       </Card.Header>
-      <Card.Content class="space-y-1.5">
+      <Card.Content class="space-y-2">
         {#if data.memberOfQueue !== null}
           <p>
             Enrolled in the <b>{data.memberOfQueue.name}</b>
             queue.
+          </p>
+          <p>
+            You are number <b>{data.position}</b>
+            in the queue.
           </p>
           <Button
             href="/{$page.params.id}/training/queues/{data.memberOfQueue
