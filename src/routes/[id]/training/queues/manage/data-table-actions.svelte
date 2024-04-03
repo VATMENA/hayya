@@ -33,6 +33,12 @@
       </DropdownMenu.Item>
     </DropdownMenu.Group>
 
+    <DropdownMenu.Separator />
+
+    <DropdownMenu.Item href="/{$page.params.id}/training/queues/{id}">
+      View queue
+    </DropdownMenu.Item>
+
     {#if can(RECOMMEND_FOR_QUEUE)}
       <DropdownMenu.Separator />
 
