@@ -5,7 +5,7 @@ import { can } from '$lib/perms/can';
 import { MANAGE_QUEUES } from '$lib/perms/permissions';
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
-    if (can(MANAGE_QUEUES)) {
+    if (!can(MANAGE_QUEUES)) {
         redirect(307, `/${params.id}/training/queues/${params.queueId}`, {
             type: "error",
             message: "You do not have permission to do that",
