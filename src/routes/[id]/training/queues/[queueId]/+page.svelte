@@ -7,7 +7,6 @@
   import { can } from "$lib/perms/can";
   import { MANAGE_QUEUES } from "$lib/perms/permissions";
   import AddForm from "./add-form.svelte";
-  import { formSchema } from "./add-form";
   import { toast } from "svelte-sonner";
 
   export let data: PageData;
@@ -37,6 +36,11 @@
     <Dialog.Content class="max-w-[25vw]">
       <Dialog.Header>
         <Dialog.Title>Add student to queue</Dialog.Title>
+        <Dialog.Description>
+          This will manually add a student to the training queue. If you wish to
+          permit the student to join a closed queue, use the 'Recommend Student'
+          option instead.
+        </Dialog.Description>
       </Dialog.Header>
       <AddForm
         form={data.form}
