@@ -11,29 +11,9 @@
   import { addPagination } from "svelte-headless-table/plugins";
   import { Button } from "$lib/components/ui/button";
   import type { TrainingQueueMembership } from "@prisma/client";
+  import { relativeTime } from "$lib/date";
 
   export let members: TrainingQueueMembership[];
-
-  const timeString = (joinedAt: Date): string => {
-    const now = new Date();
-
-    const diff = now.getTime() - joinedAt.getTime();
-
-    const sec = Math.floor(diff / 1000);
-    const min = Math.floor(sec / 60);
-    const hr = Math.floor(min / 60);
-    const day = Math.floor(hr / 24);
-
-    if (day > 0) {
-      return `${day} day${day > 1 ? "s" : ""}`;
-    } else if (hr > 0) {
-      return `${hr} hour${hr > 1 ? "s" : ""}`;
-    } else if (min > 0) {
-      return `${min} minute${min > 1 ? "s" : ""}`;
-    } else {
-      return `${sec} second${sec > 1 ? "s" : ""}`;
-    }
-  };
 
   const table = createTable(readable(members), {
     page: addPagination(),
@@ -50,13 +30,13 @@
     }),
     table.column({
       accessor: (member: TrainingQueueMembership) =>
-        member.joinedAt.toDateString(),
-      header: "Joined at",
+        relativeTime(member.joinedAt),
+      header: "Joined queue",
     }),
     table.column({
       accessor: (member: TrainingQueueMembership) =>
-        timeString(member.joinedAt),
-      header: "Waiting time",
+        member.joinedAt.toDateString(),
+      header: "Join date",
     }),
     table.column({
       accessor: (member: any) => member.user.id,
