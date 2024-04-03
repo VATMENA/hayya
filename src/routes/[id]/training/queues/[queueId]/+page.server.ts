@@ -40,6 +40,19 @@ export const actions: Actions = {
             }, event.cookies);
         }
 
+        const targetUser = await prisma.user.findUnique({
+            where: {
+                id: form.data.id,
+            }
+        });
+
+        if (!targetUser) {
+            redirect(307, event.url.pathname, {
+                type: "error",
+                message: "This user is not registered on Hayya"
+            }, event.cookies);
+        }
+
         const queueMembership = await prisma.trainingQueueMembership.findMany({
             where: {
                 queueId: event.params.queueId,
