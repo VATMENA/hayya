@@ -23,7 +23,28 @@ export const load: LayoutServerLoad = async ({ parent }) => {
     memberOfQueue = null;
   }
 
+  let position = -1;
+  if (memberOfQueue) {
+    position = await queuePosition(user.id, memberOfQueue.id);
+  }
+
   return {
     memberOfQueue: memberOfQueue,
+    position: position,
   };
 };
+
+const queuePosition = async (userId: string, queueId: string): Promise<number> => {
+    const queueMemberships = await prisma.trainingQueueMembership.findMany({
+      where: {
+        queueId: queueId,
+      },
+      orderBy: {
+        joinedAt: 'asc',
+      },
+    });
+
+    const userIndex: number = queueMemberships.findIndex(member => member.userId === userId);
+
+    return userIndex + 1;
+}
