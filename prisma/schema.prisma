@@ -143,6 +143,7 @@ model TrainingQueueMembership {
   joinedAt DateTime @default(now())
 
   @@id([userId, queueId])
+  @@unique([userId, queueId])
 }
 
 model Certificate {
