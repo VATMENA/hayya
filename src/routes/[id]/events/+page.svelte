@@ -3,6 +3,7 @@
   import { MoreHorizontal, Plus } from "lucide-svelte";
   import { Button } from "$lib/components/ui/button";
   import { can } from "$lib/perms/can";
+  import * as Carousel from "$lib/components/ui/carousel";
   import * as Dialog from "$lib/components/ui/dialog";
   import CreateEventForm from "./create-event-form.svelte";
   import { toast } from "svelte-sonner";
@@ -94,13 +95,25 @@
   {/if}
 </div>
 
-<div class="flex flex-row flex-wrap">
-  {#each data.events as event (event.id)}
-    {#if event.public}
-      <EventCard {event} />
-    {/if}
-  {/each}
-</div>
+<Carousel.Root class="max-w-full mx-12">
+  <Carousel.Content>
+    {#each data.events as event (event.id)}
+      {#if event.public}
+        <Carousel.Item class="md:basis-1/2 lg:basis-1/4">
+          <EventCard {event} />
+        </Carousel.Item>
+        <Carousel.Item class="md:basis-1/2 lg:basis-1/4">
+          <EventCard {event} />
+        </Carousel.Item>
+        <Carousel.Item class="md:basis-1/2 lg:basis-1/4">
+          <EventCard {event} />
+        </Carousel.Item>
+      {/if}
+    {/each}
+  </Carousel.Content>
+  <Carousel.Previous />
+  <Carousel.Next />
+</Carousel.Root>
 
 {#if canManageEvents}
   <Table.Root {...$tableAttrs}>
