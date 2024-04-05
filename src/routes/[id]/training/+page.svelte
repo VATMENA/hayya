@@ -1,6 +1,5 @@
 <script lang="ts">
   import * as Card from "$lib/components/ui/card";
-  import { Progress } from "$lib/components/ui/progress";
   import { Button, buttonVariants } from "$lib/components/ui/button";
   import {
     GiftIcon,
@@ -18,13 +17,13 @@
   import { Input } from "$lib/components/ui/input";
   import SessionForm from "./session-form.svelte";
   import { toast } from "svelte-sonner";
-  import { goto } from "$app/navigation";
   import {
     MANAGE_QUEUES,
     RECOMMEND_FOR_QUEUE,
     TRAIN,
   } from "$lib/perms/permissions";
   import RequestForm from "./request-form.svelte";
+  import { onMount } from "svelte";
 
   export let data: PageData;
 
@@ -32,6 +31,14 @@
   let viewTranscriptId = "";
 
   let requestTrainingOpen = false;
+
+  onMount(() => {
+    if (data.memberOfQueue !== null && data.position === null) {
+      toast.error(
+        "There was a problem retrieving your position in the queue. Please try again later.",
+      );
+    }
+  });
 </script>
 
 <div class="flex items-center justify-between space-y-2">
@@ -50,10 +57,12 @@
             Enrolled in the <b>{data.memberOfQueue.name}</b>
             queue.
           </p>
-          <p>
-            You are number <b>{data.position}</b>
-            in the queue.
-          </p>
+          {#if data.position !== null}
+            <p>
+              You are number <b>{data.position}</b>
+              in the queue.
+            </p>
+          {/if}
           <Button
             href="/{$page.params.id}/training/queues/{data.memberOfQueue
               .id}/leave">

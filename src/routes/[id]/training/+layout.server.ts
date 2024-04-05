@@ -23,7 +23,7 @@ export const load: LayoutServerLoad = async ({ parent }) => {
     memberOfQueue = null;
   }
 
-  let position = -1;
+  let position: number | null = null;
   if (memberOfQueue) {
     position = await queuePosition(user.id, memberOfQueue.id);
   }
