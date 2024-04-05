@@ -60,21 +60,21 @@ export const actions: Actions = {
             }
         });
 
-        if (queueMembership.length > 0) {
-            redirect(307, event.url.pathname, {
-                type: "error",
-                message: "Student is already a member of this queue"
-            }, event.cookies);
-        }
-
         if (event.params.queueId) {
-            await prisma.trainingQueueMembership.create({
-                data: {
-                    queueId: event.params.queueId,
-                    userId: form.data.id,
-                    joinedAt: new Date(),
-                }
-            });
+            try {
+                await prisma.trainingQueueMembership.create({
+                    data: {
+                        queueId: event.params.queueId,
+                        userId: form.data.id,
+                        joinedAt: new Date(),
+                    }
+                });
+            } catch (e) {
+                redirect(307, event.url.pathname, {
+                    type: "error",
+                    message: "Student is already a member of this queue"
+                }, event.cookies);
+            }
         }
 
         return {
