@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import { MoreHorizontal, Plus } from "lucide-svelte";
+  import { Plus } from "lucide-svelte";
   import { Button } from "$lib/components/ui/button";
   import { can } from "$lib/perms/can";
   import * as Carousel from "$lib/components/ui/carousel";
@@ -8,11 +8,7 @@
   import CreateEventForm from "./create-event-form.svelte";
   import { toast } from "svelte-sonner";
   import * as Table from "$lib/components/ui/table";
-  import Image from "$lib/components/Image.svelte";
   import { humanReadableDate } from "$lib/date.js";
-  import { page } from "$app/stores";
-  import CertForm from "../roster/cert-form.svelte";
-  import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import { writable } from "svelte/store";
   import {
     createRender,
@@ -96,7 +92,7 @@
 </div>
 
 <Carousel.Root class="max-w-full mx-12">
-  <Carousel.Content>
+  <Carousel.Content class="m-3">
     {#each data.events as event (event.id)}
       {#if event.public}
         <Carousel.Item class="md:basis-1/2 lg:basis-1/4">
