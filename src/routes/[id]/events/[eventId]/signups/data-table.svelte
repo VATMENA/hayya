@@ -15,11 +15,7 @@
     createRender,
     createTable,
   } from "svelte-headless-table";
-  import {
-    addColumnFilters,
-    addPagination,
-    addSortBy,
-  } from "svelte-headless-table/plugins";
+  import { addPagination } from "svelte-headless-table/plugins";
   import { readable } from "svelte/store";
   import DataTableCertificates from "../../../roster/data-table-certificates.svelte";
   import DataTableRating from "../../../roster/data-table-rating.svelte";

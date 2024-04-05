@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { toast } from "svelte-sonner";
   import type { PageData } from "./$types";
   import DataTable from "./data-table.svelte";
 

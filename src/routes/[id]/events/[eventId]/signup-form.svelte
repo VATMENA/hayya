@@ -1,6 +1,5 @@
 <script lang="ts">
   import * as Form from "$lib/components/ui/form";
-  import * as Select from "$lib/components/ui/select";
   import { formSchema } from "./signup-form";
 
   export let form: any;
