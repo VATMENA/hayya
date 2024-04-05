@@ -102,12 +102,6 @@
         <Carousel.Item class="md:basis-1/2 lg:basis-1/4">
           <EventCard {event} />
         </Carousel.Item>
-        <Carousel.Item class="md:basis-1/2 lg:basis-1/4">
-          <EventCard {event} />
-        </Carousel.Item>
-        <Carousel.Item class="md:basis-1/2 lg:basis-1/4">
-          <EventCard {event} />
-        </Carousel.Item>
       {/if}
     {/each}
   </Carousel.Content>
