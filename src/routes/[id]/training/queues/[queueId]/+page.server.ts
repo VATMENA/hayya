@@ -53,13 +53,6 @@ export const actions: Actions = {
             }, event.cookies);
         }
 
-        const queueMembership = await prisma.trainingQueueMembership.findMany({
-            where: {
-                queueId: event.params.queueId,
-                userId: form.data.id,
-            }
-        });
-
         if (event.params.queueId) {
             try {
                 await prisma.trainingQueueMembership.create({
