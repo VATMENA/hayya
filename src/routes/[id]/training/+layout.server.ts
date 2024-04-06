@@ -13,15 +13,15 @@ export const load: LayoutServerLoad = async ({ parent }) => {
     }
   });
 
-  let memberOfQueue = membership?.queue || null;
-
-  let position: number | null = null;
-  if (memberOfQueue) {
-    position = await queuePosition(user.id, memberOfQueue.id);
+  if (!membership) {
+    return {}
   }
 
+  const q = membership.queue;
+  const position = await queuePosition(user.id, q.id);
+
   return {
-    memberOfQueue: memberOfQueue,
+    queue: q,
     position: position,
   };
 };

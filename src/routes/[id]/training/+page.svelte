@@ -33,7 +33,10 @@
   let requestTrainingOpen = false;
 
   onMount(() => {
-    if (data.memberOfQueue !== null && data.position === null) {
+    if (
+      typeof data.queue !== "undefined" &&
+      typeof data.position == "undefined"
+    ) {
       toast.error(
         "There was a problem retrieving your position in the queue. Please try again later.",
       );
@@ -52,20 +55,19 @@
         <Card.Title>Training Queues</Card.Title>
       </Card.Header>
       <Card.Content class="space-y-2">
-        {#if data.memberOfQueue !== null}
+        {#if typeof data.queue !== "undefined"}
           <p>
-            Enrolled in the <b>{data.memberOfQueue.name}</b>
+            Enrolled in the <b>{data.queue.name}</b>
             queue.
           </p>
-          {#if data.position !== null}
+          {#if typeof data.position !== "undefined"}
             <p>
               You are number <b>{data.position}</b>
               in the queue.
             </p>
           {/if}
           <Button
-            href="/{$page.params.id}/training/queues/{data.memberOfQueue
-              .id}/leave">
+            href="/{$page.params.id}/training/queues/{data.queue.id}/leave">
             <LogOutIcon class="mr-2 w-4 h-4" />
             Leave
           </Button>
