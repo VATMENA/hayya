@@ -33,10 +33,7 @@
   let requestTrainingOpen = false;
 
   onMount(() => {
-    if (
-      typeof data.queue !== "undefined" &&
-      typeof data.position == "undefined"
-    ) {
+    if (data.queue && !data.position) {
       toast.error(
         "There was a problem retrieving your position in the queue. Please try again later.",
       );
@@ -55,12 +52,12 @@
         <Card.Title>Training Queues</Card.Title>
       </Card.Header>
       <Card.Content class="space-y-2">
-        {#if typeof data.queue !== "undefined"}
+        {#if data.queue}
           <p>
             Enrolled in the <b>{data.queue.name}</b>
             queue.
           </p>
-          {#if typeof data.position !== "undefined"}
+          {#if data.position}
             <p>
               You are number <b>{data.position}</b>
               in the queue.
