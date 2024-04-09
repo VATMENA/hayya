@@ -55,13 +55,13 @@ export const GET: RequestHandler = async () => {
 
   const roster = roster_json.items;
 
-  const existing_roster: Record<string, any> = {};
+  const existing_roster: Record<string, object> = {};
   const existing_roster_arr = await prisma.user.findMany();
   for (const existing_user of existing_roster_arr) {
     existing_roster[existing_user.id.toString()] = existing_user;
   }
 
-  const vaccs: Record<string, any> = {};
+  const vaccs: Record<string, object> = {};
   const vaccs_arr = await prisma.facility.findMany();
   for (const vacc of vaccs_arr) {
     vaccs[vacc.id] = vacc;
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async () => {
   let askipped = 0;
   let atotal = 0;
 
-  const userAssignments: Record<string, any> = {};
+  const userAssignments: Record<string, UserRecord> = {};
 
   const all_assignments: UserFacilityAssignment[] =
     await prisma.userFacilityAssignment.findMany();

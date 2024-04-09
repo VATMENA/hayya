@@ -118,7 +118,7 @@
     holderId: $page.data.user.id,
     issuedInId: $page.params.id,
     createdAt: new Date(),
-    // @ts-ignore
+    // @ts-expect-error
     instructor: $page.data.user,
   };
   let tomorrow = new Date();
@@ -137,7 +137,7 @@
     holderId: $page.data.user.id,
     issuedInId: $page.params.id,
     createdAt: new Date(),
-    // @ts-ignore
+    // @ts-expect-error Le prisma types
     instructor: $page.data.user,
   };
   let tier2ExampleCert: Certificate = {
@@ -154,7 +154,7 @@
     holderId: $page.data.user.id,
     issuedInId: $page.params.id,
     createdAt: new Date(),
-    // @ts-ignore
+    // @ts-expect-error
     instructor: $page.data.user,
   };
   let tier1ExampleCert: Certificate = {
@@ -171,7 +171,7 @@
     holderId: $page.data.user.id,
     issuedInId: $page.params.id,
     createdAt: new Date(),
-    // @ts-ignore
+    // @ts-expect-error Le prisma types
     instructor: $page.data.user,
   };
   let afspExampleCert: Certificate = {
@@ -188,7 +188,7 @@
     holderId: $page.data.user.id,
     issuedInId: $page.params.id,
     createdAt: new Date(),
-    // @ts-ignore
+    // @ts-expect-error
     instructor: $page.data.user,
   };
   let openskiesExampleCert: Certificate = {
@@ -205,7 +205,7 @@
     holderId: $page.data.user.id,
     issuedInId: $page.params.id,
     createdAt: new Date(),
-    // @ts-ignore
+    // @ts-expect-error
     instructor: $page.data.user,
   };
   let supercenterExampleCert: Certificate = {
@@ -222,7 +222,7 @@
     holderId: $page.data.user.id,
     issuedInId: $page.params.id,
     createdAt: new Date(),
-    // @ts-ignore
+    // @ts-expect-error Le prisma types
     instructor: $page.data.user,
   };
 </script>

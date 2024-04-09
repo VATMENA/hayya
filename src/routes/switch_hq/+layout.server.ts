@@ -2,7 +2,6 @@ import type { LayoutServerLoad } from "./$types";
 import { redirect } from "sveltekit-flash-message/server";
 import prisma from "$lib/prisma";
 import { verifyToken } from "$lib/auth";
-import { can } from "$lib/perms/can";
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
   if (!cookies.get("hq_token")) {

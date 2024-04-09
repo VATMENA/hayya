@@ -1,14 +1,15 @@
 <script lang="ts">
-  import * as Card from "$lib/components/ui/card";
-  import { Button, buttonVariants } from "$lib/components/ui/button";
+  import { Button } from "$lib/components/ui/button";
   import type { PageData } from "./$types";
   import Check from "lucide-svelte/icons/check";
   import ChevronRight from "lucide-svelte/icons/chevron-right";
   import ChevronsUpDown from "lucide-svelte/icons/chevrons-up-down";
-  import LogIn from "lucide-svelte/icons/log-in";
   import { tick } from "svelte";
+  // @formatter:off
+  import * as Card from "$lib/components/ui/card";
   import * as Popover from "$lib/components/ui/popover";
   import * as Command from "$lib/components/ui/command";
+  // @formatter:on
   import { cn } from "$lib/utils";
   import { goto } from "$app/navigation";
 
