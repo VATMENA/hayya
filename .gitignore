@@ -11,3 +11,6 @@ vite.config.ts.timestamp-*
 target
 .env*.local
 /db
+
+# Sentry Config File
+.sentryclirc
