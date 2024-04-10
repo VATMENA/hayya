@@ -32,6 +32,7 @@ model Facility {
   resources       Resource[]
   events          Event[]
   TrainingRequest TrainingRequest[]
+  TVCase          TVCase[]
 }
 
 model Role {
@@ -70,6 +71,9 @@ model UserFacilityAssignment {
 
   roles Role[]
 
+  case   TVCase? @relation(fields: [caseId], references: [id])
+  caseId BigInt?
+
   @@unique([userId, facilityId, assignmentType])
 }
 
@@ -103,8 +107,11 @@ model User {
 
   isSiteAdmin Boolean @default(false)
 
-  requestedSessions TrainingRequest[] @relation(name: "requestStudent")
-  acceptedSessions  TrainingRequest[] @relation(name: "requestInstructor")
+  requestedSessions  TrainingRequest[]   @relation(name: "requestStudent")
+  acceptedSessions   TrainingRequest[]   @relation(name: "requestInstructor")
+  tvCases            TVCase[]
+  tvCaseComments     TVCaseComment[]
+  tvCaseStateChanges TVCaseStateChange[]
 }
 
 model AuditLogEntry {
@@ -303,4 +310,68 @@ model Connection {
 
   startTime DateTime  @default(now())
   endTime   DateTime?
+}
+
+enum TVCaseType {
+  Visit
+  Transfer
+}
+
+enum TVCaseState {
+  Pending
+  InReview
+  AdditionalInformationNeeded
+  Rejected
+  Accepted
+}
+
+model TVCase {
+  id BigInt @id @default(autoincrement())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  targetFacility Facility @relation(fields: [facilityId], references: [id])
+  facilityId     String
+
+  caseType  TVCaseType
+  caseState TVCaseState
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  comments            TVCaseComment[]
+  stateChanges        TVCaseStateChange[]
+  facilityAssignments UserFacilityAssignment[]
+}
+
+model TVCaseComment {
+  id String @id
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  case   TVCase @relation(fields: [caseId], references: [id])
+  caseId BigInt
+
+  content String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TVCaseStateChange {
+  id String @id
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  case   TVCase @relation(fields: [caseId], references: [id])
+  caseId BigInt
+
+  before TVCaseState
+  after  TVCaseState
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

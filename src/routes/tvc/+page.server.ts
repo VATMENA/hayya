@@ -1,19 +1,19 @@
 import type { PageServerLoad } from "./$types";
-import { loadUserData } from "$lib/auth";
+import {VATSIM_CORE_API_TOKEN} from "$env/static/private";
+import prisma from "$lib/prisma";
 
-export const load: PageServerLoad = async ({ cookies, fetch }) => {
-  const { user } = await loadUserData(cookies, null);
+export const load: PageServerLoad = async ({parent}) => {
+  let { user } = await parent();
+  let u_d = await fetch(`https://api.vatsim.net/v2/members/${user.id}`, {
+    headers: {
+      "Authorization": `Bearer ${VATSIM_CORE_API_TOKEN}`
+    }
+  });
 
-  const rating = user.ratingId;
-  const home = `${user.region}/${user.division}`;
+  let user_info = await u_d.json();
 
-  // https://api.vatsim.net/v2/members/:id/atc
-  // https://api.vatsim.net/v2/members/1710004/ <- lastratingchange
-
-  const user_info_resp = await fetch(
-    `https://api.vatsim.net/v2/members/${user.id}`,
-  );
-  const user_info = await user_info_resp.json();
+  const rating = user_info.rating;
+  const home = `${user_info.region}/${user_info.division}`;
 
   const last_rating_change = new Date(user_info.lastratingchange);
 
@@ -69,18 +69,28 @@ export const load: PageServerLoad = async ({ cookies, fetch }) => {
   const fiftyHours = total_time >= required;
   const meetsActivityRequirements = true;
 
+  console.log(rating);
+
   const canVisit = hasNeededRating && fiftyHours && meetsActivityRequirements;
 
   return {
-    rating,
-    ratingShort: user.ratingShort,
-    home,
-    fiftyHours,
-    meetsActivityRequirements,
-    canVisit,
-    total_time,
-    required,
-    hours_in_last_6mo,
-    required_hrs_in_last_6mo,
-  };
+    user_updated: user_info,
+    facilityAssignments: await prisma.userFacilityAssignment.findMany({
+      where: {
+        userId: user.id.toString()
+      }
+    })!,
+    visitingRequirements: {
+      rating,
+      home,
+      fiftyHours,
+      meetsActivityRequirements,
+      canVisit,
+      total_time,
+      required,
+      hours_in_last_6mo,
+      required_hrs_in_last_6mo,
+      ratingShort: user.ratingShort,
+    }
+  }
 };
