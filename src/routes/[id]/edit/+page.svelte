@@ -1,24 +1,9 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-  import type { PageData } from "../../../../.svelte-kit/types/src/routes";
-  import { can } from "../../../lib/perms/can";
-  import { goto } from "$app/navigation";
+  import type { PageData } from "./$types";
   import { page } from "$app/stores";
-  import * as Form from "$lib/components/ui/form";
-  import { formSchema, type FormSchema } from "./schema";
-  import type { SuperValidated } from "sveltekit-superforms";
-  import { EDIT_DETAILS } from "$lib/perms/permissions";
+  import EditForm from "./EditForm.svelte";
 
   export let data: PageData;
-
-  export let form: SuperValidated<FormSchema>;
-
-  onMount(() => {
-    if (!can(EDIT_DETAILS)) {
-      goto(`/${$page.params.id}`);
-      return;
-    }
-  });
 </script>
 
 <div class="flex items-center justify-between space-y-2">
@@ -27,33 +12,4 @@
   </h2>
 </div>
 
-<Form.Root method="POST" {form} schema={formSchema} let:config>
-  <Form.Field {config} name="name">
-    <Form.Item>
-      <Form.Label>vACC Name</Form.Label>
-      <Form.Input />
-      <Form.Description>The name of the vACC.</Form.Description>
-      <Form.Validation />
-    </Form.Item>
-  </Form.Field>
-  <Form.Field {config} name="website">
-    <Form.Item>
-      <Form.Label>vACC Website</Form.Label>
-      <Form.Input />
-      <Form.Description>The public website of the vACC.</Form.Description>
-      <Form.Validation />
-    </Form.Item>
-  </Form.Field>
-  <Form.Field {config} name="contact_email">
-    <Form.Item>
-      <Form.Label>Contact Email</Form.Label>
-      <Form.Input />
-      <Form.Description>
-        An email that can be used for direct inquiries to vACC staff.
-      </Form.Description>
-      <Form.Validation />
-    </Form.Item>
-  </Form.Field>
-
-  <Form.Button>Save</Form.Button>
-</Form.Root>
+<EditForm data={data.form} />

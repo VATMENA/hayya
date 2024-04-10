@@ -33,5 +33,13 @@
         {/each}
       </Card.Content>
     </Card.Root>
+    <Card.Root>
+      <Card.Header>
+        <Card.Title>Actions</Card.Title>
+      </Card.Header>
+      <Card.Content>
+        <Button href="/{data.facility.id}/edit">Edit Facility Details</Button>
+      </Card.Content>
+    </Card.Root>
   </div>
 </div>
