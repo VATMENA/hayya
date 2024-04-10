@@ -3,7 +3,7 @@ import type { LayoutServerLoad } from "./$types";
 
 export const load: LayoutServerLoad = async ({ parent }) => {
   const { user } = await parent();
-
+  /*
   const memberships = await prisma.trainingQueueMembership.findMany({
   let membership = await prisma.trainingQueueMembership.findFirst({
     where: {
@@ -36,19 +36,27 @@ export const load: LayoutServerLoad = async ({ parent }) => {
     queue: q,
     position: position,
   };
+
+ */
+  return {};
 };
 
-const queuePosition = async (userId: string, queueId: string): Promise<number> => {
-    const queueMemberships = await prisma.trainingQueueMembership.findMany({
-      where: {
-        queueId: queueId,
-      },
-      orderBy: {
-        joinedAt: 'asc',
-      },
-    });
+const queuePosition = async (
+  userId: string,
+  queueId: string,
+): Promise<number> => {
+  const queueMemberships = await prisma.trainingQueueMembership.findMany({
+    where: {
+      queueId: queueId,
+    },
+    orderBy: {
+      joinedAt: "asc",
+    },
+  });
 
-    const userIndex: number = queueMemberships.findIndex(member => member.userId === userId);
+  const userIndex: number = queueMemberships.findIndex(
+    (member) => member.userId === userId,
+  );
 
-    return userIndex + 1;
-}
+  return userIndex + 1;
+};
