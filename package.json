@@ -44,6 +44,7 @@
   "dependencies": {
     "@internationalized/date": "^3.5.2",
     "@prisma/client": "5.11.0",
+    "@sentry/sveltekit": "^7.109.0",
     "@unpic/pixels": "^1.2.2",
     "@unpic/placeholder": "^0.1.2",
     "@unpic/svelte": "^0.0.51",
