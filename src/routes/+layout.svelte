@@ -5,9 +5,13 @@
   import { toast } from "svelte-sonner";
   import { getFlash } from "sveltekit-flash-message";
   import { page } from "$app/stores";
-  import { version } from "$app/environment";
+  import { browser, version } from "$app/environment";
+  import { onMount } from "svelte";
 
-  const flash = getFlash(page);
+  let flash = undefined;
+  if (browser) {
+    flash = getFlash(page);
+  }
 
   $: if ($flash) {
     if ($flash.type === "success") {

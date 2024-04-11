@@ -75,7 +75,7 @@
   </Card.Root>
   <Card.Root>
     <Card.Header
-      class="flex flex-row items-center justify-between space-y-0 pb-2">
+      class="flex flex-row items-center justify-between space-y-0 pb-2 pt-2">
       <Card.Title>Your Cases</Card.Title>
       <Button
         on:click={() => {
@@ -93,7 +93,7 @@
       <Dialog.Title>Submit New Application</Dialog.Title>
       <Dialog.Description>
         Please keep in mind that all applications are <i>manually reviewed</i>
-         and it may be 1-2 weeks before your application is processed, especially
+        and it may be 1-2 weeks before your application is processed, especially
         if more information is required from you.
       </Dialog.Description>
     </Dialog.Header>
