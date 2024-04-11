@@ -2,7 +2,7 @@ import prisma from "$lib/prisma";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params, parent }) => {
-  let { user, memberOfQueue } = await parent();
+  let { user, queue: memberOfQueue } = await parent();
 
   let all_queues = await prisma.trainingQueue.findMany({
     where: {
@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
   for (let queue of all_queues) {
     if (
       (queue.joinableByDefault || recommended_for.includes(queue.id)) &&
-      memberOfQueue === null &&
+      !memberOfQueue &&
       !completed.includes(queue.id)
     ) {
       canJoin.push(queue.id);
