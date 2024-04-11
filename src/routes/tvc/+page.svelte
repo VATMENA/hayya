@@ -22,7 +22,9 @@
 </script>
 
 <div class="flex items-center justify-between space-y-2">
-  <h2 class="text-3xl font-bold tracking-tight">Transfer & Visiting Application Dashboard</h2>
+  <h2 class="text-3xl font-bold tracking-tight">
+    Transfer & Visiting Application Dashboard
+  </h2>
 </div>
 
 <div class="grid-cols-3 grid gap-4">
@@ -33,7 +35,9 @@
       <EarthIcon class="h-4 w-4 text-muted-foreground" />
     </Card.Header>
     <Card.Content>
-      <div class="text-2xl font-bold">{data.user_updated?.region_id || "N/A"}</div>
+      <div class="text-2xl font-bold">
+        {data.user_updated?.region_id || "N/A"}
+      </div>
     </Card.Content>
   </Card.Root>
   <Card.Root>
@@ -43,7 +47,9 @@
       <LandPlotIcon class="h-4 w-4 text-muted-foreground" />
     </Card.Header>
     <Card.Content>
-      <div class="text-2xl font-bold">{data.user_updated?.division_id || "N/A"}</div>
+      <div class="text-2xl font-bold">
+        {data.user_updated?.division_id || "N/A"}
+      </div>
     </Card.Content>
   </Card.Root>
   <Card.Root>
@@ -53,7 +59,9 @@
       <TowerControlIcon class="h-4 w-4 text-muted-foreground" />
     </Card.Header>
     <Card.Content>
-      <div class="text-2xl font-bold">{data.user_updated.subdivision_id || "N/A"}</div>
+      <div class="text-2xl font-bold">
+        {data.user_updated.subdivision_id || "N/A"}
+      </div>
     </Card.Content>
   </Card.Root>
 </div>
@@ -66,9 +74,15 @@
     <AssignmentsTable data={data.facilityAssignments} />
   </Card.Root>
   <Card.Root>
-    <Card.Header class="flex flex-row items-center justify-between space-y-0 pb-2">
+    <Card.Header
+      class="flex flex-row items-center justify-between space-y-0 pb-2">
       <Card.Title>Your Cases</Card.Title>
-      <Button on:click={() => {submitNewDialogOpen = true;}}>Submit New Application</Button>
+      <Button
+        on:click={() => {
+          submitNewDialogOpen = true;
+        }}>
+        Submit New Application
+      </Button>
     </Card.Header>
   </Card.Root>
 </div>
@@ -77,20 +91,34 @@
   <Dialog.Content>
     <Dialog.Header>
       <Dialog.Title>Submit New Application</Dialog.Title>
-      <Dialog.Description>Please keep in mind that all applications are <i>manually reviewed</i> and it may be 1-2 weeks before your application is processed, especially if more information is required from you.</Dialog.Description>
+      <Dialog.Description>
+        Please keep in mind that all applications are <i>manually reviewed</i>
+         and it may be 1-2 weeks before your application is processed, especially
+        if more information is required from you.
+      </Dialog.Description>
     </Dialog.Header>
     <p class="text-sm">What would you like to submit an application for?</p>
     {#if data.user_updated?.region_id !== "EMEA"}
       <Button disabled>Transfer to VATMENA</Button>
-      <p class="text-xs text-foreground/80">If you want to transfer into VATMENA, <a class="underline underline-offset-4" href="https://cert.vatsim.net/vatsimnet/regch.php">submit a region change request on myVATSIM.</a></p>
+      <p class="text-xs text-foreground/80">
+        If you want to transfer into VATMENA, <a
+          class="underline underline-offset-4"
+          href="https://cert.vatsim.net/vatsimnet/regch.php">
+          submit a region change request on myVATSIM.
+        </a>
+      </p>
+    {:else if data.user_updated?.division_id === "MENA"}
+      <Button>Transfer to another vACC within VATMENA</Button>
     {:else}
-      {#if data.user_updated?.division_id === "MENA"}
-        <Button>Transfer to another vACC within VATMENA</Button>
-      {:else}
-        <Button>Transfer to VATMENA</Button>
-      {/if}
+      <Button>Transfer to VATMENA</Button>
     {/if}
-    <Button on:click={() => {submitNewDialogOpen = false; visitFacilityDialogOpen = true;}}>Visit a VATMENA Facility</Button>
+    <Button
+      on:click={() => {
+        submitNewDialogOpen = false;
+        visitFacilityDialogOpen = true;
+      }}>
+      Visit a VATMENA Facility
+    </Button>
   </Dialog.Content>
 </Dialog.Root>
 
@@ -107,7 +135,11 @@
     </Dialog.Header>
 
     <p>
-      For an <b>{data.visitingRequirements.home === "EMEA/MENA" ? "internal" : "external"}</b>
+      For an <b>
+        {data.visitingRequirements.home === "EMEA/MENA"
+          ? "internal"
+          : "external"}
+      </b>
       visiting request, the following requirements apply:
     </p>
 
@@ -121,9 +153,10 @@
           <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
         {/if}
         <span class="text-foreground/90">
-            You hold an {data.visitingRequirements.home === "EMEA/MENA" ? "S2" : "S3"} rating or higher
-            ({data.visitingRequirements.ratingShort})
-          </span>
+          You hold an {data.visitingRequirements.home === "EMEA/MENA"
+            ? "S2"
+            : "S3"} rating or higher ({data.visitingRequirements.ratingShort})
+        </span>
       </li>
       <li class="flex">
         {#if data.visitingRequirements.fiftyHours}
@@ -132,10 +165,13 @@
           <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
         {/if}
         <span class="text-foreground/90">
-            You have logged {(data.visitingRequirements.total_time / 60 / 60).toFixed(
-          1,
-        )}/{data.visitingRequirements.required / 60 / 60} hours since your last rating upgrade
-          </span>
+          You have logged {(
+            data.visitingRequirements.total_time /
+            60 /
+            60
+          ).toFixed(1)}/{data.visitingRequirements.required / 60 / 60} hours since
+          your last rating upgrade
+        </span>
       </li>
       <li class="flex">
         {#if data.visitingRequirements.fiftyHours}
@@ -144,10 +180,14 @@
           <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
         {/if}
         <span class="text-foreground/90">
-            You have logged {(data.visitingRequirements.hours_in_last_6mo / 60 / 60).toFixed(
-          1,
-        )}/{data.visitingRequirements.required_hrs_in_last_6mo / 60 / 60} hours in the last 6 months
-          </span>
+          You have logged {(
+            data.visitingRequirements.hours_in_last_6mo /
+            60 /
+            60
+          ).toFixed(1)}/{data.visitingRequirements.required_hrs_in_last_6mo /
+            60 /
+            60} hours in the last 6 months
+        </span>
       </li>
       <li class="flex">
         {#if data.visitingRequirements.canVisit}
@@ -156,8 +196,8 @@
           <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
         {/if}
         <span class="text-foreground/90">
-            Do you meet all of the above requirements?
-          </span>
+          Do you meet all of the above requirements?
+        </span>
       </li>
     </ul>
 

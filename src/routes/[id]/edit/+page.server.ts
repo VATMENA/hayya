@@ -10,9 +10,9 @@ import prisma from "$lib/prisma";
 import { redirect } from "sveltekit-flash-message/server";
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
-  let form = await superValidate(zod(formSchema));
+  const form = await superValidate(zod(formSchema));
 
-  let facility = await prisma.facility.findUnique({
+  const facility = await prisma.facility.findUnique({
     where: {
       id: params.id,
     },

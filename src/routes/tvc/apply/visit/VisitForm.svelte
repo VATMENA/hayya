@@ -20,7 +20,7 @@
         toast.success("Visiting application submitted successfully!");
         goto("/tvc");
       }
-    }
+    },
   });
 
   const { form: formData, enhance, delayed } = form;
@@ -30,7 +30,12 @@
     facilities.set(facility.id, facility.name);
   }
 
-  $: selectedFacility = $formData.facilityId ? { label: facilities.get($formData.facilityId)!, value: $formData.facilityId } : undefined;
+  $: selectedFacility = $formData.facilityId
+    ? {
+        label: facilities.get($formData.facilityId)!,
+        value: $formData.facilityId,
+      }
+    : undefined;
   $: console.log($formData.facilityId, selectedFacility);
 </script>
 
@@ -42,8 +47,7 @@
         selected={selectedFacility}
         onSelectedChange={(v) => {
           v && ($formData.facilityId = v.value);
-        }}
-      >
+        }}>
         <Select.Trigger {...attrs}>
           <Select.Value placeholder="Select a facility to apply to" />
         </Select.Trigger>

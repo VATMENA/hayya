@@ -1,16 +1,16 @@
 import type { PageServerLoad } from "./$types";
-import {VATSIM_CORE_API_TOKEN} from "$env/static/private";
+import { VATSIM_CORE_API_TOKEN } from "$env/static/private";
 import prisma from "$lib/prisma";
 
-export const load: PageServerLoad = async ({parent}) => {
-  let { user } = await parent();
-  let u_d = await fetch(`https://api.vatsim.net/v2/members/${user.id}`, {
+export const load: PageServerLoad = async ({ parent }) => {
+  const { user } = await parent();
+  const u_d = await fetch(`https://api.vatsim.net/v2/members/${user.id}`, {
     headers: {
-      "Authorization": `Bearer ${VATSIM_CORE_API_TOKEN}`
-    }
+      Authorization: `Bearer ${VATSIM_CORE_API_TOKEN}`,
+    },
   });
 
-  let user_info = await u_d.json();
+  const user_info = await u_d.json();
 
   const rating = user_info.rating;
   const home = `${user_info.region}/${user_info.division}`;
@@ -77,8 +77,8 @@ export const load: PageServerLoad = async ({parent}) => {
     user_updated: user_info,
     facilityAssignments: await prisma.userFacilityAssignment.findMany({
       where: {
-        userId: user.id.toString()
-      }
+        userId: user.id.toString(),
+      },
     })!,
     visitingRequirements: {
       rating,
@@ -91,6 +91,6 @@ export const load: PageServerLoad = async ({parent}) => {
       hours_in_last_6mo,
       required_hrs_in_last_6mo,
       ratingShort: user.ratingShort,
-    }
-  }
+    },
+  };
 };

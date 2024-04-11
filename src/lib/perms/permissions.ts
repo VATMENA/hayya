@@ -78,7 +78,8 @@ export const DELETE_REQUEST: Permission = {
 };
 export const MANAGE_TV_REQUESTS: Permission = {
   id: "tv.requests.view",
-  description: "Allows the user to manage Transfer & Visit requests, including approving or rejecting them."
+  description:
+    "Allows the user to manage Transfer & Visit requests, including approving or rejecting them.",
 };
 
 export const PERMISSIONS: Permission[] = [
@@ -100,5 +101,5 @@ export const PERMISSIONS: Permission[] = [
   ASSIGN_MENTORS_TO_REQUEST,
   SELF_ASSIGN_TO_REQUEST,
   DELETE_REQUEST,
-  MANAGE_TV_REQUESTS
+  MANAGE_TV_REQUESTS,
 ];

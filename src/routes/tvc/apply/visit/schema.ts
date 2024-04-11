@@ -7,7 +7,7 @@ export const formSchema = z.object({
   why: z.string(),
   whatPositions: z.string(),
   experience: z.string(),
-  anythingElse: z.string()
+  anythingElse: z.string(),
 });
 
 export type FormSchema = typeof formSchema;

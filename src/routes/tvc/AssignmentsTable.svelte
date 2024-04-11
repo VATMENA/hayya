@@ -4,7 +4,12 @@
   // @formatter:off
   import * as Table from "$lib/components/ui/table";
   // @formatter:on
-  import { createRender, createTable, Render, Subscribe } from "svelte-headless-table";
+  import {
+    createRender,
+    createTable,
+    Render,
+    Subscribe,
+  } from "svelte-headless-table";
   import AssignmentsTableAction from "./AssignmentsTableAction.svelte";
   import AssignmentsTableCaseId from "./AssignmentsTableCaseId.svelte";
 
@@ -18,12 +23,12 @@
   const columns = table.createColumns([
     table.column({
       accessor: "facilityId",
-      header: "Facility"
+      header: "Facility",
     }),
     table.column({
       accessor: "assignmentType",
       header: "Assignment Type",
-      cell: ({value}) => {
+      cell: ({ value }) => {
         if (value === "Primary") {
           return "Home Facility";
         } else if (value === "Secondary") {
@@ -33,17 +38,22 @@
         } else {
           return "Other";
         }
-      }
+      },
     }),
     table.column({
       accessor: (u) => u,
       header: "Case #",
-      cell: ({value}) => createRender(AssignmentsTableCaseId, { id: value.caseId, facilityId: value.facilityId })
+      cell: ({ value }) =>
+        createRender(AssignmentsTableCaseId, {
+          id: value.caseId,
+          facilityId: value.facilityId,
+        }),
     }),
     table.column({
       accessor: (u) => u,
       header: "",
-      cell: ({value}) => createRender(AssignmentsTableAction, { data: value })
+      cell: ({ value }) =>
+        createRender(AssignmentsTableAction, { data: value }),
     }),
   ]);
 
