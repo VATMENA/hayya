@@ -30,11 +30,7 @@ export function relativeTime(fromDate: Date, toDate: Date = new Date()) {
     { max: 1000 * 60, name: "second", divisor: 1000 },
     { max: 1000 * 60 * 60, name: "minute", divisor: 1000 * 60 },
     { max: 1000 * 60 * 60 * 24, name: "hour", divisor: 1000 * 60 * 60 },
-    {
-      max: 1000 * 60 * 60 * 24 * 30,
-      name: "day",
-      divisor: 1000 * 60 * 60 * 24,
-    },
+    { max: Infinity, name: "day", divisor: 1000 * 60 * 60 * 24 },
   ];
 
   const millis = fromDate.getTime() - toDate.getTime();
