@@ -4,7 +4,7 @@
 </script>
 
 {#if id}
-  <a href="/{facilityId}/tvc/case/{id}">Case #{facilityId}-{id}</a>
+  <a href="/{facilityId}/tvc/case/{id}">Case #{id}</a>
 {:else}
   N/A
 {/if}

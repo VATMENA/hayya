@@ -14,6 +14,7 @@
   import CircleCheck from "lucide-svelte/icons/circle-check";
   import CircleX from "lucide-svelte/icons/circle-x";
   import { goto } from "$app/navigation";
+  import CasesTable from "./CasesTable.svelte";
 
   export let data: PageData;
 
@@ -67,23 +68,28 @@
 </div>
 
 <div class="grid-cols-2 grid gap-4">
-  <Card.Root class="p-4">
-    <Card.Header class="px-1 py-1 mb-3">
-      <Card.Title class="p-0 m-0">Your VATMENA Facility Assignments</Card.Title>
-    </Card.Header>
-    <AssignmentsTable data={data.facilityAssignments} />
-  </Card.Root>
   <Card.Root>
-    <Card.Header
-      class="flex flex-row items-center justify-between space-y-0 pb-2 pt-2">
-      <Card.Title>Your Cases</Card.Title>
-      <Button
-        on:click={() => {
+    <Card.Content>
+      <Card.Header class="pl-0">
+        <Card.Title>Your VATMENA Facility Assignments</Card.Title>
+      </Card.Header>
+      <AssignmentsTable data={data.facilityAssignments} />
+    </Card.Content>
+  </Card.Root>
+
+  <Card.Root>
+    <Card.Content>
+      <Card.Header class="flex flex-row items-center justify-between px-0 py-3 space-y-0">
+        <Card.Title>Your Cases</Card.Title>
+        <Button class="mr-0"
+          on:click={() => {
           submitNewDialogOpen = true;
         }}>
-        Submit New Application
-      </Button>
-    </Card.Header>
+          Submit New Application
+        </Button>
+      </Card.Header>
+      <CasesTable data={data.tv_cases} />
+    </Card.Content>
   </Card.Root>
 </div>
 

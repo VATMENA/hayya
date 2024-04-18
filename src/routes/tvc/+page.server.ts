@@ -92,5 +92,10 @@ export const load: PageServerLoad = async ({ parent }) => {
       required_hrs_in_last_6mo,
       ratingShort: user.ratingShort,
     },
+    tv_cases: await prisma.tVCase.findMany({
+      where: {
+        userId: user.id.toString()
+      }
+    })
   };
 };
