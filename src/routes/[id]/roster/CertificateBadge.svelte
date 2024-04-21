@@ -323,7 +323,7 @@
         </Dialog.Description>
       </Dialog.Header>
       <RevokeForm
-        form={$page.data.formRevoke}
+        data={$page.data.formRevoke}
         id={cert.id}
         onsubmit={() => {
           revokeViaVoidOpen = false;

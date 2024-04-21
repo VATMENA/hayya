@@ -1,60 +1,63 @@
 <script lang="ts">
   import * as Form from "$lib/components/ui/form";
   import { formSchema, type FormSchema } from "./revoke-form";
-  import type { SuperValidated } from "sveltekit-superforms";
+  import type { Infer, SuperValidated } from "sveltekit-superforms";
+  import { superForm } from "sveltekit-superforms/client";
+  import { zodClient } from "sveltekit-superforms/adapters";
+  import { Textarea } from "$lib/components/ui/textarea/index.js";
+  import { LoaderCircle } from "lucide-svelte";
 
-  export let form: SuperValidated<FormSchema>;
+  export let data: SuperValidated<Infer<FormSchema>>;
   export let onsubmit: any;
   export let id: number;
 
-  let options = {
-    onUpdated: ({ form }) => {
+  const form = superForm(data, {
+    validators: zodClient(formSchema),
+    onUpdated({ form }) {
       if (form.valid) {
         onsubmit();
       }
     },
-  };
+  });
+
+  const { form: formData, enhance, delayed } = form;
 </script>
 
-<Form.Root
-  method="POST"
-  {options}
-  {form}
-  schema={formSchema}
-  let:config
-  action="?/revokeCertificate">
+<form method="POST" action="?/revokeCertificate" use:enhance>
   <input type="hidden" name="id" value={id} />
   <div class="space-y-4">
     <div class="grid-cols-2 grid gap-4">
-      <Form.Field {config} name="studentComments">
-        <Form.Item class="flex flex-col">
+
+      <Form.Field {form} name="studentComments">
+        <Form.Control let:attrs>
           <Form.Label>Student Comments</Form.Label>
-          <Form.Textarea
-            placeholder="I watched you crash a plane into a mountain. Please get more practice with this and try again."
-            class="resize-none" />
-          <Form.Description>
-            These comments will be visible to the student <b>and</b>
-            other mentors. You can use Markdown to add links and styles.
-          </Form.Description>
-          <Form.Validation />
-        </Form.Item>
+          <Textarea class="resize-none" {...attrs} bind:value={$formData.studentComments} />
+        </Form.Control>
+        <Form.Description>
+          These comments will be visible to the student <b>and</b>
+          other mentors. You can use Markdown to add links and styles.
+        </Form.Description>
+        <Form.FieldErrors />
       </Form.Field>
-      <Form.Field {config} name="mentorComments">
-        <Form.Item class="flex flex-col">
+
+      <Form.Field {form} name="mentorComments">
+        <Form.Control let:attrs>
           <Form.Label>Mentor Comments</Form.Label>
-          <Form.Textarea
-            placeholder="Needs more practice with unexpected explosions and unauthorized takeoffs."
-            class="resize-none" />
-          <Form.Description>
-            These comments will be visible only to other mentors. You can use
-            Markdown to add links and styles.
-          </Form.Description>
-          <Form.Validation />
-        </Form.Item>
+          <Textarea class="resize-none" {...attrs} bind:value={$formData.mentorComments} />
+        </Form.Control>
+        <Form.Description>
+          These comments will be visible only to other mentors. You can use
+          Markdown to add links and styles.
+        </Form.Description>
+        <Form.FieldErrors />
       </Form.Field>
     </div>
   </div>
-  <Form.Button class="float-right bg-red-500 text-red-950 hover:bg-red-600">
-    Revoke Certificate
+  <Form.Button class="w-full">
+    {#if $delayed}
+      <LoaderCircle class="animate-spin w-5 h-5" />
+    {:else}
+      Revoke
+    {/if}
   </Form.Button>
-</Form.Root>
+</form>
