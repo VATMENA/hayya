@@ -23,20 +23,24 @@
     table.column({
       accessor: (u) => u,
       header: "Case ID",
-      cell: ({value}) => createRender(CasesTableId, { id: value.id.toString(), facilityId: value.facilityId })
+      cell: ({ value }) =>
+        createRender(CasesTableId, {
+          id: value.id.toString(),
+          facilityId: value.facilityId,
+        }),
     }),
     table.column({
       accessor: "caseType",
-      header: "Case Type"
+      header: "Case Type",
     }),
     table.column({
       accessor: "facilityId",
-      header: "Facility"
+      header: "Facility",
     }),
     table.column({
       accessor: "caseState",
       header: "Status",
-    })
+    }),
   ]);
 
   const { headerRows, pageRows, tableAttrs, tableBodyAttrs } =

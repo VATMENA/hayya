@@ -2,3 +2,4 @@ node_modules
 dist
 src/lib/components/ui
 db
+pnpm-lock.yaml

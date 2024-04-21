@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type {PageData} from "./$types";
+  import type { PageData } from "./$types";
   // @formatter:off
   import * as Card from "$lib/components/ui/card";
   // @formatter:on
@@ -22,7 +22,7 @@
 
   const formatter = new Intl.RelativeTimeFormat(undefined, {
     numeric: "auto",
-  })
+  });
 
   const DIVISIONS = [
     { amount: 60, name: "seconds" },
@@ -32,17 +32,37 @@
     { amount: 4.34524, name: "weeks" },
     { amount: 12, name: "months" },
     { amount: Number.POSITIVE_INFINITY, name: "years" },
-  ]
+  ];
 
   function formatTimeAgo(date: Date) {
-    let duration = (date.getTime() - new Date().getTime()) / 1000
+    let duration = (date.getTime() - new Date().getTime()) / 1000;
 
     for (let i = 0; i < DIVISIONS.length; i++) {
-      const division = DIVISIONS[i]
+      const division = DIVISIONS[i];
       if (Math.abs(duration) < division.amount) {
-        return formatter.format(Math.round(duration), <"year" | "years" | "quarter" | "quarters" | "month" | "months" | "week" | "weeks" | "day" | "days" | "hour" | "hours" | "minute" | "minutes" | "second" | "seconds">division.name)
+        return formatter.format(
+          Math.round(duration),
+          <
+            | "year"
+            | "years"
+            | "quarter"
+            | "quarters"
+            | "month"
+            | "months"
+            | "week"
+            | "weeks"
+            | "day"
+            | "days"
+            | "hour"
+            | "hours"
+            | "minute"
+            | "minutes"
+            | "second"
+            | "seconds"
+          >division.name,
+        );
       }
-      duration /= division.amount
+      duration /= division.amount;
     }
   }
 </script>
@@ -59,19 +79,21 @@
       </Card.Header>
       <Card.Content>
         <ScrollArea>
-
           {#each data.events as event}
-            {#if event.type === 'createCase'}
+            {#if event.type === "createCase"}
               <p>
                 <b>{event.user}</b>
                 submitted the application
                 <span class="text-foreground/80">
-              {formatTimeAgo(event.time)}
-            </span>
+                  {formatTimeAgo(event.time)}
+                </span>
               </p>
-            {:else if event.type === 'comment'}
+            {:else if event.type === "comment"}
               <p>
-                <b>{event.user}</b> <span class="text-foreground/80">commented {formatTimeAgo(event.time)}</span>
+                <b>{event.user}</b>
+                <span class="text-foreground/80">
+                  commented {formatTimeAgo(event.time)}
+                </span>
               </p>
               <Markdown src={event.data.content} />
             {/if}
@@ -84,19 +106,19 @@
         <Card.Title>Comment</Card.Title>
       </Card.Header>
       <Card.Content>
-        <Textarea class="resize-none" placeholder="Enter your comment here. You can use Markdown to add links and styles." />
+        <Textarea
+          class="resize-none"
+          placeholder="Enter your comment here. You can use Markdown to add links and styles." />
         <Button class="my-2 float-right">Add Comment</Button>
       </Card.Content>
     </Card.Root>
   </div>
 
-
   <div>
     <Card.Root>
-      <Card.Header class="flex flex-row items-center pt-3 pb-2 my-0 justify-between">
-        <Card.Title>
-          Status
-        </Card.Title>
+      <Card.Header
+        class="flex flex-row items-center pt-3 pb-2 my-0 justify-between">
+        <Card.Title>Status</Card.Title>
         <Button>Update</Button>
       </Card.Header>
       <Card.Content>
@@ -105,4 +127,3 @@
     </Card.Root>
   </div>
 </div>
-

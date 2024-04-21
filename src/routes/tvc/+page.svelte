@@ -79,12 +79,14 @@
 
   <Card.Root>
     <Card.Content>
-      <Card.Header class="flex flex-row items-center justify-between px-0 py-3 space-y-0">
+      <Card.Header
+        class="flex flex-row items-center justify-between px-0 py-3 space-y-0">
         <Card.Title>Your Cases</Card.Title>
-        <Button class="mr-0"
+        <Button
+          class="mr-0"
           on:click={() => {
-          submitNewDialogOpen = true;
-        }}>
+            submitNewDialogOpen = true;
+          }}>
           Submit New Application
         </Button>
       </Card.Header>
