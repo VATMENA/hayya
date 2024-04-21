@@ -5,8 +5,17 @@
   import { color } from "$lib/colors";
   import Button from "$lib/components/ui/button/button.svelte";
   import Plus from "lucide-svelte/icons/plus";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
+  import { page } from "$app/stores";
 
   export let data: PageData;
+
+  $: {
+    clearItems($page.data.url);
+    addItem($page.data.url, "/switch_hq", data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, "Dashboard");
+    addPage($page.data.url, "Manage");
+  }
 </script>
 
 <div class="flex items-center justify-between">

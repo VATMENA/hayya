@@ -15,8 +15,11 @@
   import { Switch } from "$lib/components/ui/switch";
   import { LoaderCircle } from "lucide-svelte";
   import SuperDebug from "sveltekit-superforms/client/SuperDebug.svelte";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
 
   export let data: PageData;
+
+
 
   const form = superForm(data.form, {
     validators: zodClient(formSchema),
@@ -30,6 +33,15 @@
   });
 
   const { form: formData, enhance, delayed } = form;
+
+  $: {
+    clearItems($page.data.url);
+    addItem($page.data.url, "/switch_hq", data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, "Dashboard");
+    addItem($page.data.url, `/${data.facility.id}/manage`, "Manage");
+    addItem($page.data.url, `/${data.facility.id}/manage`, "Roles");
+    addPage($page.data.url, `${$formData.name}`);
+  }
 </script>
 
 <div class="flex items-center justify-between space-y-2">
