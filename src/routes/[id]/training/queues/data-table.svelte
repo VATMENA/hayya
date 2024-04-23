@@ -49,7 +49,7 @@
         return createRender(DataTableActions, {
           id: value,
           canJoin: canJoin.includes(value),
-          canLeave: memberOf !== null ? memberOf!.id === value : false,
+          canLeave: memberOf ? memberOf!.id === value : false,
         });
       },
     }),

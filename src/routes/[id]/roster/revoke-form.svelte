@@ -27,11 +27,13 @@
   <input type="hidden" name="id" value={id} />
   <div class="space-y-4">
     <div class="grid-cols-2 grid gap-4">
-
       <Form.Field {form} name="studentComments">
         <Form.Control let:attrs>
           <Form.Label>Student Comments</Form.Label>
-          <Textarea class="resize-none" {...attrs} bind:value={$formData.studentComments} />
+          <Textarea
+            class="resize-none"
+            {...attrs}
+            bind:value={$formData.studentComments} />
         </Form.Control>
         <Form.Description>
           These comments will be visible to the student <b>and</b>
@@ -43,7 +45,10 @@
       <Form.Field {form} name="mentorComments">
         <Form.Control let:attrs>
           <Form.Label>Mentor Comments</Form.Label>
-          <Textarea class="resize-none" {...attrs} bind:value={$formData.mentorComments} />
+          <Textarea
+            class="resize-none"
+            {...attrs}
+            bind:value={$formData.mentorComments} />
         </Form.Control>
         <Form.Description>
           These comments will be visible only to other mentors. You can use

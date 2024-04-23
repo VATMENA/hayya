@@ -4,6 +4,9 @@
   import LogInIcon from "lucide-svelte/icons/log-in";
   import AlertTriangleIcon from "lucide-svelte/icons/triangle-alert";
   import { page } from "$app/stores";
+  import { can } from "$lib/perms/can";
+  import { MANAGE_QUEUES, RECOMMEND_FOR_QUEUE } from "$lib/perms/permissions";
+  import SettingsIcon from "lucide-svelte/icons/settings";
 
   export let id: string;
   export let canJoin: boolean;
@@ -20,5 +23,11 @@
   <Button href="/{$page.params.id}/training/queues/{id}/leave">
     <AlertTriangleIcon class="mr-2 w-4 h-4" />
     Leave
+  </Button>
+{/if}
+{#if can(RECOMMEND_FOR_QUEUE) || can(MANAGE_QUEUES)}
+  <Button href="/{$page.params.id}/training/queues/{id}">
+    <SettingsIcon class="mr-2 w-4 h-4" />
+    Manage
   </Button>
 {/if}

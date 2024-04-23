@@ -6,6 +6,7 @@ import type { Actions } from "@sveltejs/kit";
 import { can } from "$lib/perms/can";
 import { MANAGE_QUEUES } from "$lib/perms/permissions";
 import { redirect } from "sveltekit-flash-message/server";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async ({ params, depends }) => {
   depends("queue:data");
@@ -25,13 +26,13 @@ export const load: PageServerLoad = async ({ params, depends }) => {
 
   return {
     queue,
-    form: await superValidate(formSchema),
+    form: await superValidate(zod(formSchema)),
   };
 };
 
 export const actions: Actions = {
   addStudent: async (event) => {
-    const form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
 
     if (!can(MANAGE_QUEUES)) {
       redirect(
