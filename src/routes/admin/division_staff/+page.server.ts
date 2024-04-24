@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from "./$types";
 import prisma from "$lib/prisma";
 import { superValidate } from "sveltekit-superforms/server";
-import { formSchema } from "./schema";
+import { formSchema, formSchema2 } from "./schema";
 import { fail } from "@sveltejs/kit";
 import { loadUserData } from "$lib/auth";
 import { ulid } from "ulid";
@@ -24,6 +24,7 @@ export const load: PageServerLoad = async ({ parent }) => {
       },
     }),
     form: await superValidate(zod(formSchema)),
+    form2: await superValidate(zod(formSchema2))
   };
 };
 
