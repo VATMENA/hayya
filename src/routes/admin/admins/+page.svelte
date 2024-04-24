@@ -13,10 +13,13 @@
   import Plus from "lucide-svelte/icons/plus";
   import { Button } from "$lib/components/ui/button";
   import { formSchema, type FormSchema } from "./schema";
-  import type { SuperValidated } from "sveltekit-superforms";
+  import type { Infer, SuperValidated } from "sveltekit-superforms";
   import type { PageData } from "./$types";
   import { toast } from "svelte-sonner";
   import ActionButtons from "./actions.svelte";
+  import { superForm } from "sveltekit-superforms/client";
+  import { Input } from "$lib/components/ui/input";
+  import { LoaderCircle } from "lucide-svelte";
 
   export let data: PageData;
 
@@ -41,16 +44,18 @@
 
   let createDialogOpen = false;
 
-  export let form: SuperValidated<FormSchema>;
+  let formSV: SuperValidated<Infer<FormSchema>> = data.form;
 
-  let options = {
-    onUpdated: ({ form }) => {
+  const form = superForm(formSV, {
+    onUpdated({ form }) {
       if (form.valid) {
         createDialogOpen = false;
         toast.success("User has been set as a site admin");
       }
     },
-  };
+  });
+
+  const { form: formData, enhance, delayed } = form;
 </script>
 
 <div class="flex items-center justify-between">
@@ -104,25 +109,23 @@
     </Dialog.Header>
 
     <div class="space-y-2">
-      <Form.Root
-        action="?/create"
-        method="POST"
-        {form}
-        schema={formSchema}
-        {options}
-        let:config>
-        <Form.Field {config} name="cid">
-          <Form.Item>
+      <form method="POST" action="?/create" use:enhance>
+        <Form.Field {form} name="cid">
+          <Form.Control let:attrs>
             <Form.Label>User CID</Form.Label>
-            <Form.Input />
-            <Form.Validation />
-          </Form.Item>
+            <Input {...attrs} bind:value={$formData.cid} />
+          </Form.Control>
+          <Form.FieldErrors />
         </Form.Field>
-        <Form.Button class="mt-2 w-100">
-          <Plus class="mr-2 w-4 h-4" />
-          Create
+
+        <Form.Button>
+          {#if $delayed}
+            <LoaderCircle class="animate-spin w-5 h-5" />
+          {:else}
+            Add Admin
+          {/if}
         </Form.Button>
-      </Form.Root>
+      </form>
     </div>
   </Dialog.Content>
 </Dialog.Root>
