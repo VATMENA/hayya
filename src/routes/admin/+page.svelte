@@ -5,8 +5,15 @@
   import UserIcon from "lucide-svelte/icons/user";
   import NetworkIcon from "lucide-svelte/icons/network";
   import type { PageData } from "./$types";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
+  import { page } from "$app/stores";
 
   export let data: PageData;
+
+  $: {
+    clearItems($page.data.url);
+    addPage($page.data.url, "Site Administration");
+  }
 </script>
 
 <div class="flex items-center justify-between space-y-2">

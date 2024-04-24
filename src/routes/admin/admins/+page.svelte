@@ -20,8 +20,17 @@
   import { superForm } from "sveltekit-superforms/client";
   import { Input } from "$lib/components/ui/input";
   import { LoaderCircle } from "lucide-svelte";
+  import { zodClient } from "sveltekit-superforms/adapters";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
+  import { page } from "$app/stores";
 
   export let data: PageData;
+
+  $: {
+    clearItems($page.data.url);
+    addItem($page.data.url, "/admin", `Site Administration`);
+    addPage($page.data.url, "Manage Site Administrators");
+  }
 
   let users_store = writable(data.users!);
   $: $users_store = data.users!;
@@ -47,6 +56,7 @@
   let formSV: SuperValidated<Infer<FormSchema>> = data.form;
 
   const form = superForm(formSV, {
+    validators: zodClient(formSchema),
     onUpdated({ form }) {
       if (form.valid) {
         createDialogOpen = false;
