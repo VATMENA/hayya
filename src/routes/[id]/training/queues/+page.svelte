@@ -35,10 +35,7 @@
   {/if}
 </PageHeader>
 
-<DataTable
-  queues={data.queues}
-  canJoin={data.canJoin}
-  memberOf={data.memberOfQueue} />
+<DataTable queues={data.queues} canJoin={data.canJoin} memberOf={data.queue} />
 
 <Dialog.Root bind:open={createDialogOpen}>
   <Dialog.Content>

@@ -16,7 +16,7 @@
 
   export let queues: TrainingQueue[];
   export let canJoin: string[];
-  export let memberOf: TrainingQueue | null;
+  export let memberOf: TrainingQueue | undefined;
 
   const table = createTable(readable(queues), {
     page: addPagination(),

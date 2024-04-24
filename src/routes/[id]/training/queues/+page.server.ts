@@ -10,7 +10,7 @@ import { MANAGE_QUEUES } from "$lib/perms/permissions";
 import { redirect } from "sveltekit-flash-message/server";
 
 export const load: PageServerLoad = async ({ params, parent }) => {
-  const { user, memberOfQueue } = await parent();
+  const { user, queue: memberOfQueue } = await parent();
 
   const all_queues = await prisma.trainingQueue.findMany({
     where: {
@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
   for (const queue of all_queues) {
     if (
       (queue.joinableByDefault || recommended_for.includes(queue.id)) &&
-      memberOfQueue === null &&
+      !memberOfQueue &&
       !completed.includes(queue.id)
     ) {
       canJoin.push(queue.id);
