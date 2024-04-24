@@ -51,17 +51,17 @@ export const actions: Actions = {
 
     // combine the datetimes
 
-    const startDate = form.data.startDate.split("T")[0];
+    const startDate = new Date(form.data.startDate);
     const startTime = String(form.data.startTime).padStart(4, "0");
-    const startHour = startTime.slice(0, 2);
-    const startMinute = startTime.slice(2);
-    const start = `${startDate}T${startHour}:${startMinute}:00Z`;
+    const startHour = Number.parseInt(startTime.slice(0, 2));
+    const startMinute = Number.parseInt(startTime.slice(2));
+    startDate.setHours(startHour, startMinute);
 
-    const endDate = form.data.endDate.split("T")[0];
+    const endDate = new Date(form.data.endDate);
     const endTime = String(form.data.endTime).padStart(4, "0");
-    const endHour = endTime.slice(0, 2);
-    const endMinute = endTime.slice(2);
-    const end = `${endDate}T${endHour}:${endMinute}:00Z`;
+    const endHour = Number.parseInt(endTime.slice(0, 2));
+    const endMinute = Number.parseInt(endTime.slice(2));
+    endDate.setHours(endHour, endMinute);
 
     // generate the blurhash
 
@@ -74,8 +74,8 @@ export const actions: Actions = {
         id: ulid(),
         name: form.data.name,
         hostId: event.params.id,
-        start: start,
-        end: end,
+        start: startDate,
+        end: endDate,
         description: form.data.description,
         bannerUrl: form.data.bannerUrl,
         bannerBlurHash: blurhash,
