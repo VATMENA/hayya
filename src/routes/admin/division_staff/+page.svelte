@@ -91,7 +91,6 @@
   });
 
   const { form: formData2, enhance: enhance2, delayed: delayed2 } = form2;
-
 </script>
 
 <div class="flex items-center justify-between">

@@ -47,7 +47,12 @@
       <Form.Field class="flex flex-col" {form} name="startTime">
         <Form.Control let:attrs>
           <Form.Label>Start Time (UTC, HHMM)</Form.Label>
-          <Input {...attrs} bind:value={$formData.startTime} type="number" min={0} max={2359} />
+          <Input
+            {...attrs}
+            bind:value={$formData.startTime}
+            type="number"
+            min={0}
+            max={2359} />
         </Form.Control>
       </Form.Field>
     </div>
@@ -64,7 +69,12 @@
       <Form.Field class="flex flex-col" {form} name="endTime">
         <Form.Control let:attrs>
           <Form.Label>End Time (UTC, HHMM)</Form.Label>
-          <Input {...attrs} bind:value={$formData.endTime} type="number" min={0} max={2359} />
+          <Input
+            {...attrs}
+            bind:value={$formData.endTime}
+            type="number"
+            min={0}
+            max={2359} />
         </Form.Control>
       </Form.Field>
     </div>
@@ -72,10 +82,15 @@
     <Form.Field class="flex flex-col" {form} name="description">
       <Form.Control let:attrs>
         <Form.Label>Event Description</Form.Label>
-        <Textarea {...attrs} class="resize-none" bind:value={$formData.description} />
+        <Textarea
+          {...attrs}
+          class="resize-none"
+          bind:value={$formData.description} />
       </Form.Control>
       <Form.FieldErrors />
-      <Form.Description>You can use markdown to add links and styles.</Form.Description>
+      <Form.Description>
+        You can use markdown to add links and styles.
+      </Form.Description>
     </Form.Field>
 
     <Form.Field class="flex flex-col" {form} name="bannerUrl">
@@ -84,7 +99,9 @@
         <Input {...attrs} bind:value={$formData.bannerUrl} />
       </Form.Control>
       <Form.FieldErrors />
-      <Form.Description>Images may take several minutes to process. Please be patient!</Form.Description>
+      <Form.Description>
+        Images may take several minutes to process. Please be patient!
+      </Form.Description>
     </Form.Field>
 
     <Form.Button class="w-full">

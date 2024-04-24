@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ parent }) => {
       },
     }),
     form: await superValidate(zod(formSchema)),
-    form2: await superValidate(zod(formSchema2))
+    form2: await superValidate(zod(formSchema2)),
   };
 };
 

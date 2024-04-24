@@ -82,9 +82,9 @@
 
   $: selectedDotnetType = $formData.dotnetType
     ? {
-      label: $formData.dotnetType,
-      value: $formData.dotnetType
-    }
+        label: $formData.dotnetType,
+        value: $formData.dotnetType,
+      }
     : undefined;
 </script>
 
@@ -167,9 +167,8 @@
             <Select.Root
               selected={selectedDotnetType}
               onSelectedChange={(v) => {
-          v && ($formData.dotnetType = v.value);
-        }}
-            >
+                v && ($formData.dotnetType = v.value);
+              }}>
               <Select.Trigger {...attrs}>
                 <Select.Value placeholder="Select..." />
               </Select.Trigger>
