@@ -18,5 +18,8 @@ jobs:
       - name: copy out the .env file
         run: cp .env.example .env
 
+      - name: sync env vars
+        run: pnpm svelte-kit sync
+
       - name: check codestyle
         run: pnpm lint
