@@ -15,5 +15,8 @@ jobs:
       - name: install dependencies
         run: pnpm i
 
+      - name: copy out the .env file
+        run: cp .env.example .env
+
       - name: check codestyle
         run: pnpm lint
