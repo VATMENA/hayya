@@ -2,7 +2,7 @@
   import type { Certificate, User } from "@prisma/client";
   import CertificateBadge from "./CertificateBadge.svelte";
 
-  export let heldCertificates: Certificate[];
+  export let heldCertificates: (Certificate & { instructor: User })[];
   export let holder: User;
 </script>
 

@@ -2,31 +2,19 @@ import prisma from "$lib/prisma";
 import type { LayoutServerLoad } from "./$types";
 
 export const load: LayoutServerLoad = async ({ parent }) => {
-  const { user } = await parent();
-  /*
-  const memberships = await prisma.trainingQueueMembership.findMany({
+  let { user } = await parent();
+
   let membership = await prisma.trainingQueueMembership.findFirst({
     where: {
       userId: user!.id,
     },
     include: {
       queue: true,
-    }
+    },
   });
 
-  let memberOfQueue;
-
-  if (memberships.length > 0) {
-    const queue = await prisma.trainingQueue.findUnique({
-      where: {
-        id: memberships[0].queueId,
-      },
-    });
-    memberOfQueue = queue!;
-  } else {
-    memberOfQueue = null;
   if (!membership) {
-    return {}
+    return {};
   }
 
   const q = membership.queue;
@@ -36,9 +24,6 @@ export const load: LayoutServerLoad = async ({ parent }) => {
     queue: q,
     position: position,
   };
-
- */
-  return {};
 };
 
 const queuePosition = async (

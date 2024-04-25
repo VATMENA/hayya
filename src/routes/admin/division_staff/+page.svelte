@@ -65,8 +65,8 @@
   let createDialogOpen = false;
   let createDialogOpen2 = false;
 
-  let dform: SuperValidated<Infer<FormSchema>> = data.form;
-  let dform2: SuperValidated<Infer<FormSchema2>> = data.form2;
+  let dform: SuperValidated<Infer<FormSchema>> = data.form!;
+  let dform2: SuperValidated<Infer<FormSchema2>> = data.form2!;
 
   const form = superForm(dform, {
     validators: zodClient(formSchema),

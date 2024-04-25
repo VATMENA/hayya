@@ -15,8 +15,13 @@
 
   export let data: PageData;
 
-  let all_facilities = [];
-  let visible_facilities = [];
+  interface DropdownItem {
+    value: string;
+    label: string;
+  }
+
+  let all_facilities: DropdownItem[] = [];
+  let visible_facilities: DropdownItem[] = [];
 
   $: {
     let user_facility_ids = [];

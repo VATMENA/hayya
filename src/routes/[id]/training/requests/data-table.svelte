@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TrainingRequest } from "@prisma/client";
+  import { type TrainingRequest, type User } from "@prisma/client";
   import { writable } from "svelte/store";
   import {
     createRender,
@@ -12,7 +12,10 @@
   import DataTableAvailability from "./data-table-availability.svelte";
   import * as Table from "$lib/components/ui/table";
 
-  export let data: TrainingRequest[];
+  export let data: (TrainingRequest & {
+    student: User;
+    instructor: User | null;
+  })[];
   let store = writable(data);
   $: $store = data;
 

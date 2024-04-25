@@ -45,7 +45,7 @@
       header: "Case #",
       cell: ({ value }) =>
         createRender(AssignmentsTableCaseId, {
-          id: value.caseId,
+          id: Number(value.caseId),
           facilityId: value.facilityId,
         }),
     }),

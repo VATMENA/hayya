@@ -95,7 +95,9 @@
                   commented {formatTimeAgo(event.time)}
                 </span>
               </p>
-              <Markdown src={event.data.content} />
+              {#if event.data && event.data.content}
+                <Markdown src={event.data.content} />
+              {/if}
             {/if}
           {/each}
         </ScrollArea>

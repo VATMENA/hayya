@@ -13,6 +13,7 @@
   import DatePicker from "$lib/components/DatePicker.svelte";
   import { getLocalTimeZone, today } from "@internationalized/date";
   import { LoaderCircle } from "lucide-svelte";
+  import { _as } from "$lib/typescriptMagic";
 
   export let data: SuperValidated<Infer<FormSchema>>;
   export let onsubmit: () => void;
@@ -107,7 +108,7 @@
       <Select.Root
         selected={selectedPtyp}
         onSelectedChange={(v) => {
-          v && ($formData.p_typ = v.value);
+          v && ($formData.p_typ = _as(v.value));
         }}>
         <Select.Trigger {...attrs}>
           <Select.Value placeholder="Select..." />
@@ -141,7 +142,7 @@
         <Select.Root
           selected={selectedPosition}
           onSelectedChange={(v) => {
-            v && ($formData.pos = v.value);
+            v && ($formData.pos = _as(v.value));
           }}>
           <Select.Trigger {...attrs}>
             <Select.Value placeholder="Select..." />

@@ -3,7 +3,13 @@ import { fail } from "@sveltejs/kit";
 import { redirect } from "sveltekit-flash-message/server";
 import { loadUserData } from "$lib/auth";
 import prisma from "$lib/prisma";
-import type { UserFacilityAssignment } from "@prisma/client";
+import {
+  type Certificate,
+  type Role,
+  type User,
+  type UserFacilityAssignment,
+  Prisma,
+} from "@prisma/client";
 import { can } from "$lib/perms/can";
 import { setError, superValidate } from "sveltekit-superforms/server";
 import { formSchema } from "./schema";
@@ -30,34 +36,48 @@ import { ulid } from "ulid";
 import { formSchema as formSchemaRevoke } from "./revoke-form";
 import { zod } from "sveltekit-superforms/adapters";
 
+export type RosterUser = Prisma.UserFacilityAssignmentGetPayload<{
+  include: {
+    user: {
+      include: {
+        heldCertificates: {
+          include: {
+            instructor: true;
+          };
+        };
+      };
+    };
+    roles: true;
+  };
+}>;
+
 export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
   const { user } = await loadUserData(cookies, params.id);
 
   // Privacy stuff
 
-  const roster: UserFacilityAssignment[] =
-    await prisma.userFacilityAssignment.findMany({
-      where: {
-        facilityId: params.id,
-        NOT: {
-          assignmentType: "DivisionalStaff",
-        },
+  const roster: RosterUser[] = await prisma.userFacilityAssignment.findMany({
+    where: {
+      facilityId: params.id,
+      NOT: {
+        assignmentType: "DivisionalStaff",
       },
-      include: {
-        user: {
-          include: {
-            heldCertificates: {
-              include: {
-                instructor: true,
-              },
+    },
+    include: {
+      user: {
+        include: {
+          heldCertificates: {
+            include: {
+              instructor: true,
             },
           },
         },
-        roles: true,
       },
-    });
+      roles: true,
+    },
+  });
 
-  let altered_roster = [];
+  let altered_roster: RosterUser[] = [];
 
   for (const roster_user of roster) {
     if (
@@ -94,8 +114,8 @@ export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
   }
 
   altered_roster = altered_roster.sort((a, b) => {
-    if (a.name < b.name) return -1;
-    else if (a.name > b.name) return 1;
+    if (a.user.name < b.user.name) return -1;
+    else if (a.user.name > b.user.name) return 1;
     else return 0;
   });
 

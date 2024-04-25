@@ -16,6 +16,8 @@
   import { LoaderCircle } from "lucide-svelte";
   import SuperDebug from "sveltekit-superforms/client/SuperDebug.svelte";
   import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
+  import { _as } from "$lib/typescriptMagic";
+  import type { FormPath } from "sveltekit-superforms";
 
   export let data: PageData;
 
@@ -39,6 +41,21 @@
     addItem($page.data.url, `/${data.facility.id}/manage`, "Manage");
     addItem($page.data.url, `/${data.facility.id}/manage`, "Roles");
     addPage($page.data.url, `Create`);
+  }
+
+  function implicit_index(
+    id: string,
+  ): FormPath<{ name: string; color: string }> {
+    // @ts-ignore
+    return id;
+  }
+
+  let permissions: Record<string, boolean | undefined> = {};
+  $: {
+    for (let permission of PERMISSIONS) {
+      // @ts-ignore
+      permissions[permission.id] = $formData[permission.id];
+    }
   }
 </script>
 
@@ -73,7 +90,7 @@
     {#if can(permission)}
       <Form.Field
         {form}
-        name={permission.id}
+        name={implicit_index(permission.id)}
         class="flex flex-row items-center justify-between rounded-lg border p-4">
         <Form.Control let:attrs>
           <div class="space-y-0.5">
@@ -85,7 +102,7 @@
           <Switch
             includeInput
             {...attrs}
-            bind:checked={$formData[permission.id]} />
+            bind:checked={permissions[permission.id]} />
         </Form.Control>
       </Form.Field>
     {/if}

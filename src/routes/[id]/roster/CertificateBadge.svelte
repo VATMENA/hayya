@@ -29,7 +29,7 @@
   import * as HoverCard from "$lib/components/ui/hover-card";
   // @formatter:on
 
-  export let cert: Certificate;
+  export let cert: Certificate & { instructor: User };
   export let holder: User;
 
   let parsed_position: PositionV2 | null = null;
@@ -167,7 +167,7 @@
 
   async function deleteCertificate() {
     let data = new URLSearchParams();
-    data.set("id", cert.id);
+    data.set("id", String(cert.id));
     await fetch("?/deleteCertificate", {
       body: data.toString(),
       method: "POST",
@@ -324,7 +324,7 @@
       </Dialog.Header>
       <RevokeForm
         data={$page.data.formRevoke}
-        id={cert.id}
+        id={Number(cert.id)}
         onsubmit={() => {
           revokeViaVoidOpen = false;
           toast.success("Certificate has been voided");

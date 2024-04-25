@@ -3,7 +3,7 @@ import type { RequestHandler } from "@sveltejs/kit";
 import prisma from "$lib/prisma";
 import { RATINGS } from "$lib/cert";
 import { ulid } from "ulid";
-import type { UserFacilityAssignment } from "@prisma/client";
+import { type User, type UserFacilityAssignment } from "@prisma/client";
 
 interface UserRecord {
   primary: UserFacilityAssignment | null;
@@ -55,7 +55,7 @@ export const GET: RequestHandler = async () => {
 
   const roster = roster_json.items;
 
-  const existing_roster: Record<string, object> = {};
+  const existing_roster: Record<string, User> = {};
   const existing_roster_arr = await prisma.user.findMany();
   for (const existing_user of existing_roster_arr) {
     existing_roster[existing_user.id.toString()] = existing_user;
@@ -182,7 +182,11 @@ export const GET: RequestHandler = async () => {
     } else {
       if (vacc && !userRecord.primary) {
         needsVacc = "create";
-      } else if (vacc && userRecord.primary.facilityId !== vacc) {
+      } else if (
+        vacc &&
+        userRecord.primary &&
+        userRecord.primary.facilityId !== vacc
+      ) {
         needsVacc = "update";
       } else {
         needsVacc = "leavealone";
@@ -230,7 +234,7 @@ export const GET: RequestHandler = async () => {
           assignmentType: "Primary",
         },
       });
-    } else if (needsVacc === "update") {
+    } else if (needsVacc === "update" && userRecord.primary) {
       reassigned += 1;
       console.log(
         `[RosterUpdate ${total}/${roster.length}] Reassigned ${roster_user.id} to ${vacc} as their new primary facility from ${userRecord.primary.id}`,

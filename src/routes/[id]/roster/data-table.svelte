@@ -1,7 +1,9 @@
 <script lang="ts">
   import {
     type Certificate,
+    type User,
     type UserFacilityAssignment,
+    type Role,
   } from "@prisma/client";
   import {
     createRender,
@@ -24,9 +26,10 @@
   // @formatter:off
   import * as Dialog from "$lib/components/ui/dialog";
   import * as Table from "$lib/components/ui/table";
+  import type { RosterUser } from "./+page.server";
   // @formatter:on
 
-  export let data: UserFacilityAssignment[];
+  export let data: RosterUser[];
 
   let store = writable(data);
 
@@ -104,7 +107,7 @@
   const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
   const { filterValue } = pluginStates.filter;
 
-  let basicExampleCert: Certificate = {
+  let basicExampleCert: Certificate & { instructor: User } = {
     id: BigInt(1),
     position: serialize_position_v2({
       c_typ: C_TYP.Permanent,
@@ -118,12 +121,11 @@
     holderId: $page.data.user.id,
     issuedInId: $page.params.id,
     createdAt: new Date(),
-    // @ts-expect-error
     instructor: $page.data.user,
   };
   let tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  let soloExampleCert: Certificate = {
+  let soloExampleCert: Certificate & { instructor: User } = {
     id: BigInt(1),
     position: serialize_position_v2({
       c_typ: C_TYP.Solo,
@@ -137,10 +139,9 @@
     holderId: $page.data.user.id,
     issuedInId: $page.params.id,
     createdAt: new Date(),
-    // @ts-expect-error Le prisma types
     instructor: $page.data.user,
   };
-  let tier2ExampleCert: Certificate = {
+  let tier2ExampleCert: Certificate & { instructor: User } = {
     id: BigInt(1),
     position: serialize_position_v2({
       c_typ: C_TYP.Permanent,
@@ -154,10 +155,9 @@
     holderId: $page.data.user.id,
     issuedInId: $page.params.id,
     createdAt: new Date(),
-    // @ts-expect-error
     instructor: $page.data.user,
   };
-  let tier1ExampleCert: Certificate = {
+  let tier1ExampleCert: Certificate & { instructor: User } = {
     id: BigInt(1),
     position: serialize_position_v2({
       c_typ: C_TYP.Permanent,
@@ -171,10 +171,9 @@
     holderId: $page.data.user.id,
     issuedInId: $page.params.id,
     createdAt: new Date(),
-    // @ts-expect-error Le prisma types
     instructor: $page.data.user,
   };
-  let afspExampleCert: Certificate = {
+  let afspExampleCert: Certificate & { instructor: User } = {
     id: BigInt(1),
     position: serialize_position_v2({
       c_typ: C_TYP.Permanent,
@@ -188,10 +187,9 @@
     holderId: $page.data.user.id,
     issuedInId: $page.params.id,
     createdAt: new Date(),
-    // @ts-expect-error
     instructor: $page.data.user,
   };
-  let openskiesExampleCert: Certificate = {
+  let openskiesExampleCert: Certificate & { instructor: User } = {
     id: BigInt(1),
     position: serialize_position_v2({
       c_typ: C_TYP.Permanent,
@@ -205,10 +203,9 @@
     holderId: $page.data.user.id,
     issuedInId: $page.params.id,
     createdAt: new Date(),
-    // @ts-expect-error
     instructor: $page.data.user,
   };
-  let supercenterExampleCert: Certificate = {
+  let supercenterExampleCert: Certificate & { instructor: User } = {
     id: BigInt(1),
     position: serialize_position_v2({
       c_typ: C_TYP.Permanent,
@@ -222,7 +219,6 @@
     holderId: $page.data.user.id,
     issuedInId: $page.params.id,
     createdAt: new Date(),
-    // @ts-expect-error Le prisma types
     instructor: $page.data.user,
   };
 </script>

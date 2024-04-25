@@ -21,7 +21,7 @@
     addItem($page.data.url, `/${data.facility.id}`, "Dashboard");
     addItem($page.data.url, `/${data.facility.id}/training`, "Training");
     addItem($page.data.url, `/${data.facility.id}/training/queues`, "Queues");
-    addPage($page.data.url, data.queue.name!);
+    addPage($page.data.url, (data.queue && data.queue.name) || "Queue Details");
   }
 
   $: members = data.queue?.members;

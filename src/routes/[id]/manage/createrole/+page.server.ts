@@ -46,6 +46,7 @@ export const actions: Actions = {
 
     for (const permission of PERMISSIONS) {
       if (Object.keys(form.data).includes(permission.id)) {
+        // @ts-ignore
         if (form.data[permission.id] && can(permission)) {
           permissions.push(permission.id);
         }

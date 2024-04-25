@@ -9,14 +9,18 @@
   import * as Select from "$lib/components/ui/select";
   import { can } from "$lib/perms/can";
   import { page } from "$app/stores";
-  import { type UserFacilityAssignment } from "@prisma/client";
+  import {
+    type Role,
+    type User,
+    type UserFacilityAssignment,
+  } from "@prisma/client";
   import CertForm from "./cert-form.svelte";
   import { goto, invalidate, invalidateAll } from "$app/navigation";
   import { ASSIGN_ROLES, ISSUE_CERTIFICATE } from "$lib/perms/permissions";
   import { toast } from "svelte-sonner";
   import Ellipsis from "lucide-svelte/icons/ellipsis";
 
-  export let user: UserFacilityAssignment;
+  export let user: UserFacilityAssignment & { user: User; roles: Role[] };
 
   let cert_issue_open = false;
 
