@@ -10,6 +10,11 @@
   import Markdown from "$lib/components/Markdown.svelte";
   import { Button } from "$lib/components/ui/button";
   import { Textarea } from "$lib/components/ui/textarea/index.js";
+  import TimelineItem from "./TimelineItem.svelte";
+  import { can } from "$lib/perms/can";
+  import { MANAGE_TV_REQUESTS } from "$lib/perms/permissions";
+  import { toast } from "svelte-sonner";
+  import { invalidateAll } from "$app/navigation";
 
   export let data: PageData;
 
@@ -65,6 +70,22 @@
       duration /= division.amount;
     }
   }
+
+  let comment: string;
+
+  async function addComment() {
+    let data = new URLSearchParams();
+    data.set("comment", comment);
+    await fetch("?/addComment", {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: data.toString()
+    });
+    toast.success('Commented successfully!');
+    await invalidateAll();
+  }
 </script>
 
 <div class="flex items-center justify-between space-y-2">
@@ -80,25 +101,36 @@
       <Card.Content>
         <ScrollArea>
           {#each data.events as event}
-            {#if event.type === "createCase"}
-              <p>
-                <b>{event.user}</b>
-                submitted the application
-                <span class="text-foreground/80">
-                  {formatTimeAgo(event.time)}
-                </span>
+            <TimelineItem type={event.type}>
+
+              <!-- Generate the header -->
+              <p slot="header">
+                {#if event.type === "createCase"}
+                  <b>{event.user}</b>
+                  submitted the application
+                    <span class="text-foreground/80">
+                    {formatTimeAgo(event.time)}
+                  </span>
+                {:else if event.type === "comment"}
+                    <b>{event.user}</b>
+                    <span class="text-foreground/80">
+                    commented {formatTimeAgo(event.time)}
+                  </span>
+                {/if}
               </p>
-            {:else if event.type === "comment"}
-              <p>
-                <b>{event.user}</b>
-                <span class="text-foreground/80">
-                  commented {formatTimeAgo(event.time)}
-                </span>
-              </p>
-              {#if event.data && event.data.content}
-                <Markdown src={event.data.content} />
-              {/if}
-            {/if}
+
+              <!-- Generate the content, if any -->
+              <span slot="content">
+                {#if event.type === "comment"}
+                  {#if event.data && event.data.content}
+                    <div class="rounded border px-4 py-2 leading-7 [&:not(:first-child)]:mt-6">
+                      <Markdown src={event.data.content} />
+                    </div>
+                  {/if}
+                {/if}
+              </span>
+
+            </TimelineItem>
           {/each}
         </ScrollArea>
       </Card.Content>
@@ -108,24 +140,54 @@
         <Card.Title>Comment</Card.Title>
       </Card.Header>
       <Card.Content>
-        <Textarea
-          class="resize-none"
-          placeholder="Enter your comment here. You can use Markdown to add links and styles." />
-        <Button class="my-2 float-right">Add Comment</Button>
+        {#if data.tvCase.caseState === "Rejected" || data.tvCase.caseState === "Accepted"}
+          <Textarea disabled
+            class="resize-none"
+            placeholder="This case is closed. It must be reopened before you can add a comment." />
+        {:else}
+          <Textarea bind:value={comment}
+            class="resize-none"
+            placeholder="Enter your comment here. You can use Markdown to add links and styles." />
+          <Button on:click={addComment} class="my-2 float-right">Add Comment</Button>
+        {/if}
       </Card.Content>
     </Card.Root>
   </div>
 
-  <div>
+  <div class="space-y-4">
+    <Card.Root>
+      <Card.Header
+        class="flex flex-row items-center pt-3 pb-2 my-0 justify-between">
+        <Card.Title>Case Type</Card.Title>
+      </Card.Header>
+      <Card.Content>
+        <p class="text-2xl font-bold my-0">{data.tvCase.caseType}</p>
+      </Card.Content>
+    </Card.Root>
+
     <Card.Root>
       <Card.Header
         class="flex flex-row items-center pt-3 pb-2 my-0 justify-between">
         <Card.Title>Status</Card.Title>
-        <Button>Update</Button>
+        {#if can(MANAGE_TV_REQUESTS)}
+          <Button>Update</Button>
+        {/if}
       </Card.Header>
       <Card.Content>
-        <p class="text-2xl font-bold my-0">Information Needed</p>
+        <p class="text-2xl font-bold my-0">{data.tvCase.caseState}</p>
       </Card.Content>
     </Card.Root>
+
+    {#if can(MANAGE_TV_REQUESTS)}
+      <Card.Root>
+        <Card.Header
+          class="flex flex-row items-center pt-3 pb-2 my-0 justify-between">
+          <Card.Title>Submitter CID</Card.Title>
+        </Card.Header>
+        <Card.Content>
+          <p class="text-2xl font-bold my-0">{data.tvCase.userId}</p>
+        </Card.Content>
+      </Card.Root>
+    {/if}
   </div>
 </div>

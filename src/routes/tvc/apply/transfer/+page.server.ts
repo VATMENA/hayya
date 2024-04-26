@@ -28,7 +28,7 @@ export const actions: Actions = {
       data: {
         userId: user.id,
         facilityId: form.data.facilityId,
-        caseType: "Visit",
+        caseType: "Transfer",
         caseState: "Pending",
       },
     })!;
@@ -37,7 +37,7 @@ export const actions: Actions = {
         id: ulid(),
         userId: user.id,
         caseId: newCase.id,
-        content: `**Why do you want to visit?**\n\n${form.data.why}\n\n**What controlling positions interest you within the facility?**\n\n${form.data.whatPositions}\n\n**Do you have any relevant experience, on or off network, that you think may affect the outcome of your application?**\n\n${form.data.experience}\n\n**Do you have anything else to add?**\n\n${form.data.anythingElse}`,
+        content: `**Why do you want to transfer?**\n\n${form.data.why}\n\n**What controlling positions interest you within the facility?**\n\n${form.data.whatPositions}\n\n**Do you have any relevant experience, on or off network, that you think may affect the outcome of your application?**\n\n${form.data.experience}\n\n**Do you have anything else to add?**\n\n${form.data.anythingElse}`,
       },
     })!;
 

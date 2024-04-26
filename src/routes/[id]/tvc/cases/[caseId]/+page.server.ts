@@ -1,8 +1,10 @@
-import type { PageServerLoad } from "./$types";
+import type { PageServerLoad, Actions } from "./$types";
 import prisma from "$lib/prisma";
 import { can } from "$lib/perms/can";
 import { MANAGE_TV_REQUESTS } from "$lib/perms/permissions";
 import { redirect } from "sveltekit-flash-message/server";
+import { loadUserData } from "$lib/auth";
+import { ulid } from "ulid";
 
 export const load: PageServerLoad = async ({ parent, cookies, params }) => {
   let { user } = await parent();
@@ -83,4 +85,39 @@ export const load: PageServerLoad = async ({ parent, cookies, params }) => {
     tvCase,
     events,
   };
+};
+
+export const actions: Actions = {
+  addComment: async (event) => {
+    let { user } = await loadUserData(event.cookies, event.params.id);
+
+    let tvCase = await prisma.tVCase.findUnique({
+      where: {
+        id: Number.parseInt(event.params.caseId)
+      }
+    });
+
+    if (!tvCase) {
+      redirect(307, "/tvc", {'type': 'error', 'message': 'That case does not exist or you do not have permission to view it.'}, event.cookies);
+    }
+
+    if (!can(MANAGE_TV_REQUESTS) && tvCase.userId !== user.id) {
+      redirect(307, "/tvc", {'type': 'error', 'message': 'That case does not exist or you do not have permission to view it.'}, event.cookies);
+    }
+
+    if (tvCase.caseState === "Rejected" || tvCase.caseState === "Accepted") {
+      redirect(307, event.url, {'type': 'error', 'message': 'You can\'t comment on a closed case.'}, event.cookies);
+    }
+
+    let data = await event.request.formData();
+
+    await prisma.tVCaseComment.create({
+      data: {
+        id: ulid(),
+        userId: user.id,
+        caseId: tvCase.id,
+        content: data.get("comment")!.toString(),
+      },
+    })!;
+  }
 };

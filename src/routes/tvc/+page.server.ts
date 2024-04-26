@@ -73,6 +73,11 @@ export const load: PageServerLoad = async ({ parent }) => {
 
   const canVisit = hasNeededRating && fiftyHours && meetsActivityRequirements;
 
+  let ninetyDaysAgo = new Date();
+  ninetyDaysAgo.setDate(-90);
+
+  let ninetyDaysSinceLastRatingUpdate = last_rating_change < ninetyDaysAgo;
+
   return {
     user_updated: user_info,
     facilityAssignments: await prisma.userFacilityAssignment.findMany({
@@ -91,6 +96,10 @@ export const load: PageServerLoad = async ({ parent }) => {
       hours_in_last_6mo,
       required_hrs_in_last_6mo,
       ratingShort: user.ratingShort,
+    },
+    transferRequirements: {
+      ninetyDaysSinceLastRatingUpdate,
+      canTransfer: ninetyDaysSinceLastRatingUpdate && fiftyHours && meetsActivityRequirements
     },
     tv_cases: await prisma.tVCase.findMany({
       where: {

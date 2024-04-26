@@ -20,6 +20,7 @@
 
   let submitNewDialogOpen = false;
   let visitFacilityDialogOpen = false;
+  let transferDialogOpen = false;
 </script>
 
 <div class="flex items-center justify-between space-y-2">
@@ -116,9 +117,15 @@
         </a>
       </p>
     {:else if data.user_updated?.division_id === "MENA"}
-      <Button>Transfer to another vACC within VATMENA</Button>
+      <Button on:click={() => {
+        submitNewDialogOpen = false;
+        transferDialogOpen = true;
+      }}>Transfer to another vACC within VATMENA</Button>
     {:else}
-      <Button>Transfer to VATMENA</Button>
+      <Button on:click={() => {
+        submitNewDialogOpen = false;
+        transferDialogOpen = true;
+      }}>Transfer to VATMENA</Button>
     {/if}
     <Button
       on:click={() => {
@@ -197,6 +204,7 @@
             60} hours in the last 6 months
         </span>
       </li>
+
       <li class="flex">
         {#if data.visitingRequirements.canVisit}
           <CircleCheck class="text-green-500 min-w-6 min-h-6 mr-2" />
@@ -213,6 +221,89 @@
       <Button href="/tvc/apply/visit">Submit a Visiting Application</Button>
     {:else}
       <Button disabled>You do not meet the visiting requirements :(</Button>
+    {/if}
+  </Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root bind:open={transferDialogOpen}>
+  <Dialog.Content>
+    <Dialog.Header>
+      <Dialog.Title>Apply to transfer to a VATMENA facility</Dialog.Title>
+      <Dialog.Description>
+        You must meet the requirements below, as outlined by the VATSIM
+        Transferring & Visiting Controller Policy, version 2.0, published 20
+        March 2024. If you do not meet the requirements, you will not be
+        permitted to transfer.
+      </Dialog.Description>
+    </Dialog.Header>
+
+    <p>
+      For an <b>
+      {data.visitingRequirements.home === "EMEA/MENA"
+        ? "internal"
+        : "external"}
+    </b>
+      transfer request, the following requirements apply:
+    </p>
+
+    <ul class="space-y-2">
+      <li class="flex">
+        {#if data.visitingRequirements.fiftyHours}
+          <CircleCheck class="text-green-500 min-w-6 min-h-6 mr-2" />
+        {:else}
+          <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
+        {/if}
+        <span class="text-foreground/90">
+          You have logged {(
+          data.visitingRequirements.total_time /
+          60 /
+          60
+        ).toFixed(1)}/{data.visitingRequirements.required / 60 / 60} hours since
+          your last rating upgrade
+        </span>
+      </li>
+      <li class="flex">
+        {#if data.visitingRequirements.fiftyHours}
+          <CircleCheck class="text-green-500 min-w-6 min-h-6 mr-2" />
+        {:else}
+          <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
+        {/if}
+        <span class="text-foreground/90">
+          You have logged {(
+          data.visitingRequirements.hours_in_last_6mo /
+          60 /
+          60
+        ).toFixed(1)}/{data.visitingRequirements.required_hrs_in_last_6mo /
+        60 /
+        60} hours in the last 6 months
+        </span>
+      </li>
+      <li class="flex">
+        {#if data.transferRequirements.ninetyDaysSinceLastRatingUpdate}
+          <CircleCheck class="text-green-500 min-w-6 min-h-6 mr-2" />
+        {:else}
+          <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
+        {/if}
+        <span class="text-foreground/90">
+          It has been 90 days since your last rating upgrade or transfer attempt
+        </span>
+      </li>
+      <li class="flex">
+        {#if data.transferRequirements.canTransfer}
+          <CircleCheck class="text-green-500 min-w-6 min-h-6 mr-2" />
+        {:else}
+          <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
+        {/if}
+        <span class="text-foreground/90">
+          Do you meet all of the above requirements?
+        </span>
+      </li>
+    </ul>
+
+    {#if data.transferRequirements.canTransfer}
+      <Button href="/tvc/apply/visit">Submit a Transfer Application</Button>
+    {:else}
+      <Button disabled>You do not meet the transfer requirements :(</Button>
     {/if}
   </Dialog.Content>
 </Dialog.Root>
