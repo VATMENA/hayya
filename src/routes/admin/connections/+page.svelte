@@ -36,7 +36,7 @@
     }),
     table.column({
       accessor: ({ startTime }) =>
-        `${startTime.toISOString().slice(11, 19)}Z (${relativeTime(startTime)})`,
+        `${startTime.toISOString().slice(11, 19)}Z (${relativeTime(startTime, new Date(), "hour")})`,
       header: "Start Time",
     }),
   ]);

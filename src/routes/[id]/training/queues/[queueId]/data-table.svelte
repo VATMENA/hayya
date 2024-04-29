@@ -30,7 +30,7 @@
     }),
     table.column({
       accessor: (member: TrainingQueueMembership) =>
-        relativeTime(member.joinedAt),
+        relativeTime(member.joinedAt, new Date(), "day"),
       header: "Joined queue",
     }),
     table.column({
