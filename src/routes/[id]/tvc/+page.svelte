@@ -7,6 +7,8 @@
   import { page } from "$app/stores";
   import CasesTable from "./CasesTable.svelte";
   import { Button, buttonVariants } from "$lib/components/ui/button";
+  import ManualAssignForm from "./ManualAssignForm.svelte";
+  import { toast } from "svelte-sonner";
   export let data: PageData;
 
   $: {
@@ -22,7 +24,7 @@
 <div class="space-y-2">
   <div class="flex items-center justify-between space-y-2">
     <h2 class="text-3xl font-bold tracking-tight">Transfer & Visiting</h2>
-    <Dialog.Root>
+    <Dialog.Root bind:open={manAssignOpen}>
       <Dialog.Trigger class={buttonVariants()}>Manual Assign</Dialog.Trigger>
       <Dialog.Content>
         <Dialog.Header>
@@ -32,6 +34,12 @@
             into Hayya once before this form will work.
           </Dialog.Description>
         </Dialog.Header>
+        <ManualAssignForm
+          data={data.form}
+          onsubmit={() => {
+            manAssignOpen = false;
+            toast.success("User assignment added successfully!");
+          }} />
       </Dialog.Content>
     </Dialog.Root>
   </div>
