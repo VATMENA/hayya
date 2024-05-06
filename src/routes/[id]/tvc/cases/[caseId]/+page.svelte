@@ -2,13 +2,14 @@
   import type { PageData } from "./$types";
   // @formatter:off
   import * as Card from "$lib/components/ui/card";
+  import * as Dialog from "$lib/components/ui/dialog";
   // @formatter:on
   import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
   import { page } from "$app/stores";
   import { ClockIcon } from "lucide-svelte";
   import { ScrollArea } from "$lib/components/ui/scroll-area";
   import Markdown from "$lib/components/Markdown.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import { Button, buttonVariants } from "$lib/components/ui/button";
   import { Textarea } from "$lib/components/ui/textarea/index.js";
   import TimelineItem from "./TimelineItem.svelte";
   import { can } from "$lib/perms/can";
@@ -21,6 +22,7 @@
   $: {
     clearItems($page.data.url);
     addItem($page.data.url, "/switch_hq", data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, "Dashboard");
     addItem($page.data.url, `/${data.facility.id}/tvc`, "Transfer & Visiting");
     addPage($page.data.url, `Case #${data.tvCase.id}`);
   }
@@ -86,20 +88,38 @@
     toast.success('Commented successfully!');
     await invalidateAll();
   }
+
+  let updStatusOpen = false;
+  async function _setStatus(to: string) {
+    let data = new URLSearchParams();
+    data.set("to", to);
+    await fetch("?/setStatus", {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: data.toString()
+    });
+    updStatusOpen = false;
+    toast.success('Status updated successfully!');
+    await invalidateAll();
+  }
+  function setStatus(to: string) {
+    return () => {_setStatus(to)};
+  }
 </script>
 
 <div class="flex items-center justify-between space-y-2">
   <h2 class="text-3xl font-bold tracking-tight">Case #{data.tvCase.id}</h2>
 </div>
 
-<div class="grid grid-cols-4 gap-4 overflow-hidden">
-  <div class="col-span-3 grid grid-rows-8 gap-4">
-    <Card.Root class="row-span-2">
+<div class="grid grid-cols-4 gap-4">
+  <div class="col-span-3 space-y-2">
+    <Card.Root>
       <Card.Header>
         <Card.Title>History</Card.Title>
       </Card.Header>
       <Card.Content>
-        <ScrollArea>
           {#each data.events as event}
             <TimelineItem type={event.type}>
 
@@ -115,6 +135,24 @@
                     <b>{event.user}</b>
                     <span class="text-foreground/80">
                     commented {formatTimeAgo(event.time)}
+                  </span>
+                {:else if event.type === "stateChange" && event.data}
+                  <b>{event.user}</b>
+                  changed the status to
+                  <b>
+                    {#if event.data.to === "Pending"}
+                      Pending
+                    {:else if event.data.to === "InReview"}
+                      In Review
+                    {:else if event.data.to === "AdditionalInformationNeeded"}
+                      Info Needed
+                    {:else if event.data.to === "Accepted"}
+                      Approved
+                    {:else if event.data.to === "Rejected"}
+                      Rejected
+                    {/if}
+                  </b><span class="text-foreground/80">
+                  {formatTimeAgo(event.time)}
                   </span>
                 {/if}
               </p>
@@ -132,9 +170,26 @@
 
             </TimelineItem>
           {/each}
-        </ScrollArea>
       </Card.Content>
     </Card.Root>
+
+    {#if !(data.tvCase.caseState === "Rejected" || data.tvCase.caseState === "Accepted")}
+      <Card.Root>
+        <Card.Header>
+          <Card.Title>Comment</Card.Title>
+        </Card.Header>
+        <Card.Content>
+          <div class="h-min">
+            <Textarea bind:value={comment}
+                      class="resize-none"
+                      placeholder="Enter your comment here. You can use Markdown to add links and styles." />
+            <Button on:click={addComment} class="mt-2">Add Comment</Button>
+          </div>
+        </Card.Content>
+      </Card.Root>
+    {/if}
+
+    <!--
     <Card.Root>
       <Card.Header>
         <Card.Title>Comment</Card.Title>
@@ -145,13 +200,11 @@
             class="resize-none"
             placeholder="This case is closed. It must be reopened before you can add a comment." />
         {:else}
-          <Textarea bind:value={comment}
-            class="resize-none"
-            placeholder="Enter your comment here. You can use Markdown to add links and styles." />
-          <Button on:click={addComment} class="my-2 float-right">Add Comment</Button>
+
         {/if}
       </Card.Content>
     </Card.Root>
+    -->
   </div>
 
   <div class="space-y-4">
@@ -170,11 +223,41 @@
         class="flex flex-row items-center pt-3 pb-2 my-0 justify-between">
         <Card.Title>Status</Card.Title>
         {#if can(MANAGE_TV_REQUESTS)}
-          <Button>Update</Button>
+          <Dialog.Root bind:open={updStatusOpen}>
+            <Dialog.Trigger class={buttonVariants({})}>Update</Dialog.Trigger>
+            <Dialog.Content>
+              <Dialog.Header>
+                <Dialog.Title>Change Status</Dialog.Title>
+              </Dialog.Header>
+
+              <div class="grid grid-cols-3 gap-4">
+                <Button on:click={setStatus("pending")} variant="secondary">Pending</Button>
+                <Button on:click={setStatus("inReview")}>In Review</Button>
+                <Button on:click={setStatus("infoNeeded")} class="bg-yellow-500 hover:bg-yellow-600">Info Needed</Button>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <Button on:click={setStatus("accept")} class="bg-green-500 hover:bg-green-600">Accept</Button>
+                <Button on:click={setStatus("reject")} variant="destructive">Reject</Button>
+              </div>
+            </Dialog.Content>
+          </Dialog.Root>
         {/if}
       </Card.Header>
       <Card.Content>
-        <p class="text-2xl font-bold my-0">{data.tvCase.caseState}</p>
+        <p class="text-2xl font-bold my-0">
+          {#if data.tvCase.caseState === "Pending"}
+            Pending
+          {:else if data.tvCase.caseState === "InReview"}
+            In Review
+          {:else if data.tvCase.caseState === "AdditionalInformationNeeded"}
+            Info Needed
+          {:else if data.tvCase.caseState === "Accepted"}
+            Approved
+          {:else if data.tvCase.caseState === "Rejected"}
+            Rejected
+          {/if}
+        </p>
       </Card.Content>
     </Card.Root>
 

@@ -34,5 +34,8 @@
     </DropdownMenu.Group>
     <DropdownMenu.Separator />
     <DropdownMenu.Item href="/{data.facilityId}">Open HQ</DropdownMenu.Item>
+    {#if data.caseId}
+      <DropdownMenu.Item href="/{data.facilityId}/tvc/cases/{data.caseId}">View case history</DropdownMenu.Item>
+    {/if}
   </DropdownMenu.Content>
 </DropdownMenu.Root>

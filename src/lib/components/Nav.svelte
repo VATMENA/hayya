@@ -16,7 +16,7 @@
   import { setMode, resetMode } from "mode-watcher";
   import { can } from "$lib/perms/can";
   import { Badge } from "$lib/components/ui/badge";
-  import { EDIT_DETAILS } from "$lib/perms/permissions";
+  import { EDIT_DETAILS, MANAGE_TV_REQUESTS } from "$lib/perms/permissions";
   import { color } from "$lib/colors";
 
   type Page = {
@@ -47,6 +47,11 @@
       name: "Manage vACC",
       link: `/${$page.data.facility.id}/manage`,
       visible: can(EDIT_DETAILS),
+    },
+    tv: {
+      name: "Transfer & Visiting",
+      link: `/${$page.data.facility.id}/tvc`,
+      visible: can(MANAGE_TV_REQUESTS)
     },
     resources: {
       name: "Resources",

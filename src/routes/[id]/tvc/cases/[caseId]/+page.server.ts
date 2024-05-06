@@ -5,6 +5,7 @@ import { MANAGE_TV_REQUESTS } from "$lib/perms/permissions";
 import { redirect } from "sveltekit-flash-message/server";
 import { loadUserData } from "$lib/auth";
 import { ulid } from "ulid";
+import { TVCaseState, TVCaseType } from "@prisma/client";
 
 export const load: PageServerLoad = async ({ parent, cookies, params }) => {
   let { user } = await parent();
@@ -27,8 +28,6 @@ export const load: PageServerLoad = async ({ parent, cookies, params }) => {
       },
     },
   });
-
-  console.log(tvCase);
 
   if (!tvCase || (!can(MANAGE_TV_REQUESTS) && user.id !== tvCase.userId)) {
     return redirect(
@@ -119,5 +118,70 @@ export const actions: Actions = {
         content: data.get("comment")!.toString(),
       },
     })!;
+  },
+  setStatus: async (event) => {
+    let { user } = await loadUserData(event.cookies, event.params.id);
+
+    let tvCase = await prisma.tVCase.findUnique({
+      where: {
+        id: Number.parseInt(event.params.caseId)
+      }
+    });
+
+    if (!tvCase) {
+      redirect(307, "/tvc", {'type': 'error', 'message': 'That case does not exist or you do not have permission to view it.'}, event.cookies);
+    }
+
+    if (!can(MANAGE_TV_REQUESTS)) {
+      redirect(307, "/tvc", {'type': 'error', 'message': 'That case does not exist or you do not have permission to view it.'}, event.cookies);
+    }
+
+    let data = await event.request.formData();
+
+    let subStatus = data.get("to")!.toString();
+    let status;
+    if (subStatus === "accept") {
+      status = TVCaseState.Accepted;
+    } else if (subStatus === "reject") {
+      status = TVCaseState.Rejected;
+    } else if (subStatus === "infoNeeded") {
+      status = TVCaseState.AdditionalInformationNeeded;
+    } else if (subStatus === "inReview") {
+      status = TVCaseState.InReview;
+    } else {
+      status = TVCaseState.Pending;
+    }
+
+    await prisma.tVCase.update({
+      where: {
+        id: tvCase.id
+      },
+      data: {
+        caseState: status
+      }
+    });
+
+    await prisma.tVCaseStateChange.create({
+      data: {
+        id: ulid(),
+        userId: user.id,
+        caseId: tvCase.id,
+        before: tvCase.caseState,
+        after: status
+      }
+    });
+
+    if (status === TVCaseState.Accepted && tvCase.caseType === TVCaseType.Visit) {
+      // create the assignment
+      await prisma.userFacilityAssignment.create({
+        data: {
+          id: ulid(),
+          userId: user.id,
+          facilityId: tvCase.facilityId,
+          caseId: tvCase.id,
+          assignmentType: "Secondary"
+        }
+      })
+    }
   }
 };
