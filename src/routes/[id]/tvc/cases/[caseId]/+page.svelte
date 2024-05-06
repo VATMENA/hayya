@@ -107,6 +107,8 @@
   function setStatus(to: string) {
     return () => {_setStatus(to)};
   }
+
+  let tConfirmOpen = false;
 </script>
 
 <div class="flex items-center justify-between space-y-2">
@@ -237,7 +239,11 @@
               </div>
 
               <div class="grid grid-cols-2 gap-4">
-                <Button on:click={setStatus("accept")} class="bg-green-500 hover:bg-green-600">Accept</Button>
+                {#if data.tvCase.caseType === "Transfer"}
+                  <Button on:click={() => {tConfirmOpen = true;}} class="bg-green-500 hover:bg-green-600">Accept</Button>
+                {:else}
+                  <Button on:click={setStatus("accept")} class="bg-green-500 hover:bg-green-600">Accept</Button>
+                {/if}
                 <Button on:click={setStatus("reject")} variant="destructive">Reject</Button>
               </div>
             </Dialog.Content>
@@ -274,3 +280,15 @@
     {/if}
   </div>
 </div>
+
+<Dialog.Root bind:open={tConfirmOpen}>
+  <Dialog.Content>
+    <Dialog.Header>
+      <Dialog.Title>Accept Transfer</Dialog.Title>
+      <Dialog.Description>In order to accept a transfer request, you must transfer the user via the transfer request system on staff.vatsim.me.</Dialog.Description>
+    </Dialog.Header>
+    <h3>Has the user already been transferred?</h3>
+    <Button on:click={() => {_setStatus("accept"); tConfirmOpen = false;}} class="bg-green-500 hover:bg-green-600">Yes, they've been transferred</Button>
+    <Button href="https://staff.vatsim.me/dashboard/transfers" target="_blank" variant="destructive">No, I need to submit a transfer request</Button>
+  </Dialog.Content>
+</Dialog.Root>

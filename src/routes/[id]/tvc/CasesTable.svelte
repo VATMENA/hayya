@@ -35,6 +35,10 @@
       header: "Case Type",
     }),
     table.column({
+      accessor: "userId",
+      header: "CID"
+    }),
+    table.column({
       accessor: "facilityId",
       header: "Facility",
     }),

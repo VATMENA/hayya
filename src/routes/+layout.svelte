@@ -56,5 +56,5 @@
 </p>
 
 <p class="text-xs fixed right-1 bottom-1">
-  Made with &lt;3 by core, sharif_, and liam
+  Made with &lt;3 by core, sharif_, hhhapz, and iconoclastic_
 </p>
