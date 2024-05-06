@@ -38,5 +38,5 @@ export default defineConfig({
       "ulid",
     ],
   },
-  ssr: { noExternal: ['quirrel/**'], }
+  ssr: { noExternal: ["quirrel/**"] },
 });
