@@ -92,20 +92,43 @@ export const actions: Actions = {
 
     let tvCase = await prisma.tVCase.findUnique({
       where: {
-        id: Number.parseInt(event.params.caseId)
-      }
+        id: Number.parseInt(event.params.caseId),
+      },
     });
 
     if (!tvCase) {
-      redirect(307, "/tvc", {'type': 'error', 'message': 'That case does not exist or you do not have permission to view it.'}, event.cookies);
+      redirect(
+        307,
+        "/tvc",
+        {
+          type: "error",
+          message:
+            "That case does not exist or you do not have permission to view it.",
+        },
+        event.cookies,
+      );
     }
 
     if (!can(MANAGE_TV_REQUESTS) && tvCase.userId !== user.id) {
-      redirect(307, "/tvc", {'type': 'error', 'message': 'That case does not exist or you do not have permission to view it.'}, event.cookies);
+      redirect(
+        307,
+        "/tvc",
+        {
+          type: "error",
+          message:
+            "That case does not exist or you do not have permission to view it.",
+        },
+        event.cookies,
+      );
     }
 
     if (tvCase.caseState === "Rejected" || tvCase.caseState === "Accepted") {
-      redirect(307, event.url, {'type': 'error', 'message': 'You can\'t comment on a closed case.'}, event.cookies);
+      redirect(
+        307,
+        event.url,
+        { type: "error", message: "You can't comment on a closed case." },
+        event.cookies,
+      );
     }
 
     let data = await event.request.formData();
@@ -124,16 +147,34 @@ export const actions: Actions = {
 
     let tvCase = await prisma.tVCase.findUnique({
       where: {
-        id: Number.parseInt(event.params.caseId)
-      }
+        id: Number.parseInt(event.params.caseId),
+      },
     });
 
     if (!tvCase) {
-      redirect(307, "/tvc", {'type': 'error', 'message': 'That case does not exist or you do not have permission to view it.'}, event.cookies);
+      redirect(
+        307,
+        "/tvc",
+        {
+          type: "error",
+          message:
+            "That case does not exist or you do not have permission to view it.",
+        },
+        event.cookies,
+      );
     }
 
     if (!can(MANAGE_TV_REQUESTS)) {
-      redirect(307, "/tvc", {'type': 'error', 'message': 'That case does not exist or you do not have permission to view it.'}, event.cookies);
+      redirect(
+        307,
+        "/tvc",
+        {
+          type: "error",
+          message:
+            "That case does not exist or you do not have permission to view it.",
+        },
+        event.cookies,
+      );
     }
 
     let data = await event.request.formData();
@@ -154,11 +195,11 @@ export const actions: Actions = {
 
     await prisma.tVCase.update({
       where: {
-        id: tvCase.id
+        id: tvCase.id,
       },
       data: {
-        caseState: status
-      }
+        caseState: status,
+      },
     });
 
     await prisma.tVCaseStateChange.create({
@@ -167,11 +208,14 @@ export const actions: Actions = {
         userId: user.id,
         caseId: tvCase.id,
         before: tvCase.caseState,
-        after: status
-      }
+        after: status,
+      },
     });
 
-    if (status === TVCaseState.Accepted && tvCase.caseType === TVCaseType.Visit) {
+    if (
+      status === TVCaseState.Accepted &&
+      tvCase.caseType === TVCaseType.Visit
+    ) {
       // create the assignment
       await prisma.userFacilityAssignment.create({
         data: {
@@ -179,9 +223,9 @@ export const actions: Actions = {
           userId: user.id,
           facilityId: tvCase.facilityId,
           caseId: tvCase.id,
-          assignmentType: "Secondary"
-        }
-      })
+          assignmentType: "Secondary",
+        },
+      });
     }
-  }
+  },
 };

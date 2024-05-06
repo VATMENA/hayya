@@ -4,7 +4,9 @@
 </script>
 
 {#if id}
-  <a class="underline underline-offset-4" href="/{facilityId}/tvc/case/{id}">#{id}</a>
+  <a class="underline underline-offset-4" href="/{facilityId}/tvc/case/{id}">
+    #{id}
+  </a>
 {:else}
   N/A
 {/if}

@@ -117,15 +117,21 @@
         </a>
       </p>
     {:else if data.user_updated?.division_id === "MENA"}
-      <Button on:click={() => {
-        submitNewDialogOpen = false;
-        transferDialogOpen = true;
-      }}>Transfer to another vACC within VATMENA</Button>
+      <Button
+        on:click={() => {
+          submitNewDialogOpen = false;
+          transferDialogOpen = true;
+        }}>
+        Transfer to another vACC within VATMENA
+      </Button>
     {:else}
-      <Button on:click={() => {
-        submitNewDialogOpen = false;
-        transferDialogOpen = true;
-      }}>Transfer to VATMENA</Button>
+      <Button
+        on:click={() => {
+          submitNewDialogOpen = false;
+          transferDialogOpen = true;
+        }}>
+        Transfer to VATMENA
+      </Button>
     {/if}
     <Button
       on:click={() => {
@@ -239,10 +245,10 @@
 
     <p>
       For an <b>
-      {data.visitingRequirements.home === "EMEA/MENA"
-        ? "internal"
-        : "external"}
-    </b>
+        {data.visitingRequirements.home === "EMEA/MENA"
+          ? "internal"
+          : "external"}
+      </b>
       transfer request, the following requirements apply:
     </p>
 
@@ -255,10 +261,10 @@
         {/if}
         <span class="text-foreground/90">
           You have logged {(
-          data.visitingRequirements.total_time /
-          60 /
-          60
-        ).toFixed(1)}/{data.visitingRequirements.required / 60 / 60} hours since
+            data.visitingRequirements.total_time /
+            60 /
+            60
+          ).toFixed(1)}/{data.visitingRequirements.required / 60 / 60} hours since
           your last rating upgrade
         </span>
       </li>
@@ -270,12 +276,12 @@
         {/if}
         <span class="text-foreground/90">
           You have logged {(
-          data.visitingRequirements.hours_in_last_6mo /
-          60 /
-          60
-        ).toFixed(1)}/{data.visitingRequirements.required_hrs_in_last_6mo /
-        60 /
-        60} hours in the last 6 months
+            data.visitingRequirements.hours_in_last_6mo /
+            60 /
+            60
+          ).toFixed(1)}/{data.visitingRequirements.required_hrs_in_last_6mo /
+            60 /
+            60} hours in the last 6 months
         </span>
       </li>
       <li class="flex">

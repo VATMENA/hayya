@@ -27,7 +27,10 @@
       <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>Manually add visitor to roster</Dialog.Title>
-          <Dialog.Description>If the visitor is outside of the division, they will need to log into Hayya once before this form will work.</Dialog.Description>
+          <Dialog.Description>
+            If the visitor is outside of the division, they will need to log
+            into Hayya once before this form will work.
+          </Dialog.Description>
         </Dialog.Header>
       </Dialog.Content>
     </Dialog.Root>

@@ -6,6 +6,7 @@ services:
       - POSTGRES_PASSWORD=menahqhayya
       - POSTGRES_USER=hayya
       - POSTGRES_DB=hayya
+    user: 1000:1000
     ports:
       - 5432:5432
     volumes:

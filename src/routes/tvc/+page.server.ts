@@ -99,7 +99,10 @@ export const load: PageServerLoad = async ({ parent }) => {
     },
     transferRequirements: {
       ninetyDaysSinceLastRatingUpdate,
-      canTransfer: ninetyDaysSinceLastRatingUpdate && fiftyHours && meetsActivityRequirements
+      canTransfer:
+        ninetyDaysSinceLastRatingUpdate &&
+        fiftyHours &&
+        meetsActivityRequirements,
     },
     tv_cases: await prisma.tVCase.findMany({
       where: {

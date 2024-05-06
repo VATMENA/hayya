@@ -16,10 +16,10 @@
     {/if}
   </span>
   <span class="mt-1">
-    <slot name="header"></slot>
+    <slot name="header" />
   </span>
 </div>
 
 <div class="ml-10 mb-2">
-  <slot name="content"></slot>
+  <slot name="content" />
 </div>

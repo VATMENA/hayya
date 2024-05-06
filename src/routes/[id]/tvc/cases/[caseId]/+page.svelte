@@ -79,13 +79,13 @@
     let data = new URLSearchParams();
     data.set("comment", comment);
     await fetch("?/addComment", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: data.toString()
+      body: data.toString(),
     });
-    toast.success('Commented successfully!');
+    toast.success("Commented successfully!");
     await invalidateAll();
   }
 
@@ -94,18 +94,20 @@
     let data = new URLSearchParams();
     data.set("to", to);
     await fetch("?/setStatus", {
-      method: 'POST',
+      method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: data.toString()
+      body: data.toString(),
     });
     updStatusOpen = false;
-    toast.success('Status updated successfully!');
+    toast.success("Status updated successfully!");
     await invalidateAll();
   }
   function setStatus(to: string) {
-    return () => {_setStatus(to)};
+    return () => {
+      _setStatus(to);
+    };
   }
 
   let tConfirmOpen = false;
@@ -122,56 +124,56 @@
         <Card.Title>History</Card.Title>
       </Card.Header>
       <Card.Content>
-          {#each data.events as event}
-            <TimelineItem type={event.type}>
-
-              <!-- Generate the header -->
-              <p slot="header">
-                {#if event.type === "createCase"}
-                  <b>{event.user}</b>
-                  submitted the application
-                    <span class="text-foreground/80">
-                    {formatTimeAgo(event.time)}
-                  </span>
-                {:else if event.type === "comment"}
-                    <b>{event.user}</b>
-                    <span class="text-foreground/80">
-                    commented {formatTimeAgo(event.time)}
-                  </span>
-                {:else if event.type === "stateChange" && event.data}
-                  <b>{event.user}</b>
-                  changed the status to
-                  <b>
-                    {#if event.data.to === "Pending"}
-                      Pending
-                    {:else if event.data.to === "InReview"}
-                      In Review
-                    {:else if event.data.to === "AdditionalInformationNeeded"}
-                      Info Needed
-                    {:else if event.data.to === "Accepted"}
-                      Approved
-                    {:else if event.data.to === "Rejected"}
-                      Rejected
-                    {/if}
-                  </b><span class="text-foreground/80">
+        {#each data.events as event}
+          <TimelineItem type={event.type}>
+            <!-- Generate the header -->
+            <p slot="header">
+              {#if event.type === "createCase"}
+                <b>{event.user}</b>
+                submitted the application
+                <span class="text-foreground/80">
                   {formatTimeAgo(event.time)}
-                  </span>
-                {/if}
-              </p>
-
-              <!-- Generate the content, if any -->
-              <span slot="content">
-                {#if event.type === "comment"}
-                  {#if event.data && event.data.content}
-                    <div class="rounded border px-4 py-2 leading-7 [&:not(:first-child)]:mt-6">
-                      <Markdown src={event.data.content} />
-                    </div>
+                </span>
+              {:else if event.type === "comment"}
+                <b>{event.user}</b>
+                <span class="text-foreground/80">
+                  commented {formatTimeAgo(event.time)}
+                </span>
+              {:else if event.type === "stateChange" && event.data}
+                <b>{event.user}</b>
+                changed the status to
+                <b>
+                  {#if event.data.to === "Pending"}
+                    Pending
+                  {:else if event.data.to === "InReview"}
+                    In Review
+                  {:else if event.data.to === "AdditionalInformationNeeded"}
+                    Info Needed
+                  {:else if event.data.to === "Accepted"}
+                    Approved
+                  {:else if event.data.to === "Rejected"}
+                    Rejected
                   {/if}
-                {/if}
-              </span>
+                </b>
+                <span class="text-foreground/80">
+                  {formatTimeAgo(event.time)}
+                </span>
+              {/if}
+            </p>
 
-            </TimelineItem>
-          {/each}
+            <!-- Generate the content, if any -->
+            <span slot="content">
+              {#if event.type === "comment"}
+                {#if event.data && event.data.content}
+                  <div
+                    class="rounded border px-4 py-2 leading-7 [&:not(:first-child)]:mt-6">
+                    <Markdown src={event.data.content} />
+                  </div>
+                {/if}
+              {/if}
+            </span>
+          </TimelineItem>
+        {/each}
       </Card.Content>
     </Card.Root>
 
@@ -182,9 +184,10 @@
         </Card.Header>
         <Card.Content>
           <div class="h-min">
-            <Textarea bind:value={comment}
-                      class="resize-none"
-                      placeholder="Enter your comment here. You can use Markdown to add links and styles." />
+            <Textarea
+              bind:value={comment}
+              class="resize-none"
+              placeholder="Enter your comment here. You can use Markdown to add links and styles." />
             <Button on:click={addComment} class="mt-2">Add Comment</Button>
           </div>
         </Card.Content>
@@ -233,18 +236,36 @@
               </Dialog.Header>
 
               <div class="grid grid-cols-3 gap-4">
-                <Button on:click={setStatus("pending")} variant="secondary">Pending</Button>
+                <Button on:click={setStatus("pending")} variant="secondary">
+                  Pending
+                </Button>
                 <Button on:click={setStatus("inReview")}>In Review</Button>
-                <Button on:click={setStatus("infoNeeded")} class="bg-yellow-500 hover:bg-yellow-600">Info Needed</Button>
+                <Button
+                  on:click={setStatus("infoNeeded")}
+                  class="bg-yellow-500 hover:bg-yellow-600">
+                  Info Needed
+                </Button>
               </div>
 
               <div class="grid grid-cols-2 gap-4">
                 {#if data.tvCase.caseType === "Transfer"}
-                  <Button on:click={() => {tConfirmOpen = true;}} class="bg-green-500 hover:bg-green-600">Accept</Button>
+                  <Button
+                    on:click={() => {
+                      tConfirmOpen = true;
+                    }}
+                    class="bg-green-500 hover:bg-green-600">
+                    Accept
+                  </Button>
                 {:else}
-                  <Button on:click={setStatus("accept")} class="bg-green-500 hover:bg-green-600">Accept</Button>
+                  <Button
+                    on:click={setStatus("accept")}
+                    class="bg-green-500 hover:bg-green-600">
+                    Accept
+                  </Button>
                 {/if}
-                <Button on:click={setStatus("reject")} variant="destructive">Reject</Button>
+                <Button on:click={setStatus("reject")} variant="destructive">
+                  Reject
+                </Button>
               </div>
             </Dialog.Content>
           </Dialog.Root>
@@ -285,10 +306,25 @@
   <Dialog.Content>
     <Dialog.Header>
       <Dialog.Title>Accept Transfer</Dialog.Title>
-      <Dialog.Description>In order to accept a transfer request, you must transfer the user via the transfer request system on staff.vatsim.me.</Dialog.Description>
+      <Dialog.Description>
+        In order to accept a transfer request, you must transfer the user via
+        the transfer request system on staff.vatsim.me.
+      </Dialog.Description>
     </Dialog.Header>
     <h3>Has the user already been transferred?</h3>
-    <Button on:click={() => {_setStatus("accept"); tConfirmOpen = false;}} class="bg-green-500 hover:bg-green-600">Yes, they've been transferred</Button>
-    <Button href="https://staff.vatsim.me/dashboard/transfers" target="_blank" variant="destructive">No, I need to submit a transfer request</Button>
+    <Button
+      on:click={() => {
+        _setStatus("accept");
+        tConfirmOpen = false;
+      }}
+      class="bg-green-500 hover:bg-green-600">
+      Yes, they've been transferred
+    </Button>
+    <Button
+      href="https://staff.vatsim.me/dashboard/transfers"
+      target="_blank"
+      variant="destructive">
+      No, I need to submit a transfer request
+    </Button>
   </Dialog.Content>
 </Dialog.Root>

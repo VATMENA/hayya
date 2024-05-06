@@ -36,7 +36,7 @@
     }),
     table.column({
       accessor: "userId",
-      header: "CID"
+      header: "CID",
     }),
     table.column({
       accessor: "facilityId",
@@ -45,7 +45,7 @@
     table.column({
       accessor: "caseState",
       header: "Status",
-      cell: ({value}) => createRender(CasesTableStatus, { caseState: value })
+      cell: ({ value }) => createRender(CasesTableStatus, { caseState: value }),
     }),
   ]);
 

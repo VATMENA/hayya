@@ -51,7 +51,7 @@
     tv: {
       name: "Transfer & Visiting",
       link: `/${$page.data.facility.id}/tvc`,
-      visible: can(MANAGE_TV_REQUESTS)
+      visible: can(MANAGE_TV_REQUESTS),
     },
     resources: {
       name: "Resources",

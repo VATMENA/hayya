@@ -41,7 +41,7 @@
     table.column({
       accessor: "caseState",
       header: "Status",
-      cell: ({value}) => createRender(CasesTableStatus, { caseState: value })
+      cell: ({ value }) => createRender(CasesTableStatus, { caseState: value }),
     }),
   ]);
 
