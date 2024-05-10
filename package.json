@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently -c bgGreen,bgBlue -n vite,quirrel 'vite dev --port 5173' 'quirrel'",
-    "build": "vite build",
+    "build": "vite build && quirrel ci",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
