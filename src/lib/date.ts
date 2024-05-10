@@ -25,7 +25,6 @@ export function humanReadableDateOnly(d: Date): string {
   return new Intl.DateTimeFormat("en-US", options).format(d);
 }
 
-
 /**
  * Calculates the relative time between two dates.
  *
@@ -34,13 +33,37 @@ export function humanReadableDateOnly(d: Date): string {
  * @param {("second" | "minute" | "hour" | "day" | "month" | "year")} [maximumUnit] - The maximum unit of time to display. Defaults to years.
  * @return {string} The relative time between the two dates. Returns "Unknown" if the difference is beyond the maximum unit.
  */
-export function relativeTime(fromDate: Date, toDate: Date = new Date(), maximumUnit?: "second" | "minute" | "hour" | "day" | "month" | "year") {
+export function relativeTime(
+  fromDate: Date,
+  toDate: Date = new Date(),
+  maximumUnit?: "second" | "minute" | "hour" | "day" | "month" | "year",
+) {
   const units = [
-    { max: maximumUnit === "second" ? Infinity : 1000 * 60, name: "second", divisor: 1000 },
-    { max: maximumUnit === "minute" ? Infinity : 1000 * 60 * 60, name: "minute", divisor: 1000 * 60 },
-    { max: maximumUnit === "hour" ? Infinity : 1000 * 60 * 60 * 24, name: "hour", divisor: 1000 * 60 * 60 },
-    { max: maximumUnit === "day" ? Infinity : 1000 * 60 * 60 * 24 * 30, name: "day", divisor: 1000 * 60 * 60 * 24 },
-    { max: maximumUnit === "month" ? Infinity : 1000 * 60 * 60 * 24 * 30 * 12, name: "month", divisor: 1000 * 60 * 60 * 24 * 30 },
+    {
+      max: maximumUnit === "second" ? Infinity : 1000 * 60,
+      name: "second",
+      divisor: 1000,
+    },
+    {
+      max: maximumUnit === "minute" ? Infinity : 1000 * 60 * 60,
+      name: "minute",
+      divisor: 1000 * 60,
+    },
+    {
+      max: maximumUnit === "hour" ? Infinity : 1000 * 60 * 60 * 24,
+      name: "hour",
+      divisor: 1000 * 60 * 60,
+    },
+    {
+      max: maximumUnit === "day" ? Infinity : 1000 * 60 * 60 * 24 * 30,
+      name: "day",
+      divisor: 1000 * 60 * 60 * 24,
+    },
+    {
+      max: maximumUnit === "month" ? Infinity : 1000 * 60 * 60 * 24 * 30 * 12,
+      name: "month",
+      divisor: 1000 * 60 * 60 * 24 * 30,
+    },
     { max: Infinity, name: "year", divisor: 1000 * 60 * 60 * 24 * 365 },
   ];
 
