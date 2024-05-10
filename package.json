@@ -1,6 +1,6 @@
 {
   "name": "hq",
-  "version": "1.5.9",
+  "version": "1.6.0",
   "private": true,
   "scripts": {
     "dev": "concurrently -c bgGreen,bgBlue -n vite,quirrel 'vite dev --port 5173' 'quirrel'",
@@ -11,7 +11,8 @@
     "postinstall": "prisma generate",
     "fmt": "prettier . --write",
     "lint": "prettier --check . && svelte-check",
-    "fix": "prettier . --write"
+    "fix": "prettier . --write",
+    "start": "node build"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.2.0",
