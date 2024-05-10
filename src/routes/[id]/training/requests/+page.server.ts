@@ -11,6 +11,7 @@ import prisma from "$lib/prisma";
 import { superValidate } from "sveltekit-superforms/server";
 import { formSchema } from "./assign";
 import { fail } from "@sveltejs/kit";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async ({ cookies, params }) => {
   await loadUserData(cookies, params.id);
@@ -24,7 +25,7 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
     );
   }
 
-  let unassigned = await prisma.trainingRequest.findMany({
+  const unassigned = await prisma.trainingRequest.findMany({
     where: {
       facilityId: params.id,
       endDate: {
@@ -37,7 +38,7 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
       instructor: true,
     },
   });
-  let expired = await prisma.trainingRequest.findMany({
+  const expired = await prisma.trainingRequest.findMany({
     where: {
       facilityId: params.id,
       endDate: {
@@ -49,7 +50,7 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
       instructor: true,
     },
   });
-  let assigned = await prisma.trainingRequest.findMany({
+  const assigned = await prisma.trainingRequest.findMany({
     where: {
       facilityId: params.id,
       endDate: {
@@ -69,7 +70,7 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
     unassigned,
     assigned,
     expired,
-    form: await superValidate(formSchema),
+    form: await superValidate(zod(formSchema)),
   };
 };
 
@@ -93,7 +94,7 @@ export const actions: Actions = {
     });
   },
   selfAssign: async (event) => {
-    let { user } = await loadUserData(event.cookies, event.params.id);
+    const { user } = await loadUserData(event.cookies, event.params.id);
 
     if (!can(SELF_ASSIGN_TO_REQUEST)) {
       redirect(
@@ -104,7 +105,7 @@ export const actions: Actions = {
       );
     }
 
-    let form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
 
     if (!form.valid) {
       return fail(400, {
@@ -112,7 +113,7 @@ export const actions: Actions = {
       });
     }
 
-    let existingModel = await prisma.trainingRequest.findUnique({
+    const existingModel = await prisma.trainingRequest.findUnique({
       where: {
         id: form.data.requestId,
       },
@@ -150,7 +151,7 @@ export const actions: Actions = {
     };
   },
   assign: async (event) => {
-    let { user } = await loadUserData(event.cookies, event.params.id);
+    const { user } = await loadUserData(event.cookies, event.params.id);
 
     if (!can(SELF_ASSIGN_TO_REQUEST)) {
       redirect(
@@ -161,7 +162,7 @@ export const actions: Actions = {
       );
     }
 
-    let form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
 
     if (!form.valid) {
       return fail(400, {
@@ -169,7 +170,7 @@ export const actions: Actions = {
       });
     }
 
-    let existingModel = await prisma.trainingRequest.findUnique({
+    const existingModel = await prisma.trainingRequest.findUnique({
       where: {
         id: form.data.requestId,
       },

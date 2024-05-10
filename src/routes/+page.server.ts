@@ -2,7 +2,6 @@ import { verifyToken } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { redirect } from "sveltekit-flash-message/server";
 import type { PageServerLoad } from "./$types";
-import type { Role } from "@prisma/client";
 import { loadFlash } from "sveltekit-flash-message/server";
 
 export const load: PageServerLoad = loadFlash(async ({ cookies }) => {
@@ -10,17 +9,17 @@ export const load: PageServerLoad = loadFlash(async ({ cookies }) => {
     return;
   }
 
-  let token = cookies.get("hq_token")!;
-  let maybe_cid = verifyToken(token);
+  const token = cookies.get("hq_token")!;
+  const maybe_cid = verifyToken(token);
 
   if (maybe_cid === null) {
     cookies.delete("hq_token", { path: "/" });
     return;
   }
 
-  let cid = maybe_cid!;
+  const cid = maybe_cid!;
 
-  let user = await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id: cid },
   });
 

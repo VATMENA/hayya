@@ -9,6 +9,7 @@
 
   async function login() {
     let callbackUrl = window.location.origin + "/callback";
+    // @ts-ignore
     window.location = `${PUBLIC_VATSIM_OAUTH_ENDPOINT}/oauth/authorize?response_type=code&client_id=${PUBLIC_VATSIM_OAUTH_CLIENT_ID}&redirect_uri=${callbackUrl}&scope=full_name+vatsim_details`;
   }
 </script>

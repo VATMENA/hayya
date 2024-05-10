@@ -1,6 +1,6 @@
 export function humanReadableDate(d: Date): string {
   // Sat Feb 17, 2024, 18:00 (EST)
-  let options: Intl.DateTimeFormatOptions = {
+  const options: Intl.DateTimeFormatOptions = {
     weekday: "short",
     year: "numeric",
     month: "short",
@@ -15,7 +15,7 @@ export function humanReadableDate(d: Date): string {
 
 export function humanReadableDateOnly(d: Date): string {
   // Sat Feb 17, 2024, 18:00 (EST)
-  let options: Intl.DateTimeFormatOptions = {
+  const options: Intl.DateTimeFormatOptions = {
     weekday: "short",
     year: "numeric",
     month: "short",

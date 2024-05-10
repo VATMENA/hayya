@@ -3,21 +3,20 @@
   import { page } from "$app/stores";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import * as Avatar from "$lib/components/ui/avatar";
-  import {
-    Github,
-    LifeBuoy,
-    LogOut,
-    Cloud,
-    Sun,
-    Moon,
-    SunMoon,
-    ServerCog,
-    BookIcon, ServerIcon
-  } from "lucide-svelte";
+  import Github from "lucide-svelte/icons/github";
+  import LifeBuoy from "lucide-svelte/icons/life-buoy";
+  import LogOut from "lucide-svelte/icons/log-out";
+  import Cloud from "lucide-svelte/icons/cloud";
+  import Sun from "lucide-svelte/icons/sun";
+  import Moon from "lucide-svelte/icons/moon";
+  import SunMoon from "lucide-svelte/icons/sun-moon";
+  import ServerCog from "lucide-svelte/icons/server-cog";
+  import BookIcon from "lucide-svelte/icons/book";
+  import ServerIcon from "lucide-svelte/icons/server";
   import { setMode, resetMode } from "mode-watcher";
   import { can } from "$lib/perms/can";
   import { Badge } from "$lib/components/ui/badge";
-  import { EDIT_DETAILS } from "$lib/perms/permissions";
+  import { EDIT_DETAILS, MANAGE_TV_REQUESTS } from "$lib/perms/permissions";
   import { color } from "$lib/colors";
 
   type Page = {
@@ -48,6 +47,11 @@
       name: "Manage vACC",
       link: `/${$page.data.facility.id}/manage`,
       visible: can(EDIT_DETAILS),
+    },
+    tv: {
+      name: "Transfer & Visiting",
+      link: `/${$page.data.facility.id}/tvc`,
+      visible: can(MANAGE_TV_REQUESTS),
     },
     resources: {
       name: "Resources",

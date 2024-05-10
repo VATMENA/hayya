@@ -10,25 +10,26 @@ import { can } from "$lib/perms/can";
 import { ulid } from "ulid";
 import { parseDate, parseDateTime } from "@internationalized/date";
 import { TRAIN } from "$lib/perms/permissions";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async () => {
   return {
-    form: await superValidate(formSchema),
-    requestForm: await superValidate(requestFormSchema),
+    form: await superValidate(zod(formSchema)),
+    requestForm: await superValidate(zod(requestFormSchema)),
   };
 };
 
 export const actions: Actions = {
   logSession: async (event) => {
-    const form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
 
     if (!form.valid) {
       return fail(400, { form });
     }
 
-    let { user } = await loadUserData(event.cookies, event.params.id!);
+    const { user } = await loadUserData(event.cookies, event.params.id!);
 
-    let targetUser = await prisma.user.findUnique({
+    const targetUser = await prisma.user.findUnique({
       where: {
         id: form.data.cid,
       },
@@ -43,8 +44,6 @@ export const actions: Actions = {
       );
     }
 
-    let date = parseDateTime(form.data.date.replace("Z", "")).toDate("UTC");
-
     await prisma.session.create({
       data: {
         id: ulid(),
@@ -53,7 +52,7 @@ export const actions: Actions = {
         sessionType: form.data.sessionType,
         studentComments: form.data.studentComments,
         instructorComments: form.data.mentorComments,
-        date: date,
+        date: form.data.date,
       },
     });
 
@@ -62,20 +61,13 @@ export const actions: Actions = {
     };
   },
   requestTraining: async (event) => {
-    const form = await superValidate(event, requestFormSchema);
+    const form = await superValidate(event, zod(requestFormSchema));
 
     if (!form.valid) {
       return fail(400, { form });
     }
 
-    let { user } = await loadUserData(event.cookies, event.params.id!);
-
-    let startDate = parseDateTime(form.data.dateStart.replace("Z", "")).toDate(
-      "UTC",
-    );
-    let endDate = parseDateTime(form.data.dateEnd.replace("Z", "")).toDate(
-      "UTC",
-    );
+    const { user } = await loadUserData(event.cookies, event.params.id!);
 
     await prisma.trainingRequest.create({
       data: {
@@ -84,8 +76,8 @@ export const actions: Actions = {
         studentId: user.id,
         instructorId: null,
         trainingType: form.data.trainingType,
-        startDate: startDate,
-        endDate: endDate,
+        startDate: form.data.dateStart,
+        endDate: form.data.dateEnd,
         availability: form.data.times,
       },
     });

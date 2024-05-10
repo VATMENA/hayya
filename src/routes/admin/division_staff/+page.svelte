@@ -10,7 +10,7 @@
   import * as Table from "$lib/components/ui/table";
   import * as Dialog from "$lib/components/ui/dialog";
   import * as Form from "$lib/components/ui/form";
-  import { Plus } from "lucide-svelte";
+  import Plus from "lucide-svelte/icons/plus";
   import { Button } from "$lib/components/ui/button";
   import {
     formSchema,
@@ -18,13 +18,24 @@
     formSchema2,
     type FormSchema2,
   } from "./schema";
-  import type { SuperValidated } from "sveltekit-superforms";
+  import type { Infer, SuperValidated } from "sveltekit-superforms";
   import type { PageData } from "./$types";
   import { toast } from "svelte-sonner";
   import ActionButtons from "./actions.svelte";
   import DataTableUser from "./data-table-user.svelte";
+  import { superForm } from "sveltekit-superforms/client";
+  import { zodClient } from "sveltekit-superforms/adapters";
+  import { Input } from "$lib/components/ui/input";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
+  import { page } from "$app/stores";
 
   export let data: PageData;
+
+  $: {
+    clearItems($page.data.url);
+    addItem($page.data.url, "/admin", `Site Administration`);
+    addPage($page.data.url, "Manage Divisional Staff Assignments");
+  }
 
   let users_store = writable(data.users!);
   $: $users_store = data.users!;
@@ -52,27 +63,34 @@
     table.createViewModel(columns);
 
   let createDialogOpen = false;
+  let createDialogOpen2 = false;
 
-  export let form: SuperValidated<FormSchema>;
-  export let form2: SuperValidated<FormSchema2>;
+  let dform: SuperValidated<Infer<FormSchema>> = data.form!;
+  let dform2: SuperValidated<Infer<FormSchema2>> = data.form2!;
 
-  let options = {
-    onUpdated: ({ form }) => {
+  const form = superForm(dform, {
+    validators: zodClient(formSchema),
+    onUpdated({ form }) {
       if (form.valid) {
         createDialogOpen = false;
         toast.success("User assignments updated!");
       }
     },
-  };
-  let createDialogOpen2 = false;
-  let options2 = {
-    onUpdated: ({ form }) => {
+  });
+
+  const { form: formData, enhance, delayed } = form;
+
+  const form2 = superForm(dform2, {
+    validators: zodClient(formSchema2),
+    onUpdated({ form }) {
       if (form.valid) {
         createDialogOpen2 = false;
         toast.success("User assignments updated!");
       }
     },
-  };
+  });
+
+  const { form: formData2, enhance: enhance2, delayed: delayed2 } = form2;
 </script>
 
 <div class="flex items-center justify-between">
@@ -135,32 +153,26 @@
     </Dialog.Header>
 
     <div class="space-y-2">
-      <Form.Root
-        action="?/create"
-        method="POST"
-        {form}
-        schema={formSchema}
-        {options}
-        let:config>
-        <Form.Field {config} name="cid">
-          <Form.Item>
+      <form action="?/create" method="POST" use:enhance>
+        <Form.Field {form} name="cid">
+          <Form.Control let:attrs>
             <Form.Label>User CID</Form.Label>
-            <Form.Input />
-            <Form.Validation />
-          </Form.Item>
+            <Input {...attrs} bind:value={$formData.cid} />
+          </Form.Control>
+          <Form.FieldErrors />
         </Form.Field>
-        <Form.Field {config} name="facilityId">
-          <Form.Item>
+        <Form.Field {form} name="facilityId">
+          <Form.Control let:attrs>
             <Form.Label>Facility ID</Form.Label>
-            <Form.Input />
-            <Form.Validation />
-          </Form.Item>
+            <Input {...attrs} bind:value={$formData.facilityId} />
+          </Form.Control>
+          <Form.FieldErrors />
         </Form.Field>
         <Form.Button class="mt-2 w-100">
           <Plus class="mr-2 w-4 h-4" />
           Create
         </Form.Button>
-      </Form.Root>
+      </form>
     </div>
   </Dialog.Content>
 </Dialog.Root>
@@ -172,25 +184,19 @@
     </Dialog.Header>
 
     <div class="space-y-2">
-      <Form.Root
-        action="?/createAll"
-        method="POST"
-        form={form2}
-        schema={formSchema2}
-        options={options2}
-        let:config>
-        <Form.Field {config} name="cid">
-          <Form.Item>
+      <form action="?/createAll" method="POST" use:enhance2>
+        <Form.Field form={form2} name="cid">
+          <Form.Control let:attrs>
             <Form.Label>User CID</Form.Label>
-            <Form.Input />
-            <Form.Validation />
-          </Form.Item>
+            <Input {...attrs} bind:value={$formData2.cid} />
+          </Form.Control>
+          <Form.FieldErrors />
         </Form.Field>
         <Form.Button class="mt-2 w-100">
           <Plus class="mr-2 w-4 h-4" />
-          New All
+          Create
         </Form.Button>
-      </Form.Root>
+      </form>
     </div>
   </Dialog.Content>
 </Dialog.Root>

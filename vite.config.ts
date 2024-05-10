@@ -3,12 +3,15 @@ import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  plugins: [sentrySvelteKit({
-    sourceMapsUploadOptions: {
-      org: "vatmena",
-      project: "javascript-sveltekit"
-    }
-  }), sveltekit()],
+  plugins: [
+    sentrySvelteKit({
+      sourceMapsUploadOptions: {
+        org: "vatmena",
+        project: "javascript-sveltekit",
+      },
+    }),
+    sveltekit(),
+  ],
   optimizeDeps: {
     include: [
       "tailwind-variants",
@@ -32,6 +35,8 @@ export default defineConfig({
       "svelte-headless-table",
       "sveltekit-superforms/server",
       "sveltekit-superforms/client",
+      "ulid",
     ],
   },
+  ssr: { noExternal: ["quirrel/**"] },
 });

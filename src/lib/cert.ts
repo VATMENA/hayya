@@ -25,25 +25,31 @@ export interface PositionV2 {
   position: POS | null;
 }
 export function validate_position_v2(pos: PositionV2): boolean {
-  // SuperCenter & Enroute must not have a facility or position specified
+  // Enroute must not have a facility or position specified
   if (
-    (pos.p_typ === P_TYP.SuperCenter || pos.p_typ === P_TYP.Enroute) &&
+    pos.p_typ === P_TYP.Enroute &&
     (pos.facility !== null || pos.position !== null)
   ) {
     return false;
   }
-  // OpenSkies & Unrestricted must have a position set and must not have a facility set
+
+  // SuperCenter must have a facility but not a position
+  if (pos.p_typ === P_TYP.SuperCenter && !(pos.facility && !pos.position)) {
+    return false;
+  }
+
+  // OpenSkies, Tier2 & Unrestricted must have a position set and must not have a facility set
   if (
-    (pos.p_typ === P_TYP.OpenSkies || pos.p_typ == P_TYP.Unrestricted) &&
+    (pos.p_typ === P_TYP.OpenSkies ||
+      pos.p_typ == P_TYP.Unrestricted ||
+      pos.p_typ == P_TYP.Tier2) &&
     (pos.position === null || pos.facility !== null)
   ) {
     return false;
   }
-  // T1 & T2 must have a position and facility set
+  // T1 & Specific must have a position and facility set
   return !(
-    (pos.p_typ === P_TYP.Tier1 ||
-      pos.p_typ === P_TYP.Tier2 ||
-      pos.p_typ === P_TYP.Specific) &&
+    (pos.p_typ === P_TYP.Tier1 || pos.p_typ === P_TYP.Specific) &&
     (pos.position === null || pos.facility === null)
   );
 }
@@ -69,10 +75,10 @@ function enumFromStringValue<T>(
 }
 
 export function parse_position_v2(input: string): PositionV2 | null {
-  let split = input.split("-");
+  const split = input.split("-");
   if (split.length < 2) return null;
-  let c_typ_str = split[0];
-  let p_typ_str = split[1];
+  const c_typ_str = split[0];
+  const p_typ_str = split[1];
 
   const c_typ: C_TYP | undefined = enumFromStringValue(C_TYP, c_typ_str);
   if (c_typ === undefined) return null;
@@ -80,31 +86,42 @@ export function parse_position_v2(input: string): PositionV2 | null {
   const p_typ: P_TYP | undefined = enumFromStringValue(P_TYP, p_typ_str);
   if (p_typ === undefined) return null;
 
-  // {SOLO,PERM}-{SCTR,ENRT}
-  if (p_typ === P_TYP.SuperCenter || p_typ === P_TYP.Enroute) {
+  // {SOLO,PERM}-{ENRT}
+  if (p_typ === P_TYP.Enroute) {
     return { c_typ, p_typ, facility: null, position: null };
   }
-  // {SOLO,PERM}-{OSKY,AFUR}-{DEL,GND,TWR,APP}
-  if (p_typ === P_TYP.OpenSkies || p_typ == P_TYP.Unrestricted) {
+
+  // {SOLO,PERM}-SCTR-{ICAO}
+  if (p_typ === P_TYP.SuperCenter) {
+    // next token needs to be the facility
+    if (split.length < 3) return null;
+    const icao = split[2];
+
+    return { c_typ, p_typ, facility: icao, position: null };
+  }
+
+  // {SOLO,PERM}-{OSKY,AFUR,AFT2}-{DEL,GND,TWR,APP}
+  if (
+    p_typ === P_TYP.OpenSkies ||
+    p_typ == P_TYP.Unrestricted ||
+    p_typ == P_TYP.Tier2
+  ) {
     // next token needs to be the position
     if (split.length < 3) return null;
-    let pos_str = split[2];
+    const pos_str = split[2];
     const pos: POS | undefined = enumFromStringValue(POS, pos_str);
     if (pos === undefined) return null;
 
     return { c_typ, p_typ, facility: null, position: pos };
   }
-  // {SOLO,PERM}-{AFT1,AFT2}-ICAO-{DEL,GND,TWR,APP}
-  if (
-    p_typ === P_TYP.Tier1 ||
-    p_typ === P_TYP.Tier2 ||
-    p_typ === P_TYP.Specific
-  ) {
+
+  // {SOLO,PERM}-{AFT1,AFSP}-ICAO-{DEL,GND,TWR,APP}
+  if (p_typ === P_TYP.Tier1 || p_typ === P_TYP.Specific) {
     if (split.length < 4) return null;
 
-    let facility_icao = split[2];
+    const facility_icao = split[2];
 
-    let pos_str = split[3];
+    const pos_str = split[3];
     const pos: POS | undefined = enumFromStringValue(POS, pos_str);
     if (pos === undefined) return null;
 

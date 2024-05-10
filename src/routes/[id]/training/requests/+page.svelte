@@ -2,8 +2,17 @@
   import * as Tabs from "$lib/components/ui/tabs";
   import type { PageData } from "./$types";
   import DataTable from "./data-table.svelte";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
+  import { page } from "$app/stores";
 
   export let data: PageData;
+  $: {
+    clearItems($page.data.url);
+    addItem($page.data.url, "/switch_hq", data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, "Dashboard");
+    addItem($page.data.url, `/${data.facility.id}/training`, "Training");
+    addPage($page.data.url, "Training Requests");
+  }
 </script>
 
 <div class="flex items-center justify-between space-y-2">

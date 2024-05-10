@@ -1,30 +1,31 @@
 <script lang="ts">
   import * as Form from "$lib/components/ui/form";
   import { formSchema, type FormSchema } from "./assign";
-  import type { SuperValidated } from "sveltekit-superforms";
+  import type { Infer, SuperValidated } from "sveltekit-superforms";
+  import { superForm } from "sveltekit-superforms/client";
+  import { zodClient } from "sveltekit-superforms/adapters";
+  import { Input } from "$lib/components/ui/input";
+  import { LoaderCircle } from "lucide-svelte";
 
-  export let form: SuperValidated<FormSchema>;
+  export let data: SuperValidated<Infer<FormSchema>>;
   export let onsubmit: any;
   export let forceCid: string | null = null;
   export let requestId: string;
   export let action: string;
 
-  let options = {
-    onUpdated: ({ form }) => {
+  const form = superForm(data, {
+    validators: zodClient(formSchema),
+    onUpdated({ form }) {
       if (form.valid) {
         onsubmit();
       }
     },
-  };
+  });
+
+  const { form: formData, enhance, delayed } = form;
 </script>
 
-<Form.Root
-  method="POST"
-  {options}
-  {form}
-  schema={formSchema}
-  let:config
-  {action}>
+<form method="POST" use:enhance {action}>
   <div class="space-y-4">
     <input type="hidden" id="requestId" name="requestId" value={requestId} />
     {#if forceCid}
@@ -34,14 +35,20 @@
         name="instructorId"
         value={forceCid} />
     {:else}
-      <Form.Field {config} name="instructorId">
-        <Form.Item class="flex flex-col">
+      <Form.Field {form} name="instructorId">
+        <Form.Control let:attrs>
           <Form.Label>Instructor's CID</Form.Label>
-          <Form.Input />
-          <Form.Validation />
-        </Form.Item>
+          <Input {...attrs} bind:value={$formData.instructorId} />
+        </Form.Control>
+        <Form.FieldErrors />
       </Form.Field>
     {/if}
   </div>
-  <Form.Button class="float-right">Assign</Form.Button>
-</Form.Root>
+  <Form.Button class="w-full">
+    {#if $delayed}
+      <LoaderCircle class="animate-spin w-5 h-5" />
+    {:else}
+      Assign
+    {/if}
+  </Form.Button>
+</form>

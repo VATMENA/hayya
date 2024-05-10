@@ -10,15 +10,28 @@
   import * as Table from "$lib/components/ui/table";
   import * as Dialog from "$lib/components/ui/dialog";
   import * as Form from "$lib/components/ui/form";
-  import { Plus } from "lucide-svelte";
+  import * as Select from "$lib/components/ui/select";
+  import Plus from "lucide-svelte/icons/plus";
   import { Button } from "$lib/components/ui/button";
   import { formSchema, type FormSchema } from "./schema";
-  import type { SuperValidated } from "sveltekit-superforms";
+  import type { Infer, SuperValidated } from "sveltekit-superforms";
   import type { PageData } from "./$types";
   import { toast } from "svelte-sonner";
   import ActionButtons from "./actions.svelte";
+  import { superForm } from "sveltekit-superforms/client";
+  import { zodClient } from "sveltekit-superforms/adapters";
+  import { Input } from "$lib/components/ui/input";
+  import { LoaderCircle } from "lucide-svelte";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
+  import { page } from "$app/stores";
 
   export let data: PageData;
+
+  $: {
+    clearItems($page.data.url);
+    addItem($page.data.url, "/admin", `Site Administration`);
+    addPage($page.data.url, "Manage Facilities");
+  }
 
   let facilities_store = writable(data.facilities!);
   $: $facilities_store = data.facilities!;
@@ -53,16 +66,26 @@
 
   let createDialogOpen = false;
 
-  export let form: SuperValidated<FormSchema>;
+  let formSV: SuperValidated<Infer<FormSchema>> = data.form!;
 
-  let options = {
-    onUpdated: ({ form }) => {
+  const form = superForm(formSV, {
+    validators: zodClient(formSchema),
+    onUpdated({ form }) {
       if (form.valid) {
         createDialogOpen = false;
         toast.success("Facility created!");
       }
     },
-  };
+  });
+
+  const { form: formData, enhance, delayed } = form;
+
+  $: selectedDotnetType = $formData.dotnetType
+    ? {
+        label: $formData.dotnetType,
+        value: $formData.dotnetType,
+      }
+    : undefined;
 </script>
 
 <div class="flex items-center justify-between">
@@ -116,54 +139,56 @@
     </Dialog.Header>
 
     <div class="space-y-2">
-      <Form.Root
-        action="?/create"
-        method="POST"
-        {form}
-        schema={formSchema}
-        {options}
-        let:config>
-        <Form.Field {config} name="id">
-          <Form.Item>
+      <form action="?/create" method="POST" use:enhance>
+        <Form.Field {form} name="id">
+          <Form.Control let:attrs>
             <Form.Label>Facility ID</Form.Label>
-            <Form.Input />
-            <Form.Validation />
-          </Form.Item>
+            <Input {...attrs} bind:value={$formData.id} />
+          </Form.Control>
+          <Form.FieldErrors />
         </Form.Field>
-        <Form.Field {config} name="name">
-          <Form.Item>
+        <Form.Field {form} name="name">
+          <Form.Control let:attrs>
             <Form.Label>Facility Name</Form.Label>
-            <Form.Input />
-            <Form.Validation />
-          </Form.Item>
+            <Input {...attrs} bind:value={$formData.name} />
+          </Form.Control>
+          <Form.FieldErrors />
         </Form.Field>
-        <Form.Field {config} name="dotnetId">
-          <Form.Item>
-            <Form.Label>.NET ID</Form.Label>
-            <Form.Input />
-            <Form.Validation />
-          </Form.Item>
+        <Form.Field {form} name="dotnetId">
+          <Form.Control let:attrs>
+            <Form.Label>VATSIM Facility ID</Form.Label>
+            <Input {...attrs} bind:value={$formData.dotnetId} />
+          </Form.Control>
+          <Form.FieldErrors />
         </Form.Field>
-        <Form.Item>
-          <Form.Field {config} name="dotnetType">
-            <Form.Label>.NET Type</Form.Label>
-            <Form.Select>
-              <Form.SelectTrigger placeholder=".NET Type" />
-              <Form.SelectContent>
-                <Form.SelectItem value="Division">Division</Form.SelectItem>
-                <Form.SelectItem value="Subdivision">
-                  Subdivision
-                </Form.SelectItem>
-              </Form.SelectContent>
-            </Form.Select>
-            <Form.Validation />
-          </Form.Field>
-        </Form.Item>
-        <Form.Button class="mt-2 w-100">
-          <Plus class="mr-2 w-4 h-4" />
-          Create
+        <Form.Field {form} name="dotnetType">
+          <Form.Control let:attrs>
+            <Form.Label>VATSIM Facility Type</Form.Label>
+            <Select.Root
+              selected={selectedDotnetType}
+              onSelectedChange={(v) => {
+                v && ($formData.dotnetType = v.value);
+              }}>
+              <Select.Trigger {...attrs}>
+                <Select.Value placeholder="Select..." />
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Item value="Division" label="Division" />
+                <Select.Item value="Subdivision" label="Subdivision" />
+              </Select.Content>
+            </Select.Root>
+            <input hidden bind:value={$formData.dotnetType} name={attrs.name} />
+          </Form.Control>
+          <Form.FieldErrors />
+        </Form.Field>
+        <Form.Button class="w-full">
+          {#if $delayed}
+            <LoaderCircle class="animate-spin w-5 h-5" />
+          {:else}
+            Create
+          {/if}
         </Form.Button>
-      </Form.Root>
+      </form>
     </div>
   </Dialog.Content>
 </Dialog.Root>

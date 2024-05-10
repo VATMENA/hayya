@@ -1,14 +1,19 @@
 <script lang="ts">
   import * as Card from "$lib/components/ui/card";
-  import {
-    SquareUserIcon,
-    TowerControlIcon,
-    UserIcon,
-    NetworkIcon,
-  } from "lucide-svelte";
+  import SquareUserIcon from "lucide-svelte/icons/square-user";
+  import TowerControlIcon from "lucide-svelte/icons/tower-control";
+  import UserIcon from "lucide-svelte/icons/user";
+  import NetworkIcon from "lucide-svelte/icons/network";
   import type { PageData } from "./$types";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
+  import { page } from "$app/stores";
 
   export let data: PageData;
+
+  $: {
+    clearItems($page.data.url);
+    addPage($page.data.url, "Site Administration");
+  }
 </script>
 
 <div class="flex items-center justify-between space-y-2">

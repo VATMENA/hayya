@@ -1,20 +1,26 @@
 <script lang="ts">
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import { Button } from "$lib/components/ui/button";
-  import { CalendarIcon, MoreHorizontal } from "lucide-svelte";
+
+  import CalendarIcon from "lucide-svelte/icons/calendar";
   import * as Dialog from "$lib/components/ui/dialog";
   import * as Tabs from "$lib/components/ui/tabs";
   import * as Popover from "$lib/components/ui/popover";
   import * as Select from "$lib/components/ui/select";
   import { can } from "$lib/perms/can";
   import { page } from "$app/stores";
-  import { type UserFacilityAssignment } from "@prisma/client";
+  import {
+    type Role,
+    type User,
+    type UserFacilityAssignment,
+  } from "@prisma/client";
   import CertForm from "./cert-form.svelte";
   import { goto, invalidate, invalidateAll } from "$app/navigation";
   import { ASSIGN_ROLES, ISSUE_CERTIFICATE } from "$lib/perms/permissions";
   import { toast } from "svelte-sonner";
+  import Ellipsis from "lucide-svelte/icons/ellipsis";
 
-  export let user: UserFacilityAssignment;
+  export let user: UserFacilityAssignment & { user: User; roles: Role[] };
 
   let cert_issue_open = false;
 
@@ -62,7 +68,7 @@
       size="icon"
       class="relative w-8 h-8 p-0">
       <span class="sr-only">Open menu</span>
-      <MoreHorizontal class="w-4 h-4" />
+      <Ellipsis class="w-4 h-4" />
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content>
@@ -122,7 +128,7 @@
   <Dialog.Root bind:open={cert_issue_open}>
     <Dialog.Content class="max-w-[40rem]">
       <Dialog.Header>
-        <Dialog.Title>Issue certificate for {user.name}</Dialog.Title>
+        <Dialog.Title>Issue certificate for {user.user.name}</Dialog.Title>
         <Dialog.Description>
           Make sure the user has completed the needed training and certificates
           are issued according to vACC policy. Certificates can only be revoked
@@ -134,8 +140,8 @@
         onsubmit={async () => {
           cert_issue_open = false;
         }}
-        theForm={$page.data.form}
-        {user} />
+        data={$page.data.form}
+        userId={user.userId} />
     </Dialog.Content>
   </Dialog.Root>
 {/if}

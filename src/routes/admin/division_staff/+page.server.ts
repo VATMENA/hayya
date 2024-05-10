@@ -1,13 +1,14 @@
 import type { PageServerLoad, Actions } from "./$types";
 import prisma from "$lib/prisma";
 import { superValidate } from "sveltekit-superforms/server";
-import { formSchema } from "./schema";
+import { formSchema, formSchema2 } from "./schema";
 import { fail } from "@sveltejs/kit";
 import { loadUserData } from "$lib/auth";
 import { ulid } from "ulid";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async ({ parent }) => {
-  let { user } = await parent();
+  const { user } = await parent();
   if (!user.isSiteAdmin) {
     return {};
   }
@@ -22,19 +23,20 @@ export const load: PageServerLoad = async ({ parent }) => {
         user: true,
       },
     }),
-    form: await superValidate(formSchema),
+    form: await superValidate(zod(formSchema)),
+    form2: await superValidate(zod(formSchema2)),
   };
 };
 
 export const actions: Actions = {
   create: async (event) => {
-    let form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
 
     if (!form.valid) {
       return fail(400, { form });
     }
 
-    let { user } = await loadUserData(event.cookies, null);
+    const { user } = await loadUserData(event.cookies, null);
     if (!user.isSiteAdmin) {
       return fail(400, { form });
     }
@@ -53,20 +55,20 @@ export const actions: Actions = {
     };
   },
   createAll: async (event) => {
-    let form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
 
     if (!form.valid) {
       return fail(400, { form });
     }
 
-    let { user } = await loadUserData(event.cookies, null);
+    const { user } = await loadUserData(event.cookies, null);
     if (!user.isSiteAdmin) {
       return fail(400, { form });
     }
 
-    let facilities = await prisma.facility.findMany();
+    const facilities = await prisma.facility.findMany();
 
-    for (let f of facilities) {
+    for (const f of facilities) {
       if (f.dotnetType === "Subdivision") {
         await prisma.userFacilityAssignment.create({
           data: {
@@ -84,7 +86,7 @@ export const actions: Actions = {
     };
   },
   delete: async (event) => {
-    let { user } = await loadUserData(event.cookies, null);
+    const { user } = await loadUserData(event.cookies, null);
     if (!user.isSiteAdmin) {
       return fail(400, {});
     }

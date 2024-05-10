@@ -8,6 +8,7 @@ import { fail } from "@sveltejs/kit";
 import { loadUserData } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { ulid } from "ulid";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
   if (!can(EDIT_DETAILS)) {
@@ -19,23 +20,28 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
     );
   }
 
-  let role = await prisma.role.findUnique({
+  const role = await prisma.role.findUnique({
     where: {
       id: params.roleId,
-      facilityId: params.id
-    }
+      facilityId: params.id,
+    },
   });
 
   if (!role) {
-    return redirect(307, `/${params.id}/manage`, {type: 'error', message: 'Could not find that role.'}, cookies);
+    return redirect(
+      307,
+      `/${params.id}/manage`,
+      { type: "error", message: "Could not find that role." },
+      cookies,
+    );
   }
 
-  let form = await superValidate(formSchema);
+  const form = await superValidate(zod(formSchema));
 
   form.data.color = role.color;
   form.data.name = role.name;
 
-  for (let permission of role.permissions) {
+  for (const permission of role.permissions) {
     // @ts-ignore
     form.data[permission] = true;
   }
@@ -49,7 +55,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 
 export const actions: Actions = {
   default: async (event) => {
-    const form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
     if (!form.valid) {
       return fail(400, {
         form,
@@ -64,9 +70,9 @@ export const actions: Actions = {
       });
     }
 
-    let permissions = [];
+    const permissions = [];
 
-    for (let permission of PERMISSIONS) {
+    for (const permission of PERMISSIONS) {
       if (Object.keys(form.data).includes(permission.id)) {
         // @ts-ignore
         if (form.data[permission.id] && can(permission)) {
@@ -78,7 +84,7 @@ export const actions: Actions = {
     await prisma.role.update({
       where: {
         id: event.params.roleId,
-        facilityId: event.params.id
+        facilityId: event.params.id,
       },
       data: {
         name: form.data.name,

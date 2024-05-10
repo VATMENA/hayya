@@ -10,11 +10,11 @@ export const load: LayoutServerLoad = async ({ parent }) => {
     },
     include: {
       queue: true,
-    }
+    },
   });
 
   if (!membership) {
-    return {}
+    return {};
   }
 
   const q = membership.queue;
@@ -26,17 +26,22 @@ export const load: LayoutServerLoad = async ({ parent }) => {
   };
 };
 
-const queuePosition = async (userId: string, queueId: string): Promise<number> => {
-    const queueMemberships = await prisma.trainingQueueMembership.findMany({
-      where: {
-        queueId: queueId,
-      },
-      orderBy: {
-        joinedAt: 'asc',
-      },
-    });
+const queuePosition = async (
+  userId: string,
+  queueId: string,
+): Promise<number> => {
+  const queueMemberships = await prisma.trainingQueueMembership.findMany({
+    where: {
+      queueId: queueId,
+    },
+    orderBy: {
+      joinedAt: "asc",
+    },
+  });
 
-    const userIndex: number = queueMemberships.findIndex(member => member.userId === userId);
+  const userIndex: number = queueMemberships.findIndex(
+    (member) => member.userId === userId,
+  );
 
-    return userIndex + 1;
-}
+  return userIndex + 1;
+};
