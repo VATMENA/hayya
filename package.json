@@ -11,7 +11,8 @@
     "postinstall": "prisma generate",
     "fmt": "prettier . --write",
     "lint": "prettier --check . && svelte-check",
-    "fix": "prettier . --write"
+    "fix": "prettier . --write",
+    "start": "node build"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.2.0",
