@@ -267,6 +267,9 @@
                   Reject
                 </Button>
               </div>
+
+              <p>Please note that accepting or rejecting will close the case and comments will no longer be accepted.</p>
+              <p>If you are rejecting the case, <b>leave a comment with reasoning</b> <i>before</i> clicking Reject.</p>
             </Dialog.Content>
           </Dialog.Root>
         {/if}
