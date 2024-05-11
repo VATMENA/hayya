@@ -10,9 +10,14 @@ import { TVCaseState, TVCaseType } from "@prisma/client";
 export const load: PageServerLoad = async ({ parent, cookies, params }) => {
   let { user } = await parent();
 
+  let id = Number.parseInt(params.caseId);
+  if (!id || isNaN(id)) {
+    return {};
+  }
+
   let tvCase = await prisma.tVCase.findUnique({
     where: {
-      id: Number.parseInt(params.caseId),
+      id: id,
       facilityId: params.id,
     },
     include: {

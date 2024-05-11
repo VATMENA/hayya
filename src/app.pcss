@@ -75,4 +75,56 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .render h1 {
+    @apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl;
+  }
+  .render h2 {
+    @apply scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0;
+  }
+  .render h3 {
+    @apply scroll-m-20 text-2xl font-semibold tracking-tight;
+  }
+  .render h4 {
+    @apply scroll-m-20 text-xl font-semibold tracking-tight;
+  }
+  .render p {
+    @apply leading-7 [&:not(:first-child)]:mt-6;
+  }
+  .render blockquote {
+    @apply mt-6 border-l-2 pl-6 italic;
+  }
+
+  .render a {
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .render ul {
+    @apply list-disc list-inside my-6 [&>li]:mt-2;
+  }
+  .render ol {
+    @apply list-decimal list-inside my-6 [&>li]:mt-2;
+  }
+
+  .render pre {
+    @apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold block w-min;
+  }
+
+  .render table {
+    @apply my-6 w-full overflow-y-auto;
+  }
+  .render table > thead > tr {
+    @apply m-0 border-t p-0 even:bg-muted;
+  }
+  .render table > thead > tr > th {
+    @apply border px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right;
+  }
+  .render table > tbody > tr {
+    @apply m-0 border-t p-0 even:bg-muted;
+  }
+  .render table > tbody > tr > td {
+    @apply border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right;
+  }
 }
