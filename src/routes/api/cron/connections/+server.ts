@@ -29,7 +29,7 @@ export const GET: RequestHandler = async () => {
 
   const req = await fetch("https://data.vatsim.net/v3/vatsim-data.json");
 
-  let datafeed: Datafeed = await req.json();
+  const datafeed: Datafeed = await req.json();
 
   const activeConnections = datafeed.controllers.filter((c) => {
     return Object.entries(callsigns).some(([_, r]) => c.callsign.match(r));
@@ -42,7 +42,7 @@ export const GET: RequestHandler = async () => {
   });
 
   const activeMap: Record<string, Controller> = {};
-  const openMap: Record<string, {}> = {};
+  const openMap: Record<string, object> = {};
   activeConnections.forEach((c) => (activeMap[c.cid.toString()] = c));
   openConnections.forEach((c) => (openMap[c.userId] = c));
 
@@ -165,19 +165,23 @@ export const GET: RequestHandler = async () => {
         if (info.rating >= ratingID("S1")) {
           ok = true;
         }
+        break;
       case "TWR":
         if (info.rating >= ratingID("S2")) {
           ok = true;
         }
+        break;
       case "APP":
         if (info.rating >= ratingID("S3")) {
           ok = true;
         }
+        break;
       case "FSS":
       case "CTR":
         if (info.rating >= ratingID("C1")) {
           ok = true;
         }
+        break;
     }
     // Authorized from rating. No need to check certificates.
     if (ok) {

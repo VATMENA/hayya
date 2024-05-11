@@ -11,13 +11,14 @@ import { encode } from "blurhash";
 import { ulid } from "ulid";
 import type { Config } from "@sveltejs/adapter-vercel";
 import { MANAGE_EVENTS } from "$lib/perms/permissions";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const config: Config = {
   maxDuration: 300,
 };
 
 export const load: PageServerLoad = async ({ params }) => {
-  let events = await prisma.event.findMany({
+  const events = await prisma.event.findMany({
     where: {
       hostId: params.id,
     },
@@ -25,13 +26,13 @@ export const load: PageServerLoad = async ({ params }) => {
 
   return {
     events,
-    form: await superValidate(formSchema),
+    form: await superValidate(zod(formSchema)),
   };
 };
 
 export const actions: Actions = {
   create: async (event) => {
-    const form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
 
     if (!form.valid) {
       return fail(400, { form });
@@ -50,17 +51,17 @@ export const actions: Actions = {
 
     // combine the datetimes
 
-    let startDate = form.data.startDate.split("T")[0];
-    let startTime = String(form.data.startTime).padStart(4, "0");
-    let startHour = startTime.slice(0, 2);
-    let startMinute = startTime.slice(2);
-    let start = `${startDate}T${startHour}:${startMinute}:00Z`;
+    const startDate = new Date(form.data.startDate);
+    const startTime = String(form.data.startTime).padStart(4, "0");
+    const startHour = Number.parseInt(startTime.slice(0, 2));
+    const startMinute = Number.parseInt(startTime.slice(2));
+    startDate.setHours(startHour, startMinute);
 
-    let endDate = form.data.endDate.split("T")[0];
-    let endTime = String(form.data.endTime).padStart(4, "0");
-    let endHour = endTime.slice(0, 2);
-    let endMinute = endTime.slice(2);
-    let end = `${endDate}T${endHour}:${endMinute}:00Z`;
+    const endDate = new Date(form.data.endDate);
+    const endTime = String(form.data.endTime).padStart(4, "0");
+    const endHour = Number.parseInt(endTime.slice(0, 2));
+    const endMinute = Number.parseInt(endTime.slice(2));
+    endDate.setHours(endHour, endMinute);
 
     // generate the blurhash
 
@@ -73,8 +74,8 @@ export const actions: Actions = {
         id: ulid(),
         name: form.data.name,
         hostId: event.params.id,
-        start: start,
-        end: end,
+        start: startDate,
+        end: endDate,
         description: form.data.description,
         bannerUrl: form.data.bannerUrl,
         bannerBlurHash: blurhash,
@@ -100,13 +101,13 @@ export const actions: Actions = {
       );
     }
 
-    let data = await event.request.formData();
+    const data = await event.request.formData();
 
     if (!data.has("eventId") || !data.has("public")) {
       return { success: false };
     } else {
-      let id = data.get("eventId")!.toString();
-      let isPublic = data.get("public")!.toString() === "true";
+      const id = data.get("eventId")!.toString();
+      const isPublic = data.get("public")!.toString() === "true";
       await prisma.event.update({
         where: {
           id,

@@ -3,63 +3,99 @@ import { fail } from "@sveltejs/kit";
 import { redirect } from "sveltekit-flash-message/server";
 import { loadUserData } from "$lib/auth";
 import prisma from "$lib/prisma";
-import type { UserFacilityAssignment } from "@prisma/client";
+import {
+  type Certificate,
+  type Role,
+  type User,
+  type UserFacilityAssignment,
+  Prisma,
+} from "@prisma/client";
 import { can } from "$lib/perms/can";
 import { setError, superValidate } from "sveltekit-superforms/server";
 import { formSchema } from "./schema";
-import { C_TYP, P_TYP, parse_position_v2, POS, type PositionV2, serialize_position_v2 } from "$lib/cert";
+import {
+  C_TYP,
+  P_TYP,
+  parse_position_v2,
+  POS,
+  type PositionV2,
+  serialize_position_v2,
+} from "$lib/cert";
 import { parseDate } from "@internationalized/date";
 import {
   ASSIGN_ROLES,
   EXTENDED_ROSTER,
   ISSUE_CERTIFICATE,
   ISSUE_OPENSKIES_CERTIFICATES,
-  ISSUE_SOLO_CERTIFICATES, REVOKE_CERTIFICATE, REVOKE_OPENSKIES_CERTIFICATES,
-  REVOKE_SOLO_CERTIFICATES
+  ISSUE_SOLO_CERTIFICATES,
+  REVOKE_CERTIFICATE,
+  REVOKE_OPENSKIES_CERTIFICATES,
+  REVOKE_SOLO_CERTIFICATES,
 } from "$lib/perms/permissions";
 import { ulid } from "ulid";
 import { formSchema as formSchemaRevoke } from "./revoke-form";
+import { zod } from "sveltekit-superforms/adapters";
+
+export type RosterUser = Prisma.UserFacilityAssignmentGetPayload<{
+  include: {
+    user: {
+      include: {
+        heldCertificates: {
+          include: {
+            instructor: true;
+          };
+        };
+      };
+    };
+    roles: true;
+  };
+}>;
 
 export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
-  let { user } = await loadUserData(cookies, params.id);
+  const { user } = await loadUserData(cookies, params.id);
 
   // Privacy stuff
 
-  let roster: UserFacilityAssignment[] =
-    await prisma.userFacilityAssignment.findMany({
-      where: {
-        facilityId: params.id,
-        NOT: {
-          assignmentType: "DivisionalStaff",
-        },
+  const roster: RosterUser[] = await prisma.userFacilityAssignment.findMany({
+    where: {
+      facilityId: params.id,
+      NOT: {
+        assignmentType: "DivisionalStaff",
       },
-      include: {
-        user: {
-          include: {
-            heldCertificates: {
-              include: {
-                instructor: true,
-              },
+    },
+    include: {
+      user: {
+        include: {
+          heldCertificates: {
+            include: {
+              instructor: true,
             },
           },
         },
-        roles: true,
       },
-    });
+      roles: true,
+    },
+  });
 
-  let altered_roster = [];
+  let altered_roster: RosterUser[] = [];
 
-  for (let roster_user of roster) {
-    if (roster_user.user.ratingShort == "SUS" || roster_user.user.ratingShort == "INAC") {
+  for (const roster_user of roster) {
+    if (
+      roster_user.user.ratingShort == "SUS" ||
+      roster_user.user.ratingShort == "INAC"
+    ) {
       continue;
     }
-    if (roster_user.user.ratingShort == "OBS" && roster_user.user.heldCertificates.length == 0) {
+    if (
+      roster_user.user.ratingShort == "OBS" &&
+      roster_user.user.heldCertificates.length == 0
+    ) {
       continue;
     }
 
-    let cleaned_certs = [];
+    const cleaned_certs = [];
 
-    for (let cert of roster_user.user.heldCertificates) {
+    for (const cert of roster_user.user.heldCertificates) {
       if (cert.issuedInId === params.id) {
         cleaned_certs.push(cert);
       }
@@ -78,15 +114,15 @@ export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
   }
 
   altered_roster = altered_roster.sort((a, b) => {
-    if (a.name < b.name) return -1;
-    else if (a.name > b.name) return 1;
+    if (a.user.name < b.user.name) return -1;
+    else if (a.user.name > b.user.name) return 1;
     else return 0;
   });
 
   return {
     users: altered_roster,
-    form: await superValidate(formSchema),
-    formRevoke: await superValidate(formSchemaRevoke)
+    form: await superValidate(zod(formSchema)),
+    formRevoke: await superValidate(zod(formSchemaRevoke)),
   };
 };
 
@@ -94,7 +130,7 @@ export const actions = {
   set_roles: async ({ cookies, params, request }) => {
     await loadUserData(cookies, params.id);
 
-    let data = await request.formData();
+    const data = await request.formData();
 
     if (!data.has("target")) {
       return fail(400, { success: false, error: "missing target" });
@@ -132,7 +168,7 @@ export const actions = {
     return { success: true };
   },
   issue_certificate: async (event) => {
-    const form = await superValidate(event, formSchema);
+    const form = await superValidate(event, zod(formSchema));
     if (!form.valid) {
       return fail(400, {
         form,
@@ -148,16 +184,16 @@ export const actions = {
       );
     }
 
-    let { user } = await loadUserData(event.cookies, event.params.id);
+    const { user } = await loadUserData(event.cookies, event.params.id);
 
-    let targetUser = await prisma.user.findUnique({
+    const targetUser = await prisma.user.findUnique({
       where: {
         id: form.data.id,
       },
     })!;
 
-    let has_solo_permission = can(ISSUE_SOLO_CERTIFICATES);
-    let has_perm_permission = can(ISSUE_CERTIFICATE);
+    const has_solo_permission = can(ISSUE_SOLO_CERTIFICATES);
+    const has_perm_permission = can(ISSUE_CERTIFICATE);
 
     if (form.data.c_typ === C_TYP.Solo && !has_solo_permission) {
       return setError(
@@ -173,7 +209,7 @@ export const actions = {
       );
     }
 
-    let has_openskies_permission = can(ISSUE_OPENSKIES_CERTIFICATES);
+    const has_openskies_permission = can(ISSUE_OPENSKIES_CERTIFICATES);
     if (form.data.p_typ === P_TYP.OpenSkies && !has_openskies_permission) {
       return setError(
         form,
@@ -185,24 +221,23 @@ export const actions = {
     // valid & authorized, issue the certificate
 
     // create the PositionV2 and serialize to a permission specifier
-    let pv2: PositionV2 = {
+    const pv2: PositionV2 = {
       c_typ: form.data.c_typ,
       p_typ: form.data.p_typ,
       facility: form.data.facility === undefined ? null : form.data.facility,
       position: form.data.pos === undefined ? null : form.data.pos,
     };
-    let position_specifier = serialize_position_v2(pv2)!;
+    const position_specifier = serialize_position_v2(pv2)!;
 
-    let date = form.data.solo_expires
-      ? parseDate(form.data.solo_expires).toDate("UTC")
-      : undefined;
+    console.log(position_specifier);
+    console.log(pv2);
 
     await prisma.certificate.create({
       data: {
         holderId: targetUser!.id,
         instructorId: user!.id,
         position: position_specifier,
-        expires: date,
+        expires: form.data.solo_expires ? form.data.solo_expires : null,
         instructorComments: form.data.comments,
         issuedInId: event.params.id,
       },
@@ -215,88 +250,184 @@ export const actions = {
   deleteCertificate: async (event) => {
     await loadUserData(event.cookies, event.params.id);
 
-    let formData = await event.request.formData();
+    const formData = await event.request.formData();
 
     if (!formData.has("id")) {
-      redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (missing id).'}, event);
+      redirect(
+        307,
+        `/${event.params.id}`,
+        {
+          type: "error",
+          message: "You don't have permission to do that (missing id).",
+        },
+        event,
+      );
     }
 
-    let cert = await prisma.certificate.findUnique({
+    const cert = await prisma.certificate.findUnique({
       where: {
-        id: Number.parseInt(formData.get("id")!.toString())
-      }
+        id: Number.parseInt(formData.get("id")!.toString()),
+      },
     });
 
     if (!cert) {
-      redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (cert does not exist).'}, event);
+      redirect(
+        307,
+        `/${event.params.id}`,
+        {
+          type: "error",
+          message:
+            "You don't have permission to do that (cert does not exist).",
+        },
+        event,
+      );
     }
 
     if (cert.issuedInId != event.params.id) {
-      redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (facility mismatch).'}, event);
+      redirect(
+        307,
+        `/${event.params.id}`,
+        {
+          type: "error",
+          message: "You don't have permission to do that (facility mismatch).",
+        },
+        event,
+      );
     }
 
-
-
     // parse the cert
-    let pv2 = parse_position_v2(cert.position);
+    const pv2 = parse_position_v2(cert.position);
 
     if (pv2) {
       if (pv2.c_typ === C_TYP.Solo && !can(REVOKE_SOLO_CERTIFICATES)) {
-        redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (missing revoke solo permission).'}, event);
-      } else if (pv2.p_typ === P_TYP.OpenSkies && !can(REVOKE_OPENSKIES_CERTIFICATES)) {
-        redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (missing revoke openskies permission).'}, event);
+        redirect(
+          307,
+          `/${event.params.id}`,
+          {
+            type: "error",
+            message:
+              "You don't have permission to do that (missing revoke solo permission).",
+          },
+          event,
+        );
+      } else if (
+        pv2.p_typ === P_TYP.OpenSkies &&
+        !can(REVOKE_OPENSKIES_CERTIFICATES)
+      ) {
+        redirect(
+          307,
+          `/${event.params.id}`,
+          {
+            type: "error",
+            message:
+              "You don't have permission to do that (missing revoke openskies permission).",
+          },
+          event,
+        );
       } else if (!can(REVOKE_CERTIFICATE)) {
-        redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (missing revoke permission).'}, event);
+        redirect(
+          307,
+          `/${event.params.id}`,
+          {
+            type: "error",
+            message:
+              "You don't have permission to do that (missing revoke permission).",
+          },
+          event,
+        );
       }
     }
 
     await prisma.certificate.delete({
       where: {
-        id: Number.parseInt(formData.get("id")!.toString())
-      }
-    })
+        id: Number.parseInt(formData.get("id")!.toString()),
+      },
+    });
   },
   revokeCertificate: async (event) => {
-    let { user } = await loadUserData(event.cookies, event.params.id);
+    const { user } = await loadUserData(event.cookies, event.params.id);
 
-    let form = await superValidate(event, formSchemaRevoke);
+    const form = await superValidate(event, zod(formSchemaRevoke));
 
     if (!form.valid) {
       return fail(400, {
-        form
+        form,
       });
     }
 
-    console.log(form);
-
-    let cert = await prisma.certificate.findUnique({
+    const cert = await prisma.certificate.findUnique({
       where: {
-        id: form.data.id
-      }
+        id: form.data.id,
+      },
     });
 
     if (!cert) {
-      redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (cert does not exist).'}, event);
+      redirect(
+        307,
+        `/${event.params.id}`,
+        {
+          type: "error",
+          message:
+            "You don't have permission to do that (cert does not exist).",
+        },
+        event,
+      );
     }
 
     if (cert.issuedInId != event.params.id) {
-      redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (facility mismatch).'}, event);
+      redirect(
+        307,
+        `/${event.params.id}`,
+        {
+          type: "error",
+          message: "You don't have permission to do that (facility mismatch).",
+        },
+        event,
+      );
     }
 
-
-
     // parse the cert
-    let pv2 = parse_position_v2(cert.position);
+    const pv2 = parse_position_v2(cert.position);
 
     let str_name = "";
-    
+
     if (pv2) {
       if (pv2.c_typ === C_TYP.Solo && !can(REVOKE_SOLO_CERTIFICATES)) {
-        redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (missing revoke solo permission).'}, event);
-      } else if (pv2.p_typ === P_TYP.OpenSkies && !can(REVOKE_OPENSKIES_CERTIFICATES)) {
-        redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (missing revoke openskies permission).'}, event);
+        redirect(
+          307,
+          `/${event.params.id}`,
+          {
+            type: "error",
+            message:
+              "You don't have permission to do that (missing revoke solo permission).",
+          },
+          event,
+        );
+      } else if (
+        pv2.p_typ === P_TYP.OpenSkies &&
+        !can(REVOKE_OPENSKIES_CERTIFICATES)
+      ) {
+        redirect(
+          307,
+          `/${event.params.id}`,
+          {
+            type: "error",
+            message:
+              "You don't have permission to do that (missing revoke openskies permission).",
+          },
+          event,
+        );
       } else if (!can(REVOKE_CERTIFICATE)) {
-        redirect(307, `/${event.params.id}`, {type: 'error', message: 'You don\'t have permission to do that (missing revoke permission).'}, event);
+        redirect(
+          307,
+          `/${event.params.id}`,
+          {
+            type: "error",
+            message:
+              "You don't have permission to do that (missing revoke permission).",
+          },
+          event,
+        );
       }
       if (pv2 !== null) {
         if (pv2.c_typ === C_TYP.Solo) {
@@ -344,8 +475,8 @@ export const actions = {
 
     await prisma.certificate.delete({
       where: {
-        id: form.data.id
-      }
+        id: form.data.id,
+      },
     });
 
     await prisma.session.create({
@@ -353,14 +484,14 @@ export const actions = {
         id: ulid(),
         studentId: cert.holderId,
         instructorId: user.id,
-        logType: 'CertificateRevokal',
+        logType: "CertificateRevokal",
         sessionType: str_name,
         date: new Date(),
         studentComments: form.data.studentComments,
-        instructorComments: form.data.mentorComments
-      }
+        instructorComments: form.data.mentorComments,
+      },
     });
 
-    return { form }
-  }
+    return { form };
+  },
 } satisfies Actions;

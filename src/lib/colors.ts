@@ -5,20 +5,20 @@ export function color(input: string): string {
   if (!input.includes("-")) {
     return "#000000";
   }
-  let split = input.split("-");
+  const split = input.split("-");
   if (split.length != 2) {
     return "#000000";
   }
 
-  let color = split[0];
-  let weight = split[1];
+  const color = split[0];
+  const weight = split[1];
 
   if (!Object.keys(colors).includes(color)) {
     return "#000000";
   }
 
   // @ts-ignore
-  let weights = colors[color];
+  const weights = colors[color];
 
   if (!Object.keys(weights).includes(weight)) {
     return "#000000";

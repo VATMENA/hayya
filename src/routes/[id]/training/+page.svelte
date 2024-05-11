@@ -2,14 +2,12 @@
   import * as Card from "$lib/components/ui/card";
   import { Progress } from "$lib/components/ui/progress";
   import { Button, buttonVariants } from "$lib/components/ui/button";
-  import {
-    GiftIcon,
-    LogInIcon,
-    LogOutIcon,
-    PlusIcon,
-    ScrollTextIcon,
-    SettingsIcon,
-  } from "lucide-svelte";
+  import GiftIcon from "lucide-svelte/icons/gift";
+  import LogInIcon from "lucide-svelte/icons/log-in";
+  import LogOutIcon from "lucide-svelte/icons/log-out";
+  import PlusIcon from "lucide-svelte/icons/plus";
+  import ScrollTextIcon from "lucide-svelte/icons/scroll-text";
+  import SettingsIcon from "lucide-svelte/icons/settings";
   import { can } from "$lib/perms/can";
   import { page } from "$app/stores";
   import * as Dialog from "$lib/components/ui/dialog";
@@ -18,20 +16,35 @@
   import { Input } from "$lib/components/ui/input";
   import SessionForm from "./session-form.svelte";
   import { toast } from "svelte-sonner";
-  import { goto } from "$app/navigation";
   import {
     MANAGE_QUEUES,
     RECOMMEND_FOR_QUEUE,
     TRAIN,
   } from "$lib/perms/permissions";
   import RequestForm from "./request-form.svelte";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
+  import { onMount } from "svelte";
 
   export let data: PageData;
+  $: {
+    clearItems($page.data.url);
+    addItem($page.data.url, "/switch_hq", data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, "Dashboard");
+    addPage($page.data.url, "Training");
+  }
 
   let sessionOpen = false;
   let viewTranscriptId = "";
 
   let requestTrainingOpen = false;
+
+  onMount(() => {
+    if (data.queue && !data.position) {
+      toast.error(
+        "There was a problem retrieving your position in the queue. Please try again later.",
+      );
+    }
+  });
 </script>
 
 <div class="flex items-center justify-between space-y-2">
@@ -44,15 +57,20 @@
       <Card.Header>
         <Card.Title>Training Queues</Card.Title>
       </Card.Header>
-      <Card.Content class="space-y-1.5">
-        {#if data.memberOfQueue !== null}
+      <Card.Content class="space-y-2">
+        {#if data.queue}
           <p>
-            Enrolled in the <b>{data.memberOfQueue.name}</b>
+            Enrolled in the <b>{data.queue.name}</b>
             queue.
           </p>
+          {#if data.position}
+            <p>
+              You are number <b>{data.position}</b>
+              in the queue.
+            </p>
+          {/if}
           <Button
-            href="/{$page.params.id}/training/queues/{data.memberOfQueue
-              .id}/leave">
+            href="/{$page.params.id}/training/queues/{data.queue.id}/leave">
             <LogOutIcon class="mr-2 w-4 h-4" />
             Leave
           </Button>
@@ -64,7 +82,7 @@
           </Button>
         {/if}
         {#if can(MANAGE_QUEUES) || can(RECOMMEND_FOR_QUEUE)}
-          <Button href="/{$page.params.id}/training/queues/manage">
+          <Button href="/{$page.params.id}/training/queues">
             <SettingsIcon class="mr-2 w-4 h-4" />
             Manage Queues
           </Button>
@@ -163,7 +181,7 @@
         <Dialog.Title>Log Training Session</Dialog.Title>
       </Dialog.Header>
       <SessionForm
-        form={data.form}
+        data={data.form}
         onsubmit={() => {
           sessionOpen = false;
           toast.success("Session has been saved to the student's transcript");
@@ -178,7 +196,7 @@
       <Dialog.Title>Request Training Session</Dialog.Title>
     </Dialog.Header>
     <RequestForm
-      form={data.requestForm}
+      data={data.requestForm}
       onsubmit={() => {
         requestTrainingOpen = false;
         toast.success("Training request submitted!");

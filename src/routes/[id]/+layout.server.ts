@@ -4,10 +4,19 @@ import prisma from "$lib/prisma";
 import { loadUserData } from "$lib/auth";
 
 export const load: LayoutServerLoad = async ({ params, cookies }) => {
-  let { user, roles } = await loadUserData(cookies, params.id);
+  const { user, roles } = await loadUserData(cookies, params.id);
+
+  const show_popup = [
+    "admin",
+    "api",
+    "callback",
+    "logout",
+    "switch_hq",
+    "visitor_application",
+  ].includes(params.id);
 
   // load the facility
-  let facility = await prisma.facility.findUnique({
+  const facility = await prisma.facility.findUnique({
     where: {
       id: params.id,
     },
@@ -21,10 +30,12 @@ export const load: LayoutServerLoad = async ({ params, cookies }) => {
     redirect(
       301,
       "/switch_hq",
-      {
-        type: "error",
-        message: "Invalid facility ID, please select another facility.",
-      },
+      show_popup
+        ? {
+            type: "error",
+            message: "Invalid facility ID, please select another facility.",
+          }
+        : undefined,
       cookies,
     );
   }

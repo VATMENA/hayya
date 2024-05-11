@@ -5,18 +5,35 @@
   import { toast } from "svelte-sonner";
   import { getFlash } from "sveltekit-flash-message";
   import { page } from "$app/stores";
-  import { version } from "$app/environment";
+  import { browser, version } from "$app/environment";
+  import { onMount } from "svelte";
 
-  const flash = getFlash(page);
+  interface Flash {
+    type: "success" | "info" | "warning" | "error";
+    message: string;
+  }
+
+  let flash = undefined;
+  if (browser) {
+    flash = getFlash(page);
+  }
 
   $: if ($flash) {
+    // @ts-ignore
     if ($flash.type === "success") {
+      // @ts-ignore
       toast.success($flash.message);
+      // @ts-ignore
     } else if ($flash.type === "info") {
+      // @ts-ignore
       toast.info($flash.message);
+      // @ts-ignore
     } else if ($flash.type === "warning") {
+      // @ts-ignore
       toast.info($flash.message);
+      // @ts-ignore
     } else if ($flash.type === "error") {
+      // @ts-ignore
       toast.error($flash.message);
     }
 
@@ -39,5 +56,5 @@
 </p>
 
 <p class="text-xs fixed right-1 bottom-1">
-  Made with &lt;3 by core, sharif_, and liam
+  Made with &lt;3 by core, sharif_, hhhapz, and iconoclastic_
 </p>

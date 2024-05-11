@@ -8,67 +8,111 @@
   import { page } from "$app/stores";
   import { PERMISSIONS } from "$lib/perms/permissions";
   import { can } from "$lib/perms/can";
+  import { zodClient } from "sveltekit-superforms/adapters";
+  import { superForm } from "sveltekit-superforms/client";
+  import Input from "$lib/components/ui/input/input.svelte";
+  import { FieldErrors } from "formsnap";
+  import { Switch } from "$lib/components/ui/switch";
+  import { LoaderCircle } from "lucide-svelte";
+  import SuperDebug from "sveltekit-superforms/client/SuperDebug.svelte";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
+  import { _as } from "$lib/typescriptMagic";
+  import type { FormPath } from "sveltekit-superforms";
 
   export let data: PageData;
 
-  let options = {
-    onUpdated: async ({ form }) => {
+  const form = superForm(data.form, {
+    validators: zodClient(formSchema),
+    async onUpdated({ form }) {
       if (form.valid) {
         await invalidateAll();
         await goto(`/${$page.params.id}/manage`);
         toast.success("Role created!");
       }
     },
-  };
+  });
+
+  const { form: formData, enhance, delayed } = form;
+
+  $: {
+    clearItems($page.data.url);
+    addItem($page.data.url, "/switch_hq", data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, "Dashboard");
+    addItem($page.data.url, `/${data.facility.id}/manage`, "Manage");
+    addItem($page.data.url, `/${data.facility.id}/manage`, "Roles");
+    addPage($page.data.url, `Create`);
+  }
+
+  function implicit_index(
+    id: string,
+  ): FormPath<{ name: string; color: string }> {
+    // @ts-ignore
+    return id;
+  }
+
+  let permissions: Record<string, boolean | undefined> = {};
+  $: {
+    for (let permission of PERMISSIONS) {
+      // @ts-ignore
+      permissions[permission.id] = $formData[permission.id];
+    }
+  }
 </script>
 
 <div class="flex items-center justify-between space-y-2">
   <h2 class="text-3xl font-bold tracking-tight">Create Role</h2>
 </div>
 
-<Form.Root
-  method="POST"
-  form={data.form}
-  schema={formSchema}
-  {options}
-  let:config>
-  <Form.Item>
-    <Form.Field {config} name="name">
+<form method="POST" use:enhance class="space-y-4">
+  <Form.Field {form} name="name">
+    <Form.Control let:attrs>
       <Form.Label>Role Name</Form.Label>
-      <Form.Input />
-      <Form.Validation />
-    </Form.Field>
-  </Form.Item>
-  <Form.Item>
-    <Form.Field {config} name="color">
+      <Input {...attrs} bind:value={$formData.name} />
+    </Form.Control>
+    <Form.FieldErrors />
+  </Form.Field>
+  <Form.Field {form} name="color">
+    <Form.Control let:attrs>
       <Form.Label>Role Color</Form.Label>
-      <Form.Input />
-      <Form.Validation />
-      <Form.Description>
-        A <a
-          class="underline-offset-4 underline"
-          href="https://tailwindcss.com/docs/customizing-colors">
-          Tailwind color
-        </a>
-        , e.g. sky-500
-      </Form.Description>
-    </Form.Field>
-  </Form.Item>
+      <Input {...attrs} bind:value={$formData.color} />
+    </Form.Control>
+    <Form.Description>
+      A <a
+        class="underline-offset-4 underline"
+        href="https://tailwindcss.com/docs/customizing-colors">
+        Tailwind color descriptor
+      </a>
+      , e.g. sky-500
+    </Form.Description>
+    <Form.FieldErrors />
+  </Form.Field>
   {#each PERMISSIONS as permission}
     {#if can(permission)}
-      <Form.Field {config} name={permission.id}>
-        <Form.Item
-          class="mt-2 flex flex-row items-center justify-between rounded-lg border p-4">
+      <Form.Field
+        {form}
+        name={implicit_index(permission.id)}
+        class="flex flex-row items-center justify-between rounded-lg border p-4">
+        <Form.Control let:attrs>
           <div class="space-y-0.5">
             <Form.Label>{permission.id}</Form.Label>
             <Form.Description>
               {permission.description}
             </Form.Description>
           </div>
-          <Form.Switch />
-        </Form.Item>
+          <Switch
+            includeInput
+            {...attrs}
+            bind:checked={permissions[permission.id]} />
+        </Form.Control>
       </Form.Field>
     {/if}
   {/each}
-  <Form.Button>Create</Form.Button>
-</Form.Root>
+
+  <Form.Button class="w-full">
+    {#if $delayed}
+      <LoaderCircle class="animate-spin w-5 h-5" />
+    {:else}
+      Create
+    {/if}
+  </Form.Button>
+</form>

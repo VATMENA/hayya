@@ -7,7 +7,7 @@ import { TRAIN } from "$lib/perms/permissions";
 export const load: PageServerLoad = async ({ parent, params, cookies }) => {
   const { user, roles } = await parent();
 
-  let targetUser = await prisma.user.findUnique({
+  const targetUser = await prisma.user.findUnique({
     where: {
       id: params.targetId,
     },
@@ -32,7 +32,7 @@ export const load: PageServerLoad = async ({ parent, params, cookies }) => {
   }
 
   // get all the user's sessions
-  let sessions = await prisma.session.findMany({
+  const sessions = await prisma.session.findMany({
     where: {
       studentId: targetUser.id,
     },
@@ -42,7 +42,7 @@ export const load: PageServerLoad = async ({ parent, params, cookies }) => {
   })!;
 
   if (!can(TRAIN)) {
-    for (let session of sessions) {
+    for (const session of sessions) {
       session.instructorComments = "[unavailable]"; // Data is just passed as json, so hidden data must be hidden at the server level
     }
   }

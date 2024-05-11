@@ -49,7 +49,7 @@
         </Dialog.Description>
       </Dialog.Header>
       <AssignForm
-        form={$page.data.form}
+        data={$page.data.form}
         onsubmit={() => {
           assignOpen = false;
           toast.success(
@@ -74,7 +74,7 @@
         </Dialog.Description>
       </Dialog.Header>
       <AssignForm
-        form={$page.data.form}
+        data={$page.data.form}
         onsubmit={() => {
           selfassignOpen = false;
           toast.success(

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import { Plus } from "lucide-svelte";
+  import Plus from "lucide-svelte/icons/plus";
+  import Ellipsis from "lucide-svelte/icons/ellipsis";
   import { Button } from "$lib/components/ui/button";
   import { can } from "$lib/perms/can";
   import * as Carousel from "$lib/components/ui/carousel";
@@ -20,6 +21,7 @@
   import DataTableActions from "./data-table-actions.svelte";
   import { MANAGE_EVENTS } from "$lib/perms/permissions";
   import EventCard from "./event-card.svelte";
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
 
   export let data: PageData;
 
@@ -29,6 +31,13 @@
 
   let store = writable(data.events);
   $: $store = data.events;
+
+  $: {
+    clearItems($page.data.url);
+    addItem($page.data.url, "/switch_hq", data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, "Dashboard");
+    addPage($page.data.url, `Events`);
+  }
 
   const table = createTable(store);
 
@@ -181,7 +190,7 @@
         The new event will be private with signups disabled by default.
       </Dialog.Description>
       <CreateEventForm
-        form={data.form}
+        data={data.form}
         onsubmit={() => {
           createDialogOpen = false;
           toast.success("Event has been created!");
