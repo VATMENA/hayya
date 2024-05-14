@@ -10,6 +10,8 @@
   import { goto } from "$app/navigation";
   import SignupForm from "./signup-form.svelte";
   import { toast } from "svelte-sonner";
+    import { addItem, addPage, clearItems } from '$lib/breadcrumbs';
+    import { page } from '$app/stores';
 
   export let data: PageData;
 
@@ -23,6 +25,16 @@
   });
 
   $: signupOpen = false;
+
+  $: {
+    clearItems($page.data.url);
+    addItem($page.data.url, "/switch_hq", data.facility.name);
+    addItem($page.data.url, `/${data.facility.id}`, "Dashboard");
+    addItem($page.data.url, `/${data.facility.id}/events`, "Events");
+    if (data.event) {
+      addPage($page.data.url, data.event.name);
+    }
+  }
 </script>
 
 <div class="mx-auto max-w-5xl">
