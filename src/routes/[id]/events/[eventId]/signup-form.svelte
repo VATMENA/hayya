@@ -1,12 +1,12 @@
 <script lang="ts">
   import * as Form from "$lib/components/ui/form";
-    import { superForm, type SuperValidated } from 'sveltekit-superforms';
+  import { superForm, type SuperValidated } from "sveltekit-superforms";
   import { formSchema, type FormSchema } from "./signup-form";
-    import { zodClient, type Infer } from 'sveltekit-superforms/adapters';
-    import * as Select from '$lib/components/ui/select';
-    import { _as } from '$lib/typescriptMagic';
-    import { Input } from '$lib/components/ui/input';
-    import { Textarea } from '$lib/components/ui/textarea';
+  import { zodClient, type Infer } from "sveltekit-superforms/adapters";
+  import * as Select from "$lib/components/ui/select";
+  import { _as } from "$lib/typescriptMagic";
+  import { Input } from "$lib/components/ui/input";
+  import { Textarea } from "$lib/components/ui/textarea";
 
   export let data: SuperValidated<Infer<FormSchema>>;
   export let event: any;
@@ -24,9 +24,9 @@
   const { form: formData, enhance, delayed } = form;
 
   $: selectedPosition = {
-      label: $formData.desiredPosition,
-      value: $formData.desiredPosition
-    };
+    label: $formData.desiredPosition,
+    value: $formData.desiredPosition,
+  };
 </script>
 
 <form method="POST" use:enhance action="?/signup">
@@ -36,9 +36,8 @@
       <Select.Root
         selected={selectedPosition}
         onSelectedChange={(v) => {
-          v && ($formData.desiredPosition = _as(v.value))
-        }}
-      >
+          v && ($formData.desiredPosition = _as(v.value));
+        }}>
         <Select.Trigger {...attrs}>
           <Select.Value placeholder="Select position" />
         </Select.Trigger>
@@ -48,27 +47,30 @@
           {/each}
         </Select.Content>
       </Select.Root>
-      <input type="hidden" bind:value={$formData.desiredPosition} name="desiredPosition" />
+      <input
+        type="hidden"
+        bind:value={$formData.desiredPosition}
+        name="desiredPosition" />
     </Form.Control>
     <Form.FieldErrors />
   </Form.Field>
-  
-  <div class="grid grid-cols-2 gap-4 mt-2 mb-3">
-      <Form.Field {form} name="availableFrom">
-        <Form.Control let:attrs>
-          <Form.Label>Available from (UTC hhmm)</Form.Label>
-          <Input {...attrs} bind:value={$formData.availableFrom} />
-        </Form.Control>
-        <Form.FieldErrors />
-      </Form.Field>
 
-      <Form.Field {form} name="availableTo">
-        <Form.Control let:attrs>
-          <Form.Label>Available to (UTC hhmm)</Form.Label>
-          <Input {...attrs} bind:value={$formData.availableTo} />
-        </Form.Control>
-        <Form.FieldErrors />
-      </Form.Field>
+  <div class="grid grid-cols-2 gap-4 mt-2 mb-3">
+    <Form.Field {form} name="availableFrom">
+      <Form.Control let:attrs>
+        <Form.Label>Available from (UTC hhmm)</Form.Label>
+        <Input {...attrs} bind:value={$formData.availableFrom} />
+      </Form.Control>
+      <Form.FieldErrors />
+    </Form.Field>
+
+    <Form.Field {form} name="availableTo">
+      <Form.Control let:attrs>
+        <Form.Label>Available to (UTC hhmm)</Form.Label>
+        <Input {...attrs} bind:value={$formData.availableTo} />
+      </Form.Control>
+      <Form.FieldErrors />
+    </Form.Field>
   </div>
 
   <Form.Field {form} name="comments">

@@ -1,7 +1,11 @@
 <script lang="ts">
   import * as Form from "$lib/components/ui/form";
   import * as Alert from "$lib/components/ui/alert";
-  import { superForm, type Infer, type SuperValidated } from "sveltekit-superforms";
+  import {
+    superForm,
+    type Infer,
+    type SuperValidated,
+  } from "sveltekit-superforms";
   import { formSchema, type FormSchema } from "./edit-form";
   import { onMount } from "svelte";
   import { X, AlertCircle, Plus } from "lucide-svelte";
@@ -9,7 +13,7 @@
   import { Input } from "$lib/components/ui/input";
   import { fade, slide } from "svelte/transition";
   import { goto } from "$app/navigation";
-    import { zodClient } from 'sveltekit-superforms/adapters';
+  import { zodClient } from "sveltekit-superforms/adapters";
 
   export let data: SuperValidated<Infer<FormSchema>>;
   export let onSubmit: any;
@@ -38,10 +42,7 @@
   };
 </script>
 
-<form
-  method="POST"
-  use:enhance
-  action="?/editEvent">
+<form method="POST" use:enhance action="?/editEvent">
   <input type="hidden" name="positions" bind:value={positions} />
 
   <div class="max-w-xs">
@@ -91,4 +92,4 @@
       </Alert.Root>
     </div>
   {/if}
-  </form>
+</form>
