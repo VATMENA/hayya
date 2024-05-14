@@ -5,6 +5,7 @@ import { formSchema } from './signup-form.js';
 import { loadUserData } from '$lib/auth.js';
 import { ulid } from 'ulid';
 import { redirect } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
     const { user } = await loadUserData(cookies, null);
@@ -24,7 +25,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 
     return {
         event,
-        signupForm: await superValidate(formSchema),
+        signupForm: await superValidate(zod(formSchema)),
         signup,
     }
 }
@@ -33,7 +34,7 @@ export const actions: Actions = {
     signup: async (event) => {
         const { user } = await loadUserData(event.cookies, null);
 
-        const form = await superValidate(event, formSchema);
+        const form = await superValidate(event, zod(formSchema));
         const eventObj = await prisma.event.findUnique({
             where: {
                 id: event.params.eventId,

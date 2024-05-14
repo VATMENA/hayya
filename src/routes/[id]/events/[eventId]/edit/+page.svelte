@@ -11,7 +11,7 @@
 </h2>
 
 <EditForm
-  form={data.editForm}
+  data={data.editForm}
   event={data.event}
   onSubmit={() => {
     toast.success("Event configured successfully");

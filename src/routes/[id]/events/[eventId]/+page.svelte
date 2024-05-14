@@ -132,7 +132,7 @@
       </Dialog.Description>
     </Dialog.Header>
     <SignupForm
-      form={data.signupForm}
+      data={data.signupForm}
       event={data.event}
       onSubmit={() => {
         signupOpen = false;

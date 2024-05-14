@@ -22,6 +22,7 @@
   import { MANAGE_EVENTS } from "$lib/perms/permissions";
   import EventCard from "./event-card.svelte";
   import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
+  import { page } from "$app/stores";
 
   export let data: PageData;
 
@@ -100,6 +101,7 @@
   {/if}
 </div>
 
+{#if data.events.length > 0}
 <Carousel.Root class="max-w-full mx-12">
   <Carousel.Content class="m-3">
     {#each data.events as event (event.id)}
@@ -113,6 +115,7 @@
   <Carousel.Previous />
   <Carousel.Next />
 </Carousel.Root>
+{/if}
 
 {#if canManageEvents}
   <Table.Root {...$tableAttrs}>

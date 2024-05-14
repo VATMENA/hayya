@@ -22,7 +22,7 @@
 
 <a href={`/${event.hostId}/events/${event.id}`}>
   <Card.Root
-    class="max-w-xs mr-4 mb-4 h-fit md:h-full transform transition-transform hover:scale-[1.02]">
+    class="max-w-xs mr-4 mb-4 h-fit md:h-full transform transition-transform hover:scale-[1.02] pb-4">
     <img
       src={event.bannerUrl}
       class="rounded-t-lg h-1/2 object-cover"

@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as Form from "$lib/components/ui/form";
   import * as Alert from "$lib/components/ui/alert";
-  import type { SuperValidated } from "sveltekit-superforms";
+  import { superForm, type Infer, type SuperValidated } from "sveltekit-superforms";
   import { formSchema, type FormSchema } from "./edit-form";
   import { onMount } from "svelte";
   import { X, AlertCircle, Plus } from "lucide-svelte";
@@ -9,18 +9,22 @@
   import { Input } from "$lib/components/ui/input";
   import { fade, slide } from "svelte/transition";
   import { goto } from "$app/navigation";
+    import { zodClient } from 'sveltekit-superforms/adapters';
 
-  export let form: SuperValidated<FormSchema>;
+  export let data: SuperValidated<Infer<FormSchema>>;
   export let onSubmit: any;
   export let event: any;
 
-  let options = {
+  const form = superForm(data, {
+    validators: zodClient(formSchema),
     onUpdated: ({ form }) => {
       if (form.valid) {
         onSubmit();
       }
     },
-  };
+  });
+
+  const { form: formData, enhance, delayed } = form;
 
   let positions: string[] = [];
   let addPosition: string = "";
@@ -34,13 +38,10 @@
   };
 </script>
 
-<Form.Root
+<form
   method="POST"
-  {options}
-  {form}
-  schema={formSchema}
-  action="?/editEvent"
-  let:config>
+  use:enhance
+  action="?/editEvent">
   <input type="hidden" name="positions" bind:value={positions} />
 
   <div class="max-w-xs">
@@ -90,4 +91,4 @@
       </Alert.Root>
     </div>
   {/if}
-</Form.Root>
+  </form>

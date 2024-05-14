@@ -6,6 +6,7 @@ import { redirect } from 'sveltekit-flash-message/server';
 import type { Actions, PageServerLoad } from './$types';
 import { superValidate } from 'sveltekit-superforms/server';
 import { formSchema } from './edit-form';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
     await loadUserData(cookies, null);
@@ -23,7 +24,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
         }
     });
 
-    let editForm = await superValidate(formSchema);
+    let editForm = await superValidate(zod(formSchema));
 
     return {
         event,
@@ -33,7 +34,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 
 export const actions: Actions = {
     editEvent: async (event) => {
-        const form = await superValidate(event, formSchema);
+        const form = await superValidate(event, zod(formSchema));
 
         let positions = form.data.positions.split(',');
         if (positions[0] == '') positions = [];
