@@ -8,11 +8,6 @@
     POS,
     type PositionV2,
   } from "$lib/cert";
-  import Calendar from "lucide-svelte/icons/calendar";
-  import Clock from "lucide-svelte/icons/clock";
-  import FileBadge2 from "lucide-svelte/icons/file-badge-2";
-  import TowerControl from "lucide-svelte/icons/tower-control";
-  import UserRound from "lucide-svelte/icons/user-round";
   import { page } from "$app/stores";
   import { can } from "$lib/perms/can";
   import {
@@ -20,13 +15,6 @@
     REVOKE_OPENSKIES_CERTIFICATES,
     REVOKE_SOLO_CERTIFICATES,
   } from "$lib/perms/permissions";
-  import { Button } from "$lib/components/ui/button";
-  import { invalidateAll } from "$app/navigation";
-  import { toast } from "svelte-sonner";
-  // @formatter:off
-  import * as Dialog from "$lib/components/ui/dialog";
-  import * as HoverCard from "$lib/components/ui/hover-card";
-  // @formatter:on
 
   export let cert: Certificate & { instructor: User };
   export let holder: User;
@@ -158,158 +146,10 @@
       valid_in = $page.data.vacc_id;
     }
   }
-
-  let revokeOpen = false;
-  let hovercardOpen = false;
-  let revokeViaVoidOpen = false;
-  let revokeViaDeleteOpen = false;
-
-  async function deleteCertificate() {
-    let data = new URLSearchParams();
-    data.set("id", String(cert.id));
-    await fetch("?/deleteCertificate", {
-      body: data.toString(),
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    });
-    revokeViaDeleteOpen = false;
-    toast.success("Certificate has been deleted!");
-    await invalidateAll();
-  }
 </script>
 
 {#if parsed_position !== null && (cert.expires !== null ? cert.expires > new Date() : true)}
-  <HoverCard.Root bind:open={hovercardOpen}>
-    <HoverCard.Trigger>
-      <Badge class={color}>
-        {short_name}
-      </Badge>
-    </HoverCard.Trigger>
-    <HoverCard.Content>
-      <h4 class="text-md font-semibold">Certificate Info</h4>
-      <p class="text-sm">{cert.instructorComments}</p>
-      <div class="flex items-center pt-2">
-        <UserRound class="mr-2 h-4 w-4 opacity-70" />{" "}
-        <span class="text-xs text-muted-foreground">
-          Valid For: {holder.name} in {valid_in}
-        </span>
-      </div>
-      <div class="flex items-center pt-2">
-        <Clock class="mr-2 h-4 w-4 opacity-70" />{" "}
-        <span class="text-xs text-muted-foreground">
-          Expires: {cert.expires
-            ? cert.expires.toLocaleDateString("en-US", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              })
-            : "Never"}
-        </span>
-      </div>
-      <div class="flex items-center pt-2">
-        <TowerControl class="mr-2 h-4 w-4 opacity-70" />{" "}
-        <span class="text-xs text-muted-foreground">
-          Position: {str_name}
-        </span>
-      </div>
-      <div class="flex items-center pt-2">
-        <UserRound class="mr-2 h-4 w-4 opacity-70" />{" "}
-        <span class="text-xs text-muted-foreground">
-          Issued By: {cert.instructor.name}
-        </span>
-      </div>
-      <div class="flex items-center pt-2">
-        <Calendar class="mr-2 h-4 w-4 opacity-70" />{" "}
-        <span class="text-xs text-muted-foreground">
-          Issued: {cert.createdAt.toLocaleDateString("en-US", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          })}
-        </span>
-      </div>
-      <div class="flex items-center pt-2">
-        <FileBadge2 class="mr-2 h-4 w-4 opacity-70" />{" "}
-        <span class="text-xs text-muted-foreground">
-          Certificate #{cert.id}
-        </span>
-      </div>
-      {#if can_revoke}
-        <Button
-          on:click={() => {
-            hovercardOpen = false;
-            revokeOpen = true;
-          }}
-          class="mt-2 w-full">
-          Revoke Certificate
-        </Button>
-      {/if}
-    </HoverCard.Content>
-  </HoverCard.Root>
-{/if}
-
-{#if can_revoke}
-  <Dialog.Root bind:open={revokeOpen}>
-    <Dialog.Content class="sm:max-w-[425px]">
-      <Dialog.Header>
-        <Dialog.Title>Revoke Certificate</Dialog.Title>
-        <Dialog.Description>
-          Select what type of revocation you would like to issue.
-        </Dialog.Description>
-      </Dialog.Header>
-      <Button
-        on:click={() => {
-          revokeOpen = false;
-          revokeViaVoidOpen = true;
-        }}>
-        Revoke Certificate
-      </Button>
-      <p>
-        A certificate revocation will invalidate the certificate, and add a log
-        to the user's training transcript that it was revoked by you. You'll
-        need to provide reasoning.
-      </p>
-      <Button
-        on:click={() => {
-          revokeOpen = false;
-          revokeViaDeleteOpen = true;
-        }}>
-        Delete Certificate
-      </Button>
-      <p>
-        A certificate deletion will simply remove the certificate, as if it had
-        never existed. Use this if you made a mistake while issuing a
-        certificate. <b>Do not use this for any other reason.</b>
-      </p>
-    </Dialog.Content>
-  </Dialog.Root>
-  <Dialog.Root bind:open={revokeViaDeleteOpen}>
-    <Dialog.Content class="sm:max-w-[425px]">
-      <Dialog.Header>
-        <Dialog.Title>Are you sure?</Dialog.Title>
-        <Dialog.Description>
-          Deleting a certificate will <b>remove</b>
-          it from the database.
-          <b>It will be as if it was never issued.</b>
-          Deleting a certificate will leave no trace that it was ever created or
-          deleted. Be very careful with this option.
-        </Dialog.Description>
-      </Dialog.Header>
-      <Dialog.Footer>
-        <Button
-          on:click={() => {
-            revokeViaDeleteOpen = false;
-          }}>
-          Nevermind
-        </Button>
-        <Button
-          on:click={deleteCertificate}
-          class="text-red-950 bg-red-500 hover:bg-red-600">
-          I'm sure, delete it
-        </Button>
-      </Dialog.Footer>
-    </Dialog.Content>
-  </Dialog.Root>
+  <Badge class={color}>
+    {short_name}
+  </Badge>
 {/if}
