@@ -8,7 +8,7 @@
     TableHeader,
     TableRow,
   } from "$lib/components/ui/table";
-  import type { EventSignup, User } from "@prisma/client";
+  import { Prisma, type EventSignup, type User } from "@prisma/client";
   import {
     Render,
     Subscribe,
@@ -17,10 +17,24 @@
   } from "svelte-headless-table";
   import { addPagination } from "svelte-headless-table/plugins";
   import { readable } from "svelte/store";
-  import DataTableCertificates from "../../../roster/data-table-certificates.svelte";
+  import DataTableCertificates from "./data-table-certificates.svelte";
   import DataTableRating from "../../../roster/data-table-rating.svelte";
 
-  export let signups: any;
+  const signupWithCertificates =
+    Prisma.validator<Prisma.EventSignupDefaultArgs>()({
+      include: {
+        user: {
+          include: {
+            heldCertificates: true,
+          },
+        },
+      },
+    });
+  type EventSignupWithCertificates = Prisma.EventSignupGetPayload<
+    typeof signupWithCertificates
+  >;
+
+  export let signups: EventSignupWithCertificates[] | undefined;
 
   const table = createTable(readable(signups), {
     page: addPagination(),
@@ -37,18 +51,18 @@
     }),
     table.column({
       header: "Rating",
-      accessor: ({ user }: User) => user.ratingShort,
+      accessor: ({ user }) => user.ratingShort,
       cell: ({ value }) => {
         return createRender(DataTableRating, { rating: value });
       },
     }),
     table.column({
       header: "Certificates",
-      accessor: (user: User) => user,
+      accessor: ({ user }) => user,
       cell: ({ value }) => {
         return createRender(DataTableCertificates, {
-          heldCertificates: value.user.heldCertificates,
-          holder: value.user,
+          heldCertificates: value.heldCertificates,
+          holder: value,
         });
       },
     }),
