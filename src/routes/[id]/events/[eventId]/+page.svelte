@@ -56,19 +56,21 @@
         {/if}
       </p>
       <div>
-        {#if !data.signup}
-          <Button on:click={() => (signupOpen = true)}>Sign up!</Button>
-        {:else}
-          <p class="mb-3">
-            You have signed up for <b>
-              {data.signup.desiredPosition}
-            </b>
-          </p>
-          <form method="POST" action="?/cancelSignup">
-            <Button type="submit" variant="destructive" class="mb-2">
-              Cancel signup
-            </Button>
-          </form>
+        {#if data.event?.allowSignups}
+          {#if !data.signup}
+            <Button on:click={() => (signupOpen = true)}>Sign up!</Button>
+          {:else}
+            <p class="mb-3">
+              You have signed up for <b>
+                {data.signup.desiredPosition}
+              </b>
+            </p>
+            <form method="POST" action="?/cancelSignup">
+              <Button type="submit" variant="destructive" class="mb-2">
+                Cancel signup
+              </Button>
+            </form>
+          {/if}
         {/if}
         {#if can(MANAGE_EVENTS)}
           <Button
@@ -77,12 +79,16 @@
               goto(`/${data.event?.hostId}/events/${data.event?.id}/edit`)}>
             Configure event
           </Button>
-          <Button
-            variant="outline"
-            on:click={() =>
-              goto(`/${data.event?.hostId}/events/${data.event?.id}/signups`)}>
-            Manage signups
-          </Button>
+          {#if data.event?.allowSignups}
+            <Button
+              variant="outline"
+              on:click={() =>
+                goto(
+                  `/${data.event?.hostId}/events/${data.event?.id}/signups`,
+                )}>
+              Manage signups
+            </Button>
+          {/if}
         {/if}
       </div>
     </div>

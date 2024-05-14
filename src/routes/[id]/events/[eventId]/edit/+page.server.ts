@@ -49,9 +49,21 @@ export const actions: Actions = {
         id: event.params.eventId,
       },
       data: {
-        positions: positions,
+        name: form.data.name,
+        description: form.data.description,
+        public: form.data.public,
+        allowSignups: form.data.allowSignups,
+        positions: form.data.allowSignups ? positions : [],
       },
     });
+
+    if (!form.data.allowSignups) {
+      await prisma.eventSignup.deleteMany({
+        where: {
+          eventId: event.params.eventId,
+        },
+      });
+    }
 
     redirect(
       301,
