@@ -10,8 +10,8 @@
   import { goto } from "$app/navigation";
   import SignupForm from "./signup-form.svelte";
   import { toast } from "svelte-sonner";
-    import { addItem, addPage, clearItems } from '$lib/breadcrumbs';
-    import { page } from '$app/stores';
+  import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
+  import { page } from "$app/stores";
 
   export let data: PageData;
 
