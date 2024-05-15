@@ -1,6 +1,6 @@
 {
   "name": "hq",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "private": true,
   "scripts": {
     "dev": "concurrently -c bgGreen,bgBlue -n vite,quirrel \"vite dev --port 5173\" \"quirrel\"",
