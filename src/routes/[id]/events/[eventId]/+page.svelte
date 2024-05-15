@@ -127,7 +127,10 @@
       <Accordion.Content>
         {#if !data.event?.rosterPublic}
           {#if data.event?.positions && data.event?.positions.length > 0}
-            <p>The roster for this event has not been published yet. Check back before the event begins!</p>
+            <p>
+              The roster for this event has not been published yet. Check back
+              before the event begins!
+            </p>
             <p class="font-bold">Positions to be rostered:</p>
             <ul>
               {#each data.event?.positions as position (position)}
@@ -137,17 +140,32 @@
           {:else}
             <p class="font-bold">No positions to be rostered for this event!</p>
           {/if}
+        {:else if data.event?.assignments.filter((assignment) => assignment.userId == $page.data.user?.id).length > 0}
+          You have been assigned the following positions for this event:
+          <ul>
+            {#each data.event?.assignments
+              .filter((assignment) => assignment.userId == $page.data.user?.id)
+              .sort( (a, b) => (a.startTime > b.startTime ? 1 : -1), ) as assignment (assignment.assignedPosition)}
+              <li>
+                <strong>{assignment.assignedPosition}</strong>
+                : {assignment.startTime
+                  .getUTCHours()
+                  .toString()
+                  .padStart(2, "0")}:{assignment.startTime
+                  .getUTCMinutes()
+                  .toString()
+                  .padStart(2, "0")}z - {assignment.endTime
+                  .getUTCHours()
+                  .toString()
+                  .padStart(2, "0")}:{assignment.endTime
+                  .getUTCMinutes()
+                  .toString()
+                  .padStart(2, "0")}z
+              </li>
+            {/each}
+          </ul>
         {:else}
-            {#if data.event?.assignments.filter((assignment) => assignment.userId == $page.data.user?.id).length > 0}
-              You have been assigned the following positions for this event:
-              <ul>
-                {#each data.event?.assignments.filter((assignment) => assignment.userId == $page.data.user?.id).sort((a, b) => a.startTime > b.startTime ? 1 : -1) as assignment (assignment.assignedPosition)}
-                  <li><strong>{assignment.assignedPosition}</strong>: {assignment.startTime.getUTCHours().toString().padStart(2, "0")}:{assignment.startTime.getUTCMinutes().toString().padStart(2, "0")}z - {assignment.endTime.getUTCHours().toString().padStart(2, "0")}:{assignment.endTime.getUTCMinutes().toString().padStart(2, "0")}z</li>
-                {/each}
-              </ul>
-            {:else}
-              You have not been assigned to a position for this event.
-            {/if}
+          You have not been assigned to a position for this event.
         {/if}
       </Accordion.Content>
     </Accordion.Item>

@@ -89,7 +89,9 @@
         </Select.Root>
         <input type="hidden" bind:value={$formData.userId} name="userId" />
       </Form.Control>
-      <Form.Description>You can only select members who have signed up for this event.</Form.Description>
+      <Form.Description>
+        You can only select members who have signed up for this event.
+      </Form.Description>
       <Form.FieldErrors />
     </Form.Field>
 

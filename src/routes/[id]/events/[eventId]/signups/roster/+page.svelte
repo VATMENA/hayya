@@ -28,8 +28,8 @@
   }
 </script>
 
-  <h2 class="text-3xl font-bold tracking-tight !mb-2">
-    Event Roster - {data.event?.name}
-  </h2>
+<h2 class="text-3xl font-bold tracking-tight !mb-2">
+  Event Roster - {data.event?.name}
+</h2>
 
 <Roster {data} event={data.event} />

@@ -14,7 +14,7 @@
   import CreateForm from "./create-form.svelte";
   import { Button } from "$lib/components/ui/button";
   import { toast } from "svelte-sonner";
-    import { enhance } from '$app/forms';
+  import { enhance } from "$app/forms";
 
   const eventWithSignupsAssignments =
     Prisma.validator<Prisma.EventDefaultArgs>()({
@@ -66,7 +66,7 @@
       "blue",
       "green",
       "red",
-      "brown"
+      "brown",
     ];
     return colors[index % colors.length];
   };
@@ -74,7 +74,6 @@
   const getDurationString = (date: Date): string => {
     return `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
   };
-
 
   let eventPositions = event.positions.map((position: string, index) => {
     return {
@@ -103,13 +102,15 @@
   console.log(event.assignments);
 
   const handleSave = () => {
-    const form = document.getElementById('eventsForm') as HTMLFormElement;
-    const eventInput = document.getElementById('eventsHiddenInput') as HTMLInputElement;
-    
+    const form = document.getElementById("eventsForm") as HTMLFormElement;
+    const eventInput = document.getElementById(
+      "eventsHiddenInput",
+    ) as HTMLInputElement;
+
     eventInput.value = JSON.stringify(ec.getEvents());
     form.submit();
-    toast.success('Roster has been saved!');
-  }
+    toast.success("Roster has been saved!");
+  };
 
   let ec: any;
   let plugins = [TimeGrid, Interaction, ResourceTimeGrid];
@@ -140,7 +141,7 @@
       saveButton: {
         text: "Save roster",
         click: handleSave,
-      }
+      },
     },
     headerToolbar: {
       start: "title saveButton",
@@ -162,7 +163,7 @@
     eventClick: (info: any) => {
       assignmentDialogObj = info.event;
       assignmentDialogOpen = true;
-    }
+    },
   };
 </script>
 
@@ -190,16 +191,26 @@
       <Dialog.Description>
         {#if assignmentDialogObj}
           <div class="flex flex-col space-y-2">
-            <span><strong>Controller: </strong>{assignmentDialogObj.extendedProps.user.name}</span>
-            <span><strong>Assigned position: </strong>{assignmentDialogObj.extendedProps.assignedPosition}</span>
+            <span>
+              <strong>Controller:</strong>
+              {assignmentDialogObj.extendedProps.user.name}
+            </span>
+            <span>
+              <strong>Assigned position:</strong>
+              {assignmentDialogObj.extendedProps.assignedPosition}
+            </span>
           </div>
           <form action="?/deleteAssignment" method="POST">
-            <input type="hidden" name="assignmentId" value={assignmentDialogObj.id} />
-            <Button variant="destructive" type="submit" class="float-right">Delete</Button>
+            <input
+              type="hidden"
+              name="assignmentId"
+              value={assignmentDialogObj.id} />
+            <Button variant="destructive" type="submit" class="float-right">
+              Delete
+            </Button>
           </form>
         {/if}
       </Dialog.Description>
     </Dialog.Header>
   </Dialog.Content>
 </Dialog.Root>
-
