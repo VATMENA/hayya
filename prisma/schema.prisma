@@ -232,6 +232,7 @@ model Event {
 
   public       Boolean
   allowSignups Boolean
+  rosterPublic Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

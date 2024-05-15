@@ -4,15 +4,12 @@
   import Ellipsis from "lucide-svelte/icons/ellipsis";
   import { Button } from "$lib/components/ui/button";
   import { can } from "$lib/perms/can";
+  import * as Carousel from "$lib/components/ui/carousel";
   import * as Dialog from "$lib/components/ui/dialog";
   import CreateEventForm from "./create-event-form.svelte";
   import { toast } from "svelte-sonner";
   import * as Table from "$lib/components/ui/table";
-  import Image from "$lib/components/Image.svelte";
   import { humanReadableDate } from "$lib/date.js";
-  import { page } from "$app/stores";
-  import CertForm from "../roster/cert-form.svelte";
-  import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import { writable } from "svelte/store";
   import {
     createRender,
@@ -23,7 +20,9 @@
   import DataTableBanner from "./data-table-banner.svelte";
   import DataTableActions from "./data-table-actions.svelte";
   import { MANAGE_EVENTS } from "$lib/perms/permissions";
+  import EventCard from "./event-card.svelte";
   import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
+  import { page } from "$app/stores";
 
   export let data: PageData;
 
@@ -102,38 +101,56 @@
   {/if}
 </div>
 
-<Table.Root {...$tableAttrs}>
-  <Table.Header>
-    {#each $headerRows as headerRow}
-      <Subscribe rowAttrs={headerRow.attrs()}>
-        <Table.Row>
-          {#each headerRow.cells as cell (cell.id)}
-            <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()}>
-              <Table.Head {...attrs}>
-                <Render of={cell.render()} />
-              </Table.Head>
-            </Subscribe>
-          {/each}
-        </Table.Row>
-      </Subscribe>
-    {/each}
-  </Table.Header>
-  <Table.Body {...$tableBodyAttrs}>
-    {#each $pageRows as row (row.id)}
-      <Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-        <Table.Row {...rowAttrs}>
-          {#each row.cells as cell (cell.id)}
-            <Subscribe attrs={cell.attrs()} let:attrs>
-              <Table.Cell {...attrs}>
-                <Render of={cell.render()} />
-              </Table.Cell>
-            </Subscribe>
-          {/each}
-        </Table.Row>
-      </Subscribe>
-    {/each}
-  </Table.Body>
-</Table.Root>
+{#if data.events.length > 0}
+  <Carousel.Root class="max-w-full mx-12">
+    <Carousel.Content class="m-3">
+      {#each data.events as event (event.id)}
+        {#if event.public}
+          <Carousel.Item class="md:basis-1/2 lg:basis-1/4">
+            <EventCard {event} />
+          </Carousel.Item>
+        {/if}
+      {/each}
+    </Carousel.Content>
+    <Carousel.Previous />
+    <Carousel.Next />
+  </Carousel.Root>
+{/if}
+
+{#if canManageEvents}
+  <Table.Root {...$tableAttrs}>
+    <Table.Header>
+      {#each $headerRows as headerRow}
+        <Subscribe rowAttrs={headerRow.attrs()}>
+          <Table.Row>
+            {#each headerRow.cells as cell (cell.id)}
+              <Subscribe attrs={cell.attrs()} let:attrs props={cell.props()}>
+                <Table.Head {...attrs}>
+                  <Render of={cell.render()} />
+                </Table.Head>
+              </Subscribe>
+            {/each}
+          </Table.Row>
+        </Subscribe>
+      {/each}
+    </Table.Header>
+    <Table.Body {...$tableBodyAttrs}>
+      {#each $pageRows as row (row.id)}
+        <Subscribe rowAttrs={row.attrs()} let:rowAttrs>
+          <Table.Row {...rowAttrs}>
+            {#each row.cells as cell (cell.id)}
+              <Subscribe attrs={cell.attrs()} let:attrs>
+                <Table.Cell {...attrs}>
+                  <Render of={cell.render()} />
+                </Table.Cell>
+              </Subscribe>
+            {/each}
+          </Table.Row>
+        </Subscribe>
+      {/each}
+    </Table.Body>
+  </Table.Root>
+{/if}
 
 <!--
 <Table.Root>
