@@ -62,7 +62,6 @@
       cell: ({ value }) => {
         return createRender(DataTableCertificates, {
           heldCertificates: value.heldCertificates,
-          holder: value,
         });
       },
     }),
