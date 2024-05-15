@@ -6,6 +6,7 @@ export const formSchema = z.object({
   positions: z.string(),
   public: z.boolean(),
   allowSignups: z.boolean(),
+  rosterPublic: z.boolean(),
 });
 
 export type FormSchema = typeof formSchema;

@@ -42,6 +42,7 @@
     $formData.description = event.description;
     $formData.public = event.public;
     $formData.allowSignups = event.allowSignups;
+    $formData.rosterPublic = event.rosterPublic;
   });
 
   const removePosition = (index: number) => {
@@ -102,6 +103,25 @@
             </Popover.Root>
           </Form.Label>
           <Switch {...attrs} bind:checked={$formData.allowSignups} />
+        </Form.Control>
+        <Form.FieldErrors />
+      </Form.Field>
+
+      <Form.Field {form} name="rosterPublic">
+        <Form.Control let:attrs>
+          <Form.Label>
+            Publish roster
+            <Popover.Root>
+              <Popover.Trigger>
+                <CircleHelp class="size-4" />
+              </Popover.Trigger>
+              <Popover.Content>
+                Publish the event roster to all members. Before checking this,
+                you should finalise the event assignments.
+              </Popover.Content>
+            </Popover.Root>
+          </Form.Label>
+          <Switch {...attrs} bind:checked={$formData.rosterPublic} />
         </Form.Control>
         <Form.FieldErrors />
       </Form.Field>

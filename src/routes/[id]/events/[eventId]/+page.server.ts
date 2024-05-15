@@ -16,6 +16,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
     },
     include: {
       signups: true,
+      assignments: true,
     },
   });
 

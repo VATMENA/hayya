@@ -17,7 +17,6 @@
   } from "$lib/perms/permissions";
 
   export let cert: Certificate & { instructor: User };
-  export let holder: User;
 
   let parsed_position: PositionV2 | null = null;
   let color = "";

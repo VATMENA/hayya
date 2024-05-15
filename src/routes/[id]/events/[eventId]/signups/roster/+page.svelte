@@ -1,10 +1,9 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import DataTable from "./data-table.svelte";
   import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
   import { page } from "$app/stores";
   import { Button } from "$lib/components/ui/button";
-  import { goto } from "$app/navigation";
+  import Roster from "./roster.svelte";
 
   export let data: PageData;
 
@@ -19,20 +18,18 @@
         `/${data.facility.id}/events/${data.event.id}`,
         data.event.name,
       );
-      addPage($page.data.url, "Manage Signups");
+      addItem(
+        $page.data.url,
+        `/${data.facility.id}/events/${data.event.id}/signups`,
+        "Manage Signups",
+      );
+      addPage($page.data.url, "Event Roster");
     }
   }
 </script>
 
-<div class="flex justify-between">
   <h2 class="text-3xl font-bold tracking-tight !mb-2">
-    Manage Signups - {data.event?.name}
+    Event Roster - {data.event?.name}
   </h2>
-  <Button
-    on:click={() =>
-      goto(`/${data.facility.id}/events/${data.event?.id}/signups/roster`)}>
-    Create event roster
-  </Button>
-</div>
 
-<DataTable signups={data.event?.signups} />
+<Roster {data} event={data.event} />

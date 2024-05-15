@@ -53,6 +53,7 @@ export const actions: Actions = {
         description: form.data.description,
         public: form.data.public,
         allowSignups: form.data.allowSignups,
+        rosterPublic: form.data.rosterPublic,
         positions: form.data.allowSignups ? positions : [],
       },
     });
