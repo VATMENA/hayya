@@ -42,6 +42,6 @@
     <Dialog.Header>
       <Dialog.Title>Create new training queue</Dialog.Title>
     </Dialog.Header>
-    <CreateForm data={data.createForm} />
+    <CreateForm bind:open={createDialogOpen} data={data.createForm} />
   </Dialog.Content>
 </Dialog.Root>

@@ -7,11 +7,21 @@
   import { Input } from "$lib/components/ui/input";
   import { Textarea } from "$lib/components/ui/textarea";
   import { Switch } from "$lib/components/ui/switch";
+  import { toast } from "svelte-sonner";
+  import { invalidateAll } from "$app/navigation";
 
   export let data: SuperValidated<Infer<CreateSchema>>;
+  export let open: boolean;
 
   const form = superForm(data, {
     validators: zodClient(createSchema),
+    onUpdated({ form }) {
+      if (form.valid) {
+        toast.success("Queue created!");
+        invalidateAll();
+        open = false;
+      }
+    },
   });
 
   const { form: formData, enhance } = form;

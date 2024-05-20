@@ -1,5 +1,6 @@
 import prisma from "$lib/prisma";
 import type { LayoutServerLoad } from "./$types";
+import { queuePosition } from "$lib/queue";
 
 export const load: LayoutServerLoad = async ({ parent }) => {
   let { user } = await parent();
@@ -24,24 +25,4 @@ export const load: LayoutServerLoad = async ({ parent }) => {
     queue: q,
     position: position,
   };
-};
-
-const queuePosition = async (
-  userId: string,
-  queueId: string,
-): Promise<number> => {
-  const queueMemberships = await prisma.trainingQueueMembership.findMany({
-    where: {
-      queueId: queueId,
-    },
-    orderBy: {
-      joinedAt: "asc",
-    },
-  });
-
-  const userIndex: number = queueMemberships.findIndex(
-    (member) => member.userId === userId,
-  );
-
-  return userIndex + 1;
 };
