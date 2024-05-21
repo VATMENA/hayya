@@ -86,12 +86,6 @@ export const load: PageServerLoad = async ({ fetch, cookies, params }) => {
     ) {
       continue;
     }
-    if (
-      roster_user.user.ratingShort == "OBS" &&
-      roster_user.user.heldCertificates.length == 0
-    ) {
-      continue;
-    }
 
     const cleaned_certs = [];
 
