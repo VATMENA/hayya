@@ -5,7 +5,7 @@
     Render,
     Subscribe,
   } from "svelte-headless-table";
-  import { readable } from "svelte/store";
+  import { readable, writable } from "svelte/store";
   import type { TrainingQueue } from "@prisma/client";
   import CircleCheck from "lucide-svelte/icons/circle-check";
   import CircleX from "lucide-svelte/icons/circle-x";
@@ -18,7 +18,9 @@
   export let canJoin: string[];
   export let memberOf: TrainingQueue | undefined;
 
-  const table = createTable(readable(queues), {
+  const store = writable(queues);
+  $: $store = queues;
+  const table = createTable(store, {
     page: addPagination(),
   });
 
