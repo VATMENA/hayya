@@ -222,7 +222,7 @@ export const actions: Actions = {
       await prisma.userFacilityAssignment.create({
         data: {
           id: ulid(),
-          userId: user.id,
+          userId: tvCase.userId,
           facilityId: tvCase.facilityId,
           caseId: tvCase.id,
           assignmentType: "Secondary",
