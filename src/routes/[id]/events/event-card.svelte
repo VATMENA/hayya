@@ -10,6 +10,8 @@
 
   export let event: Event;
 
+  let canManageEvents = can(MANAGE_EVENTS);
+
   const formatter = new Intl.DateTimeFormat("en-GB", {
     timeZone: "UTC",
     weekday: "long",
@@ -22,23 +24,34 @@
 
 <a href={`/${event.hostId}/events/${event.id}`}>
   <Card.Root
-    class="max-w-xs mr-4 mb-4 h-fit md:h-full transform transition-transform hover:scale-[1.02] pb-4">
+    class="w-full mr-4 mb-4 h-fit md:h-full transition hover:scale-[1.02]">
     <img
       src={event.bannerUrl}
       class="rounded-t-lg h-1/2 object-cover"
       alt={`${event.name} event banner`} />
-    <Card.Header class="font-bold text-lg py-3">{event.name}</Card.Header>
-    <Card.Content class="flex grow">
-      <p>{event.description}</p>
+    <Card.Header class="font-bold text-3xl py-3">{event.name}</Card.Header>
+    <Card.Content>
+      <!-- <div class="truncate">{event.description}</div> -->
     </Card.Content>
-    <Card.Footer class="font-bold mb-4 float-bottom">
-      {#if event.start.getDate() === event.end.getDate()}
-        {formatter.format(event.start).replace(" at", "")}z - {event.end.getUTCHours()}:{event.end.getUTCMinutes()}z
-      {:else}
-        {formatter.format(event.start).replace(" at", "")}z - {formatter
-          .format(event.end)
-          .replace(" at", "")}z
-      {/if}
+    <Card.Footer class="flex flex-col items-start">
+      <div class="font-bold">
+        {#if event.start.getDate() === event.end.getDate()}
+          {formatter.format(event.start).replace(" at", "")}z - {event.end.getUTCHours()}:{event.end.getUTCMinutes()}z
+        {:else}
+          {formatter.format(event.start).replace(" at", "")}z - {formatter
+            .format(event.end)
+            .replace(" at", "")}z
+        {/if}
+      </div>
+      <div>
+        {#if canManageEvents}
+          <div class="text-xs">
+            Visibility (STAFF ONLY): <span class="font-bold">
+              {event.public ? "Public" : "Private"}
+            </span>
+          </div>
+        {/if}
+      </div>
     </Card.Footer>
   </Card.Root>
 </a>
