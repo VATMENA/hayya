@@ -8,7 +8,7 @@ import { redirect } from "@sveltejs/kit";
 import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
-  const { user } = await loadUserData(cookies, null);
+  const { user } = await loadUserData(cookies, params.id);
 
   const event = await prisma.event.findUnique({
     where: {

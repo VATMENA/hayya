@@ -9,7 +9,7 @@ import { formSchema } from "./edit-form";
 import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
-  await loadUserData(cookies, null);
+  await loadUserData(cookies, params.id);
 
   if (!can(MANAGE_EVENTS)) {
     redirect(
