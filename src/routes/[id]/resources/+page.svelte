@@ -26,8 +26,8 @@
   let createDialogOpen = false;
 </script>
 
-<div class="flex items-center justify-between space-y-2 mb-2">
-  <h2 class="text-3xl font-bold tracking-tight">Resources</h2>
+<div class="flex items-center justify-between space-y-2">
+  <h2 class="md:text-3xl text-2xl font-bold tracking-tight">Resources</h2>
   {#if can(MANAGE_RESOURCES)}
     <Button
       on:click={() => {
@@ -39,7 +39,9 @@
   {/if}
 </div>
 
-<DataTable data={data.resources} />
+<div class="flex pt-2">
+  <DataTable data={data.resources} />
+</div>
 
 {#if can(MANAGE_RESOURCES)}
   <Dialog.Root bind:open={createDialogOpen}>

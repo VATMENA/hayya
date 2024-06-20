@@ -224,7 +224,8 @@
 </script>
 
 <div>
-  <div class="flex items-center py-4 space-x-2">
+  <div
+    class="flex flex-col md:flex-row justify-between items-center py-4 gap-y-2">
     <Input
       class="max-w-sm"
       placeholder="Search by name..."
@@ -232,7 +233,7 @@
       bind:value={$filterValue} />
     <Dialog.Root>
       <Dialog.Trigger
-        class="{buttonVariants({ variant: 'outline' })} float-right">
+        class="{buttonVariants({ variant: 'outline' })} w-full md:w-fit">
         <Info class="align-middle mr-2 w-4 h-4" />
         How to read this page
       </Dialog.Trigger>

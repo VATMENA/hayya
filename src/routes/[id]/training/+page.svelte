@@ -51,7 +51,7 @@
   <h2 class="text-3xl font-bold tracking-tight">Training</h2>
 </div>
 
-<div class="grid grid-cols-3 gap-4">
+<div class="flex flex-col md:grid grid-cols-3 gap-4">
   <div class="space-y-4">
     <Card.Root>
       <Card.Header>
@@ -93,7 +93,7 @@
       <Card.Header>
         <Card.Title>Request Training</Card.Title>
       </Card.Header>
-      <Card.Content>
+      <Card.Content class="space-y-2">
         <Button
           on:click={() => {
             requestTrainingOpen = true;
