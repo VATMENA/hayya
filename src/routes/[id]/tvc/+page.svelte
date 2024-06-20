@@ -23,7 +23,9 @@
 
 <div class="space-y-2">
   <div class="flex items-center justify-between space-y-2">
-    <h2 class="text-3xl font-bold tracking-tight">Transfer & Visiting</h2>
+    <h2 class="md:text-3xl text-xl font-bold tracking-tight">
+      Transfer & Visiting
+    </h2>
     <Dialog.Root bind:open={manAssignOpen}>
       <Dialog.Trigger class={buttonVariants()}>Manual Assign</Dialog.Trigger>
       <Dialog.Content>

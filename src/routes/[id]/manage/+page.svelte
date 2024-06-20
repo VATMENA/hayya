@@ -22,33 +22,31 @@
   <h2 class="text-3xl font-bold tracking-tight">Manage Facility</h2>
 </div>
 
-<div class="grid grid-cols-3 gap-4">
-  <div>
-    <Card.Root>
-      <Card.Header>
-        <Card.Title>Roles</Card.Title>
-        <Button href="/{data.facility.id}/manage/createrole">
-          <Plus class="mr-2 w-4 h-4" />
-          Create
-        </Button>
-      </Card.Header>
-      <Card.Content class="space-y-1.5">
-        {#each data.facility.roles as role}
-          <Badge
-            href="/{data.facility.id}/manage/editrole/{role.id}"
-            style="background-color: {color(role.color)};">
-            {role.name}
-          </Badge>
-        {/each}
-      </Card.Content>
-    </Card.Root>
-    <Card.Root>
-      <Card.Header>
-        <Card.Title>Actions</Card.Title>
-      </Card.Header>
-      <Card.Content>
-        <Button href="/{data.facility.id}/edit">Edit Facility Details</Button>
-      </Card.Content>
-    </Card.Root>
-  </div>
+<div class="flex flex-col pt-2 max-w-lg gap-y-4">
+  <Card.Root>
+    <Card.Header>
+      <Card.Title>Roles</Card.Title>
+      <Button href="/{data.facility.id}/manage/createrole">
+        <Plus class="mr-2 w-4 h-4" />
+        Create
+      </Button>
+    </Card.Header>
+    <Card.Content class="space-y-1.5">
+      {#each data.facility.roles as role}
+        <Badge
+          href="/{data.facility.id}/manage/editrole/{role.id}"
+          style="background-color: {color(role.color)};">
+          {role.name}
+        </Badge>
+      {/each}
+    </Card.Content>
+  </Card.Root>
+  <Card.Root>
+    <Card.Header>
+      <Card.Title>Actions</Card.Title>
+    </Card.Header>
+    <Card.Content>
+      <Button href="/{data.facility.id}/edit">Edit Facility Details</Button>
+    </Card.Content>
+  </Card.Root>
 </div>

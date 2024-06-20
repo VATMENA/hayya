@@ -88,8 +88,8 @@
     table.createViewModel(columns);
 </script>
 
-<div class="flex items-center justify-between">
-  <h2 class="text-3xl font-bold tracking-tight">Upcoming Events</h2>
+<div class="flex items-center justify-between py-2">
+  <h2 class="md:text-3xl text-2xl font-bold tracking-tight">Upcoming Events</h2>
   {#if canManageEvents}
     <Button
       on:click={() => {
@@ -102,7 +102,7 @@
 </div>
 
 {#if data.events.length > 0}
-  <Carousel.Root class="flex mx-12 h-full items-center">
+  <Carousel.Root class="hidden md:flex mx-12 h-full items-center">
     <Carousel.Content class="m-3 h-full">
       {#each data.events as event (event.id)}
         {#if canManageEvents}
@@ -119,6 +119,15 @@
     <Carousel.Previous />
     <Carousel.Next />
   </Carousel.Root>
+  <div class="flex md:hidden flex-col pt-2">
+    {#each data.events as event (event.id)}
+      {#if canManageEvents}
+        <EventCard {event} />
+      {:else if event.public}
+        <EventCard {event} />
+      {/if}
+    {/each}
+  </div>
 {/if}
 
 <!--
