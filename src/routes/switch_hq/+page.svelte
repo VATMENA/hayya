@@ -81,122 +81,122 @@
   }
 </script>
 
-<div
-  class="h-screen min-w-[40rem] flex flex-col p-6 space-y-4 items-center justify-center">
+<div class="h-screen flex flex-col p-6 space-y-4 items-center justify-center">
   <Card.Root class="justify-center content-center">
     <Card.Header>
       <Card.Title>
         Hi, {data.user.name}! What are you looking to do today?
       </Card.Title>
     </Card.Header>
-    <Card.Content class="grid space-y-4">
-      <div class="grid grid-rows-2 gap-4">
-        <div class="grid grid-cols-3 gap-4">
-          <h3 class="font-bold text-lg mb-2">Log into a facility HQ</h3>
-          <h3 class="font-bold text-lg mb-2">View the roster of a facility</h3>
-          <h3 class="font-bold text-lg">
-            Apply to visit or transfer to a facility
-          </h3>
-        </div>
-        <div class="grid grid-cols-3 gap-4">
-          <Popover.Root bind:open={hqopen} let:ids>
-            <div class="grid grid-cols-4 gap-2">
-              <Popover.Trigger asChild let:builder>
-                <Button
-                  builders={[builder]}
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={hqopen}
-                  class="w-full justify-between col-span-3">
-                  {hqselectedValue}
-                  <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </Popover.Trigger>
-              <Button
-                variant="outline"
-                on:click={() => {
-                  goto(`/${hqvalue}`);
-                }}>
-                Go
-                <ChevronRight class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </div>
+    <Card.Content class="flex flex-col xl:flex-row gap-4">
+      <div class="flex flex-col gap-2">
+        <h3 class="font-bold text-lg">Log into a facility HQ</h3>
 
-            <Popover.Content class="w-[200px] p-0">
-              <Command.Root>
-                <Command.Input placeholder="Search facilities..." />
-                <Command.Empty>No facility found.</Command.Empty>
-                <Command.Group>
-                  {#each visible_facilities as facility}
-                    <Command.Item
-                      value={facility.value}
-                      onSelect={(currentValue) => {
-                        hqvalue = currentValue;
-                        hqcloseAndFocusTrigger(ids.trigger);
-                      }}>
-                      <Check
-                        class={cn(
-                          "mr-2 h-4 w-4",
-                          hqvalue !== facility.value && "text-transparent",
-                        )} />
-                      {facility.label}
-                    </Command.Item>
-                  {/each}
-                </Command.Group>
-              </Command.Root>
-            </Popover.Content>
-          </Popover.Root>
-
-          <Popover.Root bind:open={rosteropen} let:ids>
-            <div class="grid grid-cols-4 gap-2">
-              <Popover.Trigger asChild let:builder>
-                <Button
-                  builders={[builder]}
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={rosteropen}
-                  class="w-full justify-between col-span-3">
-                  {rosterselectedValue}
-                  <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </Popover.Trigger>
+        <Popover.Root bind:open={hqopen} let:ids>
+          <div class="grid grid-cols-4 gap-2">
+            <Popover.Trigger asChild let:builder>
               <Button
+                builders={[builder]}
                 variant="outline"
-                on:click={() => {
-                  goto(`/${rostervalue}/roster`);
-                }}>
-                Go <ChevronRight
-                  class="ml-2 h-4 w-4 shrink-0 opacity-50 align-middle" />
+                role="combobox"
+                aria-expanded={hqopen}
+                class="w-full justify-between col-span-3">
+                {hqselectedValue}
+                <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
-            </div>
-            <Popover.Content class="w-[200px] p-0">
-              <Command.Root>
-                <Command.Input placeholder="Search facilities..." />
-                <Command.Empty>No facility found.</Command.Empty>
-                <Command.Group>
-                  {#each all_facilities as facility}
-                    <Command.Item
-                      value={facility.value}
-                      onSelect={(currentValue) => {
-                        rostervalue = currentValue;
-                        rostercloseAndFocusTrigger(ids.trigger);
-                      }}>
-                      <Check
-                        class={cn(
-                          "mr-2 h-4 w-4",
-                          rostervalue !== facility.value && "text-transparent",
-                        )} />
-                      {facility.label}
-                    </Command.Item>
-                  {/each}
-                </Command.Group>
-              </Command.Root>
-            </Popover.Content>
-          </Popover.Root>
-          <Button variant="outline" href="/tvc/" class="w-full">
-            T&V Dashboard <ChevronRight class="w-5 h-5 font-light" />
-          </Button>
-        </div>
+            </Popover.Trigger>
+            <Button
+              variant="outline"
+              on:click={() => {
+                goto(`/${hqvalue}`);
+              }}>
+              Go
+              <ChevronRight class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </div>
+
+          <Popover.Content class="w-[200px] p-0">
+            <Command.Root>
+              <Command.Input placeholder="Search facilities..." />
+              <Command.Empty>No facility found.</Command.Empty>
+              <Command.Group>
+                {#each visible_facilities as facility}
+                  <Command.Item
+                    value={facility.value}
+                    onSelect={(currentValue) => {
+                      hqvalue = currentValue;
+                      hqcloseAndFocusTrigger(ids.trigger);
+                    }}>
+                    <Check
+                      class={cn(
+                        "mr-2 h-4 w-4",
+                        hqvalue !== facility.value && "text-transparent",
+                      )} />
+                    {facility.label}
+                  </Command.Item>
+                {/each}
+              </Command.Group>
+            </Command.Root>
+          </Popover.Content>
+        </Popover.Root>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <h3 class="font-bold text-lg">View the roster of a facility</h3>
+        <Popover.Root bind:open={rosteropen} let:ids>
+          <div class="grid grid-cols-4 gap-2">
+            <Popover.Trigger asChild let:builder>
+              <Button
+                builders={[builder]}
+                variant="outline"
+                role="combobox"
+                aria-expanded={rosteropen}
+                class="w-full justify-between col-span-3">
+                {rosterselectedValue}
+                <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </Popover.Trigger>
+            <Button
+              variant="outline"
+              on:click={() => {
+                goto(`/${rostervalue}/roster`);
+              }}>
+              Go <ChevronRight
+                class="ml-2 h-4 w-4 shrink-0 opacity-50 align-middle" />
+            </Button>
+          </div>
+          <Popover.Content class="w-[200px] p-0">
+            <Command.Root>
+              <Command.Input placeholder="Search facilities..." />
+              <Command.Empty>No facility found.</Command.Empty>
+              <Command.Group>
+                {#each all_facilities as facility}
+                  <Command.Item
+                    value={facility.value}
+                    onSelect={(currentValue) => {
+                      rostervalue = currentValue;
+                      rostercloseAndFocusTrigger(ids.trigger);
+                    }}>
+                    <Check
+                      class={cn(
+                        "mr-2 h-4 w-4",
+                        rostervalue !== facility.value && "text-transparent",
+                      )} />
+                    {facility.label}
+                  </Command.Item>
+                {/each}
+              </Command.Group>
+            </Command.Root>
+          </Popover.Content>
+        </Popover.Root>
+      </div>
+      <div class="flex flex-col gap-2">
+        <h3 class="font-bold text-lg">
+          Apply to visit or transfer to a facility
+        </h3>
+        <Button variant="outline" href="/tvc/" class="w-full">
+          T&V Dashboard <ChevronRight class="w-5 h-5 font-light" />
+        </Button>
       </div>
     </Card.Content>
   </Card.Root>

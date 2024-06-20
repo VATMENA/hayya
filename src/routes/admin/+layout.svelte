@@ -1,8 +1,6 @@
 <script>
   import { items } from "$lib/breadcrumbs";
   import * as Breadcrumb from "$lib/components/ui/breadcrumb";
-
-  $: console.log($items);
 </script>
 
 <div
