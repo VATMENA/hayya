@@ -3,6 +3,7 @@
   import { page } from "$app/stores";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import * as Avatar from "$lib/components/ui/avatar";
+  import * as Sheet from "$lib/components/ui/sheet";
   import Github from "lucide-svelte/icons/github";
   import LifeBuoy from "lucide-svelte/icons/life-buoy";
   import LogOut from "lucide-svelte/icons/log-out";
@@ -18,6 +19,9 @@
   import { Badge } from "$lib/components/ui/badge";
   import { EDIT_DETAILS, MANAGE_TV_REQUESTS } from "$lib/perms/permissions";
   import { color } from "$lib/colors";
+  import { Menu } from "lucide-svelte";
+
+  let mobileNavOpen = false;
 
   type Page = {
     [pageId: string]: {
@@ -77,16 +81,48 @@
 
 <header
   class="sticky top-0 z-50 w-full border-b bg-background shadow-lg backdrop-blur rounded-md">
-  <div class="flex p-8 h-14 items-center">
-    <div class="mr-4 hidden md:flex">
-      <a
-        class="mr-6 flex items-center space-x-2"
-        href="/{$page.data.facility.id}">
-        <span class="hidden font-bold sm:inline-block text-[15px] lg:text-base">
+  <div class="flex p-8 px-4 md:px-8 h-14 w-full items-center justify-between">
+    <div class="flex md:hidden">
+      <Sheet.Root bind:open={mobileNavOpen}>
+        <Sheet.Trigger>
+          <Button variant="ghost">
+            <Menu class="h-5 w-5 text-zinc-300" />
+          </Button>
+        </Sheet.Trigger>
+        <Sheet.Content side={"left"} class="w-[250px]">
+          <div class="flex flex-col font-bold gap-y-4 pr-4">
+            {#each Object.entries(pages) as [_, { name, link, visible }]}
+              {#if visible}
+                {#if $page.url.pathname.startsWith(link)}
+                  <Button
+                    class="transition-colors text-lg justify-start"
+                    variant="secondary"
+                    href={link}
+                    on:click={() => (mobileNavOpen = false)}>
+                    {name}
+                  </Button>
+                {:else}
+                  <Button
+                    class="transition-colors text-lg justify-start"
+                    variant="ghost"
+                    href={link}
+                    on:click={() => (mobileNavOpen = false)}>
+                    {name}
+                  </Button>
+                {/if}
+              {/if}
+            {/each}
+          </div>
+        </Sheet.Content>
+      </Sheet.Root>
+    </div>
+    <div class="flex gap-x-6">
+      <a class="flex items-center space-x-2" href="/{$page.data.facility.id}">
+        <span class="font-bold inline-block text-[15px] lg:text-base">
           {$page.data.facility.name} HQ
         </span>
       </a>
-      <nav class="flex items-center space-x-6 text-sm font-medium">
+      <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
         {#each Object.entries(pages) as [_, { name, link, visible }]}
           {#if visible}
             {#if $page.url.pathname.startsWith(link)}
@@ -106,16 +142,15 @@
         {/each}
       </nav>
     </div>
-    <div
-      class="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
+    <div class="flex items-center space-x-4">
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild let:builder>
           <Button
             builders={[builder]}
             variant="outline"
-            class="mr-1 flex items-center space-x-2">
+            class="flex items-center space-x-2">
             {#if $page.data.user !== null && $page.data.roles !== null}
-              <Avatar.Root class="mr-2 h-5 w-5">
+              <Avatar.Root class="h-5 w-5">
                 <Avatar.Image src={avatar($page.data.user.name)} />
                 <Avatar.Fallback>
                   {initials($page.data.user.name)}
