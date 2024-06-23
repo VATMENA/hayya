@@ -43,7 +43,7 @@
       src={data.event?.bannerUrl}
       class="w-[30vw] rounded-md"
       alt={`${data.event?.name} event banner`} />
-    <div class="flex flex-col space-y-3 ml-6">
+    <div class="ml-6 flex flex-col space-y-3">
       <p class="text-3xl font-bold">{data.event?.name}</p>
       <p>{data.event?.description}</p>
       <p class="font-bold">

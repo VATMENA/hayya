@@ -101,14 +101,14 @@
     on:click={() => {
       createDialogOpen = true;
     }}>
-    <Plus class="mr-2 w-4 h-4" />
+    <Plus class="mr-2 h-4 w-4" />
     New
   </Button>
   <Button
     on:click={() => {
       createDialogOpen2 = true;
     }}>
-    <Plus class="mr-2 w-4 h-4" />
+    <Plus class="mr-2 h-4 w-4" />
     New All
   </Button>
 </div>
@@ -168,8 +168,8 @@
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
-        <Form.Button class="mt-2 w-100">
-          <Plus class="mr-2 w-4 h-4" />
+        <Form.Button class="w-100 mt-2">
+          <Plus class="mr-2 h-4 w-4" />
           Create
         </Form.Button>
       </form>
@@ -192,8 +192,8 @@
           </Form.Control>
           <Form.FieldErrors />
         </Form.Field>
-        <Form.Button class="mt-2 w-100">
-          <Plus class="mr-2 w-4 h-4" />
+        <Form.Button class="w-100 mt-2">
+          <Plus class="mr-2 h-4 w-4" />
           Create
         </Form.Button>
       </form>

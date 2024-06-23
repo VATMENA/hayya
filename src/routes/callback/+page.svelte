@@ -6,8 +6,8 @@
   export let data: PageData;
 </script>
 
-<div class="h-screen flex flex-col p-6 space-y-4 items-center justify-center">
-  <Card.Root class="w-[20em] justify-center content-center text-center pt-5">
+<div class="flex h-screen flex-col items-center justify-center space-y-4 p-6">
+  <Card.Root class="w-[20em] content-center justify-center pt-5 text-center">
     <Card.Header class="space-y-0 pb-0 pt-0">
       <img src={logo} alt="VATMENA logo" class="logo_image" />
       <!--<Card.Title tag="h1">Login to MENA HQ</Card.Title>-->

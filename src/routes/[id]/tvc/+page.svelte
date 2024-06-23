@@ -23,7 +23,7 @@
 
 <div class="space-y-2">
   <div class="flex items-center justify-between space-y-2">
-    <h2 class="md:text-3xl text-xl font-bold tracking-tight">
+    <h2 class="text-xl font-bold tracking-tight md:text-3xl">
       Transfer & Visiting
     </h2>
     <Dialog.Root bind:open={manAssignOpen}>

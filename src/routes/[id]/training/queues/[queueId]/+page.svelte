@@ -31,7 +31,7 @@
   <h2 class="text-3xl font-bold tracking-tight">{data.queue?.name}</h2>
   {#if can(MANAGE_QUEUES)}
     <Button on:click={() => (addOpen = true)}>
-      <Plus class="mr-2 w-4 h-4" /> Add student
+      <Plus class="mr-2 h-4 w-4" /> Add student
     </Button>
   {/if}
 </div>

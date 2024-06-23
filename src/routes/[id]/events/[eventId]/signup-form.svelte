@@ -55,7 +55,7 @@
     <Form.FieldErrors />
   </Form.Field>
 
-  <div class="grid grid-cols-2 gap-4 mt-2 mb-3">
+  <div class="mb-3 mt-2 grid grid-cols-2 gap-4">
     <Form.Field {form} name="availableFrom">
       <Form.Control let:attrs>
         <Form.Label>Available from (UTC hhmm)</Form.Label>

@@ -27,7 +27,7 @@
 </script>
 
 <div class="flex items-center justify-between space-y-2">
-  <h2 class="md:text-3xl text-2xl font-bold tracking-tight">Resources</h2>
+  <h2 class="text-2xl font-bold tracking-tight md:text-3xl">Resources</h2>
   {#if can(MANAGE_RESOURCES)}
     <Button
       on:click={() => {

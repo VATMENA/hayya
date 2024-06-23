@@ -44,7 +44,7 @@
 </script>
 
 <form method="POST" action="?/createAssignment">
-  <div class="grid gap-4 max-w-lg">
+  <div class="grid max-w-lg gap-4">
     <Form.Field {form} name="position">
       <Form.Control let:attrs>
         <Form.Label>Assigned position</Form.Label>

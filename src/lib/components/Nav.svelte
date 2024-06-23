@@ -80,8 +80,8 @@
 </script>
 
 <header
-  class="sticky top-0 z-50 w-full border-b bg-background shadow-lg backdrop-blur rounded-md">
-  <div class="flex p-8 px-4 md:px-8 h-14 w-full items-center justify-between">
+  class="sticky top-0 z-50 w-full rounded-md border-b bg-background shadow-lg backdrop-blur">
+  <div class="flex h-14 w-full items-center justify-between p-8 px-4 md:px-8">
     <div class="flex md:hidden">
       <Sheet.Root bind:open={mobileNavOpen}>
         <Sheet.Trigger>
@@ -90,12 +90,12 @@
           </Button>
         </Sheet.Trigger>
         <Sheet.Content side={"left"} class="w-[250px]">
-          <div class="flex flex-col font-bold gap-y-4 pr-4">
+          <div class="flex flex-col gap-y-4 pr-4 font-bold">
             {#each Object.entries(pages) as [_, { name, link, visible }]}
               {#if visible}
                 {#if $page.url.pathname.startsWith(link)}
                   <Button
-                    class="transition-colors text-lg justify-start"
+                    class="justify-start text-lg transition-colors"
                     variant="secondary"
                     href={link}
                     on:click={() => (mobileNavOpen = false)}>
@@ -103,7 +103,7 @@
                   </Button>
                 {:else}
                   <Button
-                    class="transition-colors text-lg justify-start"
+                    class="justify-start text-lg transition-colors"
                     variant="ghost"
                     href={link}
                     on:click={() => (mobileNavOpen = false)}>
@@ -118,22 +118,22 @@
     </div>
     <div class="flex gap-x-6">
       <a class="flex items-center space-x-2" href="/{$page.data.facility.id}">
-        <span class="font-bold inline-block text-[15px] lg:text-base">
+        <span class="inline-block text-[15px] font-bold lg:text-base">
           {$page.data.facility.name} HQ
         </span>
       </a>
-      <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+      <nav class="hidden items-center space-x-6 text-sm font-medium md:flex">
         {#each Object.entries(pages) as [_, { name, link, visible }]}
           {#if visible}
             {#if $page.url.pathname.startsWith(link)}
               <a
-                class="transition-colors hover:text-foreground/80 text-foreground"
+                class="text-foreground transition-colors hover:text-foreground/80"
                 href={link}>
                 {name}
               </a>
             {:else}
               <a
-                class="transition-colors hover:text-foreground/80 text-foreground/60"
+                class="text-foreground/60 transition-colors hover:text-foreground/80"
                 href={link}>
                 {name}
               </a>
@@ -157,12 +157,12 @@
                 </Avatar.Fallback>
               </Avatar.Root>
               <span
-                class="hidden font-bold sm:inline-block text-[15px] lg:text-base">
+                class="hidden text-[15px] font-bold sm:inline-block lg:text-base">
                 {$page.data.user.name}
               </span>
             {:else}
               <span
-                class="hidden font-bold sm:inline-block text-[15px] lg:text-base">
+                class="hidden text-[15px] font-bold sm:inline-block lg:text-base">
                 User Info
               </span>
             {/if}

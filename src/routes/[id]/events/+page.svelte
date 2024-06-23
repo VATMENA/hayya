@@ -89,28 +89,28 @@
 </script>
 
 <div class="flex items-center justify-between py-2">
-  <h2 class="md:text-3xl text-2xl font-bold tracking-tight">Upcoming Events</h2>
+  <h2 class="text-2xl font-bold tracking-tight md:text-3xl">Upcoming Events</h2>
   {#if canManageEvents}
     <Button
       on:click={() => {
         createDialogOpen = true;
       }}>
-      <Plus class="mr-2 w-4 h-4" />
+      <Plus class="mr-2 h-4 w-4" />
       Create
     </Button>
   {/if}
 </div>
 
 {#if data.events.length > 0}
-  <Carousel.Root class="hidden md:flex mx-12 h-full items-center">
+  <Carousel.Root class="mx-12 hidden h-full items-center md:flex">
     <Carousel.Content class="m-3 h-full">
       {#each data.events as event (event.id)}
         {#if canManageEvents}
-          <Carousel.Item class="lg:basis-1/2 h-full">
+          <Carousel.Item class="h-full lg:basis-1/2">
             <EventCard {event} />
           </Carousel.Item>
         {:else if event.public}
-          <Carousel.Item class="lg:basis-1/2 h-full">
+          <Carousel.Item class="h-full lg:basis-1/2">
             <EventCard {event} />
           </Carousel.Item>
         {/if}
@@ -119,7 +119,7 @@
     <Carousel.Previous />
     <Carousel.Next />
   </Carousel.Root>
-  <div class="flex md:hidden flex-col pt-2">
+  <div class="flex flex-col pt-2 md:hidden">
     {#each data.events as event (event.id)}
       {#if canManageEvents}
         <EventCard {event} />

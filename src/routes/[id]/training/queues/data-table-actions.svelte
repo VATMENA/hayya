@@ -32,19 +32,19 @@
 
 {#if canJoin}
   <Button on:click={join}>
-    <LogInIcon class="mr-2 w-4 h-4" />
+    <LogInIcon class="mr-2 h-4 w-4" />
     Join
   </Button>
 {/if}
 {#if canLeave}
   <Button href="/{$page.params.id}/training/queues/{id}/leave">
-    <AlertTriangleIcon class="mr-2 w-4 h-4" />
+    <AlertTriangleIcon class="mr-2 h-4 w-4" />
     Leave
   </Button>
 {/if}
 {#if can(RECOMMEND_FOR_QUEUE) || can(MANAGE_QUEUES)}
   <Button href="/{$page.params.id}/training/queues/{id}">
-    <SettingsIcon class="mr-2 w-4 h-4" />
+    <SettingsIcon class="mr-2 h-4 w-4" />
     Manage
   </Button>
 {/if}

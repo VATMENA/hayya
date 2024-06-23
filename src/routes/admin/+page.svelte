@@ -20,7 +20,7 @@
   <h2 class="text-3xl font-bold tracking-tight">Site Administration</h2>
 </div>
 
-<div class="flex flex-col md:flex-row pt-2 gap-4">
+<div class="flex flex-col gap-4 pt-2 md:flex-row">
   <Card.Root>
     <Card.Header
       class="flex flex-row items-center justify-between space-y-0 pb-2">

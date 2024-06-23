@@ -51,7 +51,7 @@
 </script>
 
 <form method="POST" use:enhance action="?/editEvent">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
     <div class="max-w-lg">
       <Form.Field {form} name="name">
         <Form.Control let:attrs>
@@ -136,17 +136,17 @@
           {#each positions as position, index (position)}
             <div
               transition:slide
-              class="py-2 px-3 hover:bg-slate-100 flex justify-between items-center group">
+              class="group flex items-center justify-between px-3 py-2 hover:bg-slate-100">
               {position}
               <Button variant="ghost" on:click={() => removePosition(index)}>
                 <X
-                  class="group-hover:inline-block md:hidden text-slate-400 hover:text-slate-600" />
+                  class="text-slate-400 hover:text-slate-600 group-hover:inline-block md:hidden" />
               </Button>
             </div>
           {/each}
         </div>
 
-        <div class="flex justify-between space-x-2 items-baseline mt-3">
+        <div class="mt-3 flex items-baseline justify-between space-x-2">
           <Input
             type="text"
             placeholder="Add position"
@@ -156,7 +156,7 @@
               positions = [...positions, addPosition.toUpperCase()];
               addPosition = "";
             }}>
-            <Plus class="w-3 h-3" />
+            <Plus class="h-3 w-3" />
           </Button>
         </div>
       </div>

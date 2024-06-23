@@ -102,14 +102,14 @@
   }
 
   .render ul {
-    @apply list-disc list-inside my-6 [&>li]:mt-2;
+    @apply my-6 list-inside list-disc [&>li]:mt-2;
   }
   .render ol {
-    @apply list-decimal list-inside my-6 [&>li]:mt-2;
+    @apply my-6 list-inside list-decimal [&>li]:mt-2;
   }
 
   .render pre {
-    @apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold block w-min;
+    @apply relative block w-min rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold;
   }
 
   .render table {

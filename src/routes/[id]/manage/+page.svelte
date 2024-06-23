@@ -22,12 +22,12 @@
   <h2 class="text-3xl font-bold tracking-tight">Manage Facility</h2>
 </div>
 
-<div class="flex flex-col pt-2 max-w-lg gap-y-4">
+<div class="flex max-w-lg flex-col gap-y-4 pt-2">
   <Card.Root>
     <Card.Header>
       <Card.Title>Roles</Card.Title>
       <Button href="/{data.facility.id}/manage/createrole">
-        <Plus class="mr-2 w-4 h-4" />
+        <Plus class="mr-2 h-4 w-4" />
         Create
       </Button>
     </Card.Header>

@@ -307,7 +307,7 @@
         </Button>
         <Button
           on:click={deleteCertificate}
-          class="text-red-950 bg-red-500 hover:bg-red-600">
+          class="bg-red-500 text-red-950 hover:bg-red-600">
           I'm sure, delete it
         </Button>
       </Dialog.Footer>

@@ -54,7 +54,7 @@
           <div>
             <p class="font-semibold text-foreground/40">COMMENTS</p>
             <div
-              class="mt-2 relative rounded bg-muted p-[0.5rem] text-sm mb-5 overflow-auto h-[150px]">
+              class="relative mb-5 mt-2 h-[150px] overflow-auto rounded bg-muted p-[0.5rem] text-sm">
               <Markdown src={session.studentComments} />
             </div>
           </div>
@@ -64,7 +64,7 @@
                 PRIVATE MENTOR NOTES
               </p>
               <div
-                class="mt-2 relative rounded bg-muted p-[0.5rem] text-sm mb-5 overflow-auto h-[150px]">
+                class="relative mb-5 mt-2 h-[150px] overflow-auto rounded bg-muted p-[0.5rem] text-sm">
                 <Markdown src={session.instructorComments} />
               </div>
             </div>

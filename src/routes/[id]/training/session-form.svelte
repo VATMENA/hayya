@@ -27,7 +27,7 @@
 
 <form method="POST" action="?/logSession" use:enhance>
   <div class="space-y-4">
-    <div class="grid-cols-3 grid gap-4">
+    <div class="grid grid-cols-3 gap-4">
       <Form.Field {form} name="cid" class="flex flex-col">
         <Form.Control let:attrs>
           <Form.Label>CID</Form.Label>
@@ -92,7 +92,7 @@
     </div>
     <Form.Button class="w-full">
       {#if $delayed}
-        <LoaderCircle class="animate-spin w-5 h-5" />
+        <LoaderCircle class="h-5 w-5 animate-spin" />
       {:else}
         Log Session
       {/if}

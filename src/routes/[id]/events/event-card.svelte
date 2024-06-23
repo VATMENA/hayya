@@ -24,12 +24,12 @@
 
 <a href={`/${event.hostId}/events/${event.id}`}>
   <Card.Root
-    class="w-full mr-4 mb-4 h-fit md:h-full transition hover:scale-[1.02]">
+    class="mb-4 mr-4 h-fit w-full transition hover:scale-[1.02] md:h-full">
     <img
       src={event.bannerUrl}
-      class="rounded-t-lg h-1/2 object-cover"
+      class="h-1/2 rounded-t-lg object-cover"
       alt={`${event.name} event banner`} />
-    <Card.Header class="font-bold text-3xl py-3">{event.name}</Card.Header>
+    <Card.Header class="py-3 text-3xl font-bold">{event.name}</Card.Header>
     <Card.Content>
       <!-- <div class="truncate">{event.description}</div> -->
     </Card.Content>

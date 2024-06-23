@@ -78,7 +78,7 @@
     </Form.Control>
     <Form.Description>
       A <a
-        class="underline-offset-4 underline"
+        class="underline underline-offset-4"
         href="https://tailwindcss.com/docs/customizing-colors">
         Tailwind color descriptor
       </a>
@@ -110,7 +110,7 @@
 
   <Form.Button class="w-full">
     {#if $delayed}
-      <LoaderCircle class="animate-spin w-5 h-5" />
+      <LoaderCircle class="h-5 w-5 animate-spin" />
     {:else}
       Create
     {/if}
