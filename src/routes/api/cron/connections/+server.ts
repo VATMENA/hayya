@@ -1,8 +1,8 @@
-import type { RequestHandler } from "@sveltejs/kit";
 import prisma from "$lib/prisma";
 import { FACILITIES, RATINGS, parse_position_v2 } from "$lib/cert";
 import { ulid } from "ulid";
 import type { Certificate } from "@prisma/client";
+import { CronJob } from "quirrel/sveltekit";
 
 interface Datafeed {
   controllers: Controller[];
@@ -21,7 +21,7 @@ interface Controller {
   logon_time: Date;
 }
 
-export const GET: RequestHandler = async () => {
+const connectionCron = CronJob("api/cron/connections", "* * * * *", async () => {
   // active = Connections in Vatsim which are active at this moment.
   // open = Connections in DB which were active.
 
@@ -239,9 +239,7 @@ export const GET: RequestHandler = async () => {
       })),
     });
   }
-
-  return new Response("");
-};
+});
 
 const callsigns = {
   HECC: /(^HE[A-Z]{2}_.+$)/,
@@ -287,3 +285,5 @@ const callsigns = {
 };
 
 const ratingID = (name: string) => RATINGS.findIndex((r) => r[0] === name);
+
+export const POST = connectionCron;
