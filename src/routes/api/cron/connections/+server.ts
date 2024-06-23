@@ -21,57 +21,83 @@ interface Controller {
   logon_time: Date;
 }
 
-const connectionCron = CronJob("api/cron/connections", "* * * * *", async () => {
-  // active = Connections in Vatsim which are active at this moment.
-  // open = Connections in DB which were active.
+const connectionCron = CronJob(
+  "api/cron/connections",
+  "* * * * *",
+  async () => {
+    // active = Connections in Vatsim which are active at this moment.
+    // open = Connections in DB which were active.
 
-  console.log("[ConnectionUpdater] Connections update task started");
+    console.log("[ConnectionUpdater] Connections update task started");
 
-  const req = await fetch("https://data.vatsim.net/v3/vatsim-data.json");
+    const req = await fetch("https://data.vatsim.net/v3/vatsim-data.json");
 
-  const datafeed: Datafeed = await req.json();
+    const datafeed: Datafeed = await req.json();
 
-  const activeConnections = datafeed.controllers.filter((c) => {
-    return Object.entries(callsigns).some(([_, r]) => c.callsign.match(r));
-  });
+    const activeConnections = datafeed.controllers.filter((c) => {
+      return Object.entries(callsigns).some(([_, r]) => c.callsign.match(r));
+    });
 
-  const openConnections = await prisma.connection.findMany({
-    where: {
-      endTime: null,
-    },
-  });
+    const openConnections = await prisma.connection.findMany({
+      where: {
+        endTime: null,
+      },
+    });
 
-  const activeMap: Record<string, Controller> = {};
-  const openMap: Record<string, object> = {};
-  activeConnections.forEach((c) => (activeMap[c.cid.toString()] = c));
-  openConnections.forEach((c) => (openMap[c.userId] = c));
+    const activeMap: Record<string, Controller> = {};
+    const openMap: Record<string, object> = {};
+    activeConnections.forEach((c) => (activeMap[c.cid.toString()] = c));
+    openConnections.forEach((c) => (openMap[c.userId] = c));
 
-  console.log(
-    `[ConnectionUpdater] Vatsim Connections: ${activeConnections.length} | DB Connections: ${openConnections.length}`,
-  );
+    console.log(
+      `[ConnectionUpdater] Vatsim Connections: ${activeConnections.length} | DB Connections: ${openConnections.length}`,
+    );
 
-  const closedConnections: Array<string> = [];
-  const newConnections: Array<{
-    userId: string;
-    callsign: string;
-    isAuthorized: boolean;
-    startTime: Date;
-    facility: number;
-    // Fields used for creating new unknown users.
-    name: string;
-    rating: number;
-  }> = [];
+    const closedConnections: Array<string> = [];
+    const newConnections: Array<{
+      userId: string;
+      callsign: string;
+      isAuthorized: boolean;
+      startTime: Date;
+      facility: number;
+      // Fields used for creating new unknown users.
+      name: string;
+      rating: number;
+    }> = [];
 
-  // Collect changed callsigns and closed connections.
-  openConnections.forEach((oc) => {
-    const ac = activeMap[oc.userId];
-    if (ac) {
-      // If they swapped callsigns, close the old connection and open a new one.
-      if (ac.callsign === oc.callsign) {
+    // Collect changed callsigns and closed connections.
+    openConnections.forEach((oc) => {
+      const ac = activeMap[oc.userId];
+      if (ac) {
+        // If they swapped callsigns, close the old connection and open a new one.
+        if (ac.callsign === oc.callsign) {
+          return;
+        }
+
+        closedConnections.push(oc.id);
+        newConnections.push({
+          userId: ac.cid.toString(),
+          callsign: ac.callsign,
+          isAuthorized: false,
+          startTime: ac.logon_time,
+          facility: ac.facility,
+          name: ac.name,
+          rating: ac.rating,
+        });
         return;
       }
 
+      // If not in activeMap, it no longer exists.
       closedConnections.push(oc.id);
+    });
+
+    activeConnections.forEach((ac) => {
+      const oc = openMap[ac.cid.toString()];
+      if (oc) {
+        // Connection exists. Handled above.
+        return;
+      }
+
       newConnections.push({
         userId: ac.cid.toString(),
         callsign: ac.callsign,
@@ -81,165 +107,143 @@ const connectionCron = CronJob("api/cron/connections", "* * * * *", async () => 
         name: ac.name,
         rating: ac.rating,
       });
-      return;
-    }
-
-    // If not in activeMap, it no longer exists.
-    closedConnections.push(oc.id);
-  });
-
-  activeConnections.forEach((ac) => {
-    const oc = openMap[ac.cid.toString()];
-    if (oc) {
-      // Connection exists. Handled above.
-      return;
-    }
-
-    newConnections.push({
-      userId: ac.cid.toString(),
-      callsign: ac.callsign,
-      isAuthorized: false,
-      startTime: ac.logon_time,
-      facility: ac.facility,
-      name: ac.name,
-      rating: ac.rating,
     });
-  });
 
-  console.log(
-    `[ConnectionUpdater] New Connections: ${newConnections.length} | Closed Connections: ${closedConnections.length}`,
-  );
+    console.log(
+      `[ConnectionUpdater] New Connections: ${newConnections.length} | Closed Connections: ${closedConnections.length}`,
+    );
 
-  if (closedConnections.length) {
-    await prisma.connection.updateMany({
+    if (closedConnections.length) {
+      await prisma.connection.updateMany({
+        where: {
+          id: {
+            in: closedConnections,
+          },
+        },
+        data: {
+          endTime: new Date(),
+        },
+      });
+    }
+
+    // Create any unknown potential users.
+    const activeUsers = await prisma.user.findMany({
       where: {
         id: {
-          in: closedConnections,
+          in: newConnections.map((info) => info.userId),
         },
       },
-      data: {
-        endTime: new Date(),
-      },
     });
-  }
 
-  // Create any unknown potential users.
-  const activeUsers = await prisma.user.findMany({
-    where: {
-      id: {
-        in: newConnections.map((info) => info.userId),
-      },
-    },
-  });
-
-  const userMap: Record<string, boolean> = {};
-  activeUsers.forEach((u) => {
-    userMap[u.id] = true;
-  });
-
-  const newUsers = newConnections.filter((info) => !userMap[info.userId]);
-  if (newUsers.length) {
-    console.log(
-      `[ConnectionUpdater] Unknown User Connections: ${newUsers.length}`,
-    );
-    await prisma.user.createMany({
-      data: newUsers.map((u) => ({
-        id: u.userId,
-        name: u.name,
-        ratingId: u.rating,
-        ratingShort: RATINGS[u.rating][0],
-        ratingLong: RATINGS[u.rating][1],
-        region: "",
-        division: "",
-        recommendedTrainingQueues: [],
-        completedTrainingQueues: [],
-      })),
+    const userMap: Record<string, boolean> = {};
+    activeUsers.forEach((u) => {
+      userMap[u.id] = true;
     });
-  }
 
-  const insufficientRating = newConnections.filter((info, i) => {
-    let ok = false;
-    switch (FACILITIES[info.facility][0]) {
-      case "DEL":
-      case "GND":
-        if (info.rating >= ratingID("S1")) {
-          ok = true;
-        }
-        break;
-      case "TWR":
-        if (info.rating >= ratingID("S2")) {
-          ok = true;
-        }
-        break;
-      case "APP":
-        if (info.rating >= ratingID("S3")) {
-          ok = true;
-        }
-        break;
-      case "FSS":
-      case "CTR":
-        if (info.rating >= ratingID("C1")) {
-          ok = true;
-        }
-        break;
+    const newUsers = newConnections.filter((info) => !userMap[info.userId]);
+    if (newUsers.length) {
+      console.log(
+        `[ConnectionUpdater] Unknown User Connections: ${newUsers.length}`,
+      );
+      await prisma.user.createMany({
+        data: newUsers.map((u) => ({
+          id: u.userId,
+          name: u.name,
+          ratingId: u.rating,
+          ratingShort: RATINGS[u.rating][0],
+          ratingLong: RATINGS[u.rating][1],
+          region: "",
+          division: "",
+          recommendedTrainingQueues: [],
+          completedTrainingQueues: [],
+        })),
+      });
     }
-    // Authorized from rating. No need to check certificates.
-    if (ok) {
-      newConnections[i].isAuthorized = true;
-    }
-    return !ok;
-  });
 
-  const certs = await prisma.certificate.findMany({
-    where: {
-      holderId: {
-        in: insufficientRating.map((info) => info.userId),
-      },
-      OR: [
-        // Non-expired and permanent certificates.
-        { expires: { lt: new Date() } },
-        { expires: null },
-      ],
-    },
-  });
-
-  const certMap: Record<string, Certificate[]> = {};
-  certs.forEach((c) => {
-    if (!certMap[c.holderId]) certMap[c.holderId] = [];
-    certMap[c.holderId].push(c);
-  });
-
-  newConnections.forEach((info, i) => {
-    const certs = certMap[info.userId];
-    if (info.isAuthorized || !certs) return;
-    certs.forEach((c) => {
-      const pos = parse_position_v2(c.position);
-      if (!pos) return;
-
-      // Check to match callsign with certificate facility.
-      if (pos.facility && pos.facility in callsigns) {
-        const re = (callsigns as any)[pos.facility];
-        if (!info.callsign.match(re)) return;
+    const insufficientRating = newConnections.filter((info, i) => {
+      let ok = false;
+      switch (FACILITIES[info.facility][0]) {
+        case "DEL":
+        case "GND":
+          if (info.rating >= ratingID("S1")) {
+            ok = true;
+          }
+          break;
+        case "TWR":
+          if (info.rating >= ratingID("S2")) {
+            ok = true;
+          }
+          break;
+        case "APP":
+          if (info.rating >= ratingID("S3")) {
+            ok = true;
+          }
+          break;
+        case "FSS":
+        case "CTR":
+          if (info.rating >= ratingID("C1")) {
+            ok = true;
+          }
+          break;
       }
-
-      if (FACILITIES[info.facility][0] === pos.position) {
+      // Authorized from rating. No need to check certificates.
+      if (ok) {
         newConnections[i].isAuthorized = true;
       }
+      return !ok;
     });
-  });
 
-  if (newConnections.length) {
-    await prisma.connection.createMany({
-      data: newConnections.map((info) => ({
-        id: ulid(),
-        userId: info.userId,
-        callsign: info.callsign,
-        isAuthorized: info.isAuthorized,
-        startTime: info.startTime,
-      })),
+    const certs = await prisma.certificate.findMany({
+      where: {
+        holderId: {
+          in: insufficientRating.map((info) => info.userId),
+        },
+        OR: [
+          // Non-expired and permanent certificates.
+          { expires: { lt: new Date() } },
+          { expires: null },
+        ],
+      },
     });
-  }
-});
+
+    const certMap: Record<string, Certificate[]> = {};
+    certs.forEach((c) => {
+      if (!certMap[c.holderId]) certMap[c.holderId] = [];
+      certMap[c.holderId].push(c);
+    });
+
+    newConnections.forEach((info, i) => {
+      const certs = certMap[info.userId];
+      if (info.isAuthorized || !certs) return;
+      certs.forEach((c) => {
+        const pos = parse_position_v2(c.position);
+        if (!pos) return;
+
+        // Check to match callsign with certificate facility.
+        if (pos.facility && pos.facility in callsigns) {
+          const re = (callsigns as any)[pos.facility];
+          if (!info.callsign.match(re)) return;
+        }
+
+        if (FACILITIES[info.facility][0] === pos.position) {
+          newConnections[i].isAuthorized = true;
+        }
+      });
+    });
+
+    if (newConnections.length) {
+      await prisma.connection.createMany({
+        data: newConnections.map((info) => ({
+          id: ulid(),
+          userId: info.userId,
+          callsign: info.callsign,
+          isAuthorized: info.isAuthorized,
+          startTime: info.startTime,
+        })),
+      });
+    }
+  },
+);
 
 const callsigns = {
   HECC: /(^HE[A-Z]{2}_.+$)/,
