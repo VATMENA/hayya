@@ -69,5 +69,14 @@
     "tailwind-variants": "^0.2.1",
     "ulid": "^2.3.0",
     "zod": "^3.22.4"
-  }
+  },
+  "trustedDependencies": [
+    "@datadog/native-appsec",
+    "@datadog/native-iast-taint-tracking",
+    "@datadog/native-metrics",
+    "@datadog/pprof",
+    "@sentry/cli",
+    "protobufjs",
+    "svelte-preprocess"
+  ]
 }
