@@ -81,16 +81,16 @@
   }
 </script>
 
-<div class="h-screen flex flex-col p-6 space-y-4 items-center justify-center">
-  <Card.Root class="justify-center content-center">
+<div class="flex h-screen flex-col items-center justify-center space-y-4 p-6">
+  <Card.Root class="content-center justify-center">
     <Card.Header>
       <Card.Title>
         Hi, {data.user.name}! What are you looking to do today?
       </Card.Title>
     </Card.Header>
-    <Card.Content class="flex flex-col xl:flex-row gap-4">
+    <Card.Content class="flex flex-col gap-4 xl:flex-row">
       <div class="flex flex-col gap-2">
-        <h3 class="font-bold text-lg">Log into a facility HQ</h3>
+        <h3 class="text-lg font-bold">Log into a facility HQ</h3>
 
         <Popover.Root bind:open={hqopen} let:ids>
           <div class="grid grid-cols-4 gap-2">
@@ -100,7 +100,7 @@
                 variant="outline"
                 role="combobox"
                 aria-expanded={hqopen}
-                class="w-full justify-between col-span-3">
+                class="col-span-3 w-full justify-between">
                 {hqselectedValue}
                 <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
@@ -142,7 +142,7 @@
       </div>
 
       <div class="flex flex-col gap-2">
-        <h3 class="font-bold text-lg">View the roster of a facility</h3>
+        <h3 class="text-lg font-bold">View the roster of a facility</h3>
         <Popover.Root bind:open={rosteropen} let:ids>
           <div class="grid grid-cols-4 gap-2">
             <Popover.Trigger asChild let:builder>
@@ -151,7 +151,7 @@
                 variant="outline"
                 role="combobox"
                 aria-expanded={rosteropen}
-                class="w-full justify-between col-span-3">
+                class="col-span-3 w-full justify-between">
                 {rosterselectedValue}
                 <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
@@ -162,7 +162,7 @@
                 goto(`/${rostervalue}/roster`);
               }}>
               Go <ChevronRight
-                class="ml-2 h-4 w-4 shrink-0 opacity-50 align-middle" />
+                class="ml-2 h-4 w-4 shrink-0 align-middle opacity-50" />
             </Button>
           </div>
           <Popover.Content class="w-[200px] p-0">
@@ -191,11 +191,11 @@
         </Popover.Root>
       </div>
       <div class="flex flex-col gap-2">
-        <h3 class="font-bold text-lg">
+        <h3 class="text-lg font-bold">
           Apply to visit or transfer to a facility
         </h3>
         <Button variant="outline" href="/tvc/" class="w-full">
-          T&V Dashboard <ChevronRight class="w-5 h-5 font-light" />
+          T&V Dashboard <ChevronRight class="h-5 w-5 font-light" />
         </Button>
       </div>
     </Card.Content>

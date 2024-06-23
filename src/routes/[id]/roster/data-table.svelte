@@ -225,7 +225,7 @@
 
 <div>
   <div
-    class="flex flex-col md:flex-row justify-between items-center py-4 gap-y-2">
+    class="flex flex-col items-center justify-between gap-y-2 py-4 md:flex-row">
     <Input
       class="max-w-sm"
       placeholder="Search by name..."
@@ -234,7 +234,7 @@
     <Dialog.Root>
       <Dialog.Trigger
         class="{buttonVariants({ variant: 'outline' })} w-full md:w-fit">
-        <Info class="align-middle mr-2 w-4 h-4" />
+        <Info class="mr-2 h-4 w-4 align-middle" />
         How to read this page
       </Dialog.Trigger>
       <Dialog.Content>
@@ -244,7 +244,7 @@
             The certificates view can be a little confusing. Here's a key for
             reading the badges.
           </Dialog.Description>
-          <div class="text-sm text-muted-foreground leading-6">
+          <div class="text-sm leading-6 text-muted-foreground">
             <p>
               A regular certificate will look like this: <CertificateBadge
                 holder={$page.data.user}

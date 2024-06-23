@@ -47,14 +47,14 @@
 <Toaster richColors />
 
 <div
-  class="h-screen flex flex-col p-6 space-y-4 bg-[url('/sunset2.jpg')] bg-cover bg-no-repeat items-center justify-center">
+  class="flex h-screen flex-col items-center justify-center space-y-4 bg-[url('/sunset2.jpg')] bg-cover bg-no-repeat p-6">
   <slot />
 </div>
 
-<p class="text-xs fixed left-1 bottom-1">
+<p class="fixed bottom-1 left-1 text-xs">
   Hayya {version}
 </p>
 
-<p class="text-xs fixed right-1 bottom-1">
+<p class="fixed bottom-1 right-1 text-xs">
   Made with &lt;3 by core, sharif_, hhhapz, and iconoclastic_
 </p>

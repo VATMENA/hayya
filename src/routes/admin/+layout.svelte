@@ -4,7 +4,7 @@
 </script>
 
 <div
-  class="flex flex-col h-full overflow-auto w-full bg-background shadow-lg p-8 pt-4 space-y-1 rounded-md">
+  class="flex h-full w-full flex-col space-y-1 overflow-auto rounded-md bg-background p-8 pt-4 shadow-lg">
   <Breadcrumb.Root>
     <Breadcrumb.List>
       {#each $items as item, i}

@@ -5,14 +5,14 @@
   export let type: string;
 </script>
 
-<div class="flex space-x-2 mb-2">
-  <span class="bg-muted rounded-full p-2 w-8 h-8">
+<div class="mb-2 flex space-x-2">
+  <span class="h-8 w-8 rounded-full bg-muted p-2">
     {#if type === "createCase"}
-      <PlusIcon class="w-4 h-4" />
+      <PlusIcon class="h-4 w-4" />
     {:else if type === "comment"}
-      <MessageSquareIcon class="w-4 h-4" />
+      <MessageSquareIcon class="h-4 w-4" />
     {:else if type === "stateChange"}
-      <OrbitIcon class="w-4 h-4" />
+      <OrbitIcon class="h-4 w-4" />
     {/if}
   </span>
   <span class="mt-1">
@@ -20,6 +20,6 @@
   </span>
 </div>
 
-<div class="ml-10 mb-2">
+<div class="mb-2 ml-10">
   <slot name="content" />
 </div>

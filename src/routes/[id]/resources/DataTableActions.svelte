@@ -76,7 +76,7 @@
         ?
       </Dialog.Description>
     </Dialog.Header>
-    <div class="grid-cols-2 grid gap-4">
+    <div class="grid grid-cols-2 gap-4">
       <Button
         on:click={() => {
           dialogOpen = false;

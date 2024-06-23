@@ -25,7 +25,7 @@
 </script>
 
 <div class="flex justify-between">
-  <h2 class="text-3xl font-bold tracking-tight !mb-2">
+  <h2 class="!mb-2 text-3xl font-bold tracking-tight">
     Manage Signups - {data.event?.name}
   </h2>
   <Button

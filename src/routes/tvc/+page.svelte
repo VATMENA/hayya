@@ -29,7 +29,7 @@
   </h2>
 </div>
 
-<div class="grid-cols-3 grid gap-4">
+<div class="grid grid-cols-3 gap-4">
   <Card.Root>
     <Card.Header
       class="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -68,7 +68,7 @@
   </Card.Root>
 </div>
 
-<div class="grid-cols-2 grid gap-4">
+<div class="grid grid-cols-2 gap-4">
   <Card.Root>
     <Card.Content>
       <Card.Header class="pl-0">
@@ -81,7 +81,7 @@
   <Card.Root>
     <Card.Content>
       <Card.Header
-        class="flex flex-row items-center justify-between px-0 py-3 space-y-0">
+        class="flex flex-row items-center justify-between space-y-0 px-0 py-3">
         <Card.Title>Your Cases</Card.Title>
         <Button
           class="mr-0"
@@ -167,11 +167,11 @@
     <ul class="space-y-2">
       <li class="flex">
         {#if data.visitingRequirements.home === "EMEA/MENA" && data.visitingRequirements.rating > 2}
-          <CircleCheck class="text-green-500 min-w-6 min-h-6 mr-2" />
+          <CircleCheck class="mr-2 min-h-6 min-w-6 text-green-500" />
         {:else if data.visitingRequirements.rating > 3}
-          <CircleCheck class="text-green-500 min-w-6 min-h-6 mr-2" />
+          <CircleCheck class="mr-2 min-h-6 min-w-6 text-green-500" />
         {:else}
-          <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
+          <CircleX class="mr-2 min-h-6 min-w-6 text-red-500" />
         {/if}
         <span class="text-foreground/90">
           You hold an {data.visitingRequirements.home === "EMEA/MENA"
@@ -181,9 +181,9 @@
       </li>
       <li class="flex">
         {#if data.visitingRequirements.fiftyHours}
-          <CircleCheck class="text-green-500 min-w-6 min-h-6 mr-2" />
+          <CircleCheck class="mr-2 min-h-6 min-w-6 text-green-500" />
         {:else}
-          <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
+          <CircleX class="mr-2 min-h-6 min-w-6 text-red-500" />
         {/if}
         <span class="text-foreground/90">
           You have logged {(
@@ -196,9 +196,9 @@
       </li>
       <li class="flex">
         {#if data.visitingRequirements.fiftyHours}
-          <CircleCheck class="text-green-500 min-w-6 min-h-6 mr-2" />
+          <CircleCheck class="mr-2 min-h-6 min-w-6 text-green-500" />
         {:else}
-          <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
+          <CircleX class="mr-2 min-h-6 min-w-6 text-red-500" />
         {/if}
         <span class="text-foreground/90">
           You have logged {(
@@ -213,9 +213,9 @@
 
       <li class="flex">
         {#if data.visitingRequirements.canVisit}
-          <CircleCheck class="text-green-500 min-w-6 min-h-6 mr-2" />
+          <CircleCheck class="mr-2 min-h-6 min-w-6 text-green-500" />
         {:else}
-          <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
+          <CircleX class="mr-2 min-h-6 min-w-6 text-red-500" />
         {/if}
         <span class="text-foreground/90">
           Do you meet all of the above requirements?
@@ -255,9 +255,9 @@
     <ul class="space-y-2">
       <li class="flex">
         {#if data.visitingRequirements.fiftyHours}
-          <CircleCheck class="text-green-500 min-w-6 min-h-6 mr-2" />
+          <CircleCheck class="mr-2 min-h-6 min-w-6 text-green-500" />
         {:else}
-          <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
+          <CircleX class="mr-2 min-h-6 min-w-6 text-red-500" />
         {/if}
         <span class="text-foreground/90">
           You have logged {(
@@ -270,9 +270,9 @@
       </li>
       <li class="flex">
         {#if data.visitingRequirements.fiftyHours}
-          <CircleCheck class="text-green-500 min-w-6 min-h-6 mr-2" />
+          <CircleCheck class="mr-2 min-h-6 min-w-6 text-green-500" />
         {:else}
-          <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
+          <CircleX class="mr-2 min-h-6 min-w-6 text-red-500" />
         {/if}
         <span class="text-foreground/90">
           You have logged {(
@@ -286,9 +286,9 @@
       </li>
       <li class="flex">
         {#if data.transferRequirements.ninetyDaysSinceLastRatingUpdate}
-          <CircleCheck class="text-green-500 min-w-6 min-h-6 mr-2" />
+          <CircleCheck class="mr-2 min-h-6 min-w-6 text-green-500" />
         {:else}
-          <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
+          <CircleX class="mr-2 min-h-6 min-w-6 text-red-500" />
         {/if}
         <span class="text-foreground/90">
           It has been 90 days since your last rating upgrade or transfer attempt
@@ -296,9 +296,9 @@
       </li>
       <li class="flex">
         {#if data.transferRequirements.canTransfer}
-          <CircleCheck class="text-green-500 min-w-6 min-h-6 mr-2" />
+          <CircleCheck class="mr-2 min-h-6 min-w-6 text-green-500" />
         {:else}
-          <CircleX class="text-red-500 min-w-6 min-h-6 mr-2" />
+          <CircleX class="mr-2 min-h-6 min-w-6 text-red-500" />
         {/if}
         <span class="text-foreground/90">
           Do you meet all of the above requirements?

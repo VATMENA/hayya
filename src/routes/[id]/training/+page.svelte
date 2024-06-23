@@ -51,7 +51,7 @@
   <h2 class="text-3xl font-bold tracking-tight">Training</h2>
 </div>
 
-<div class="flex flex-col md:grid grid-cols-3 gap-4">
+<div class="flex grid-cols-3 flex-col gap-4 md:grid">
   <div class="space-y-4">
     <Card.Root>
       <Card.Header>
@@ -71,19 +71,19 @@
           {/if}
           <Button
             href="/{$page.params.id}/training/queues/{data.queue.id}/leave">
-            <LogOutIcon class="mr-2 w-4 h-4" />
+            <LogOutIcon class="mr-2 h-4 w-4" />
             Leave
           </Button>
         {:else}
           <p>Not currently a member of any queue.</p>
           <Button href="/{$page.params.id}/training/queues">
-            <LogInIcon class="mr-2 w-4 h-4" />
+            <LogInIcon class="mr-2 h-4 w-4" />
             Join A Queue
           </Button>
         {/if}
         {#if can(MANAGE_QUEUES) || can(RECOMMEND_FOR_QUEUE)}
           <Button href="/{$page.params.id}/training/queues">
-            <SettingsIcon class="mr-2 w-4 h-4" />
+            <SettingsIcon class="mr-2 h-4 w-4" />
             Manage Queues
           </Button>
         {/if}
@@ -98,12 +98,12 @@
           on:click={() => {
             requestTrainingOpen = true;
           }}>
-          <GiftIcon class="mr-2 w-4 h-4" />
+          <GiftIcon class="mr-2 h-4 w-4" />
           Request Training
         </Button>
         {#if can(TRAIN)}
           <Button href="/{$page.params.id}/training/requests">
-            <SettingsIcon class="mr-2 w-4 h-4" />
+            <SettingsIcon class="mr-2 h-4 w-4" />
             Manage Requests
           </Button>
         {/if}
@@ -118,7 +118,7 @@
       <Card.Content class="space-y-1.5">
         <Button
           href="/{$page.params.id}/training/transcript/{$page.data.user.id}">
-          <ScrollTextIcon class="mr-2 w-4 h-4" />
+          <ScrollTextIcon class="mr-2 h-4 w-4" />
           My Training Transcript
         </Button>
       </Card.Content>
@@ -133,13 +133,13 @@
             on:click={() => {
               sessionOpen = true;
             }}>
-            <PlusIcon class="mr-2 w-4 h-4" />
+            <PlusIcon class="mr-2 h-4 w-4" />
             Log Session
           </Button>
 
           <Dialog.Root>
             <Dialog.Trigger class={buttonVariants()}>
-              <ScrollTextIcon class="mr-2 w-4 h-4" />
+              <ScrollTextIcon class="mr-2 h-4 w-4" />
               Open a Student's Transcript
             </Dialog.Trigger>
             <Dialog.Content>

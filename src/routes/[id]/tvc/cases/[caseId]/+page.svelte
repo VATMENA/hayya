@@ -215,17 +215,17 @@
   <div class="space-y-4">
     <Card.Root>
       <Card.Header
-        class="flex flex-row items-center pt-3 pb-2 my-0 justify-between">
+        class="my-0 flex flex-row items-center justify-between pb-2 pt-3">
         <Card.Title>Case Type</Card.Title>
       </Card.Header>
       <Card.Content>
-        <p class="text-2xl font-bold my-0">{data.tvCase.caseType}</p>
+        <p class="my-0 text-2xl font-bold">{data.tvCase.caseType}</p>
       </Card.Content>
     </Card.Root>
 
     <Card.Root>
       <Card.Header
-        class="flex flex-row items-center pt-3 pb-2 my-0 justify-between">
+        class="my-0 flex flex-row items-center justify-between pb-2 pt-3">
         <Card.Title>Status</Card.Title>
         {#if can(MANAGE_TV_REQUESTS)}
           <Dialog.Root bind:open={updStatusOpen}>
@@ -272,7 +272,7 @@
         {/if}
       </Card.Header>
       <Card.Content>
-        <p class="text-2xl font-bold my-0">
+        <p class="my-0 text-2xl font-bold">
           {#if data.tvCase.caseState === "Pending"}
             Pending
           {:else if data.tvCase.caseState === "InReview"}
@@ -291,11 +291,11 @@
     {#if can(MANAGE_TV_REQUESTS)}
       <Card.Root>
         <Card.Header
-          class="flex flex-row items-center pt-3 pb-2 my-0 justify-between">
+          class="my-0 flex flex-row items-center justify-between pb-2 pt-3">
           <Card.Title>Submitter CID</Card.Title>
         </Card.Header>
         <Card.Content>
-          <p class="text-2xl font-bold my-0">{data.tvCase.userId}</p>
+          <p class="my-0 text-2xl font-bold">{data.tvCase.userId}</p>
         </Card.Content>
       </Card.Root>
     {/if}

@@ -29,7 +29,7 @@
       on:click={() => {
         createDialogOpen = true;
       }}>
-      <Plus class="mr-2 w-4 h-4" />
+      <Plus class="mr-2 h-4 w-4" />
       Create
     </Button>
   {/if}

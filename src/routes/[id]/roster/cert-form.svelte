@@ -199,7 +199,7 @@
   </Form.Field>
   <Form.Button class="w-full">
     {#if $delayed}
-      <LoaderCircle class="animate-spin w-5 h-5" />
+      <LoaderCircle class="h-5 w-5 animate-spin" />
     {:else}
       Issue Certificate
     {/if}

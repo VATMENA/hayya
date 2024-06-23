@@ -26,7 +26,7 @@
 <form method="POST" action="?/revokeCertificate" use:enhance>
   <input type="hidden" name="id" value={id} />
   <div class="space-y-4">
-    <div class="grid-cols-2 grid gap-4">
+    <div class="grid grid-cols-2 gap-4">
       <Form.Field {form} name="studentComments">
         <Form.Control let:attrs>
           <Form.Label>Student Comments</Form.Label>
@@ -60,7 +60,7 @@
   </div>
   <Form.Button class="w-full">
     {#if $delayed}
-      <LoaderCircle class="animate-spin w-5 h-5" />
+      <LoaderCircle class="h-5 w-5 animate-spin" />
     {:else}
       Revoke
     {/if}

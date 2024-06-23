@@ -106,7 +106,7 @@
 
     <Form.Button class="w-full">
       {#if $delayed}
-        <Loader2Icon class="w-4 h-4 animate-spin" />
+        <Loader2Icon class="h-4 w-4 animate-spin" />
       {:else}
         Create Event
       {/if}

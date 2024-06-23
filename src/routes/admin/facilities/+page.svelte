@@ -94,7 +94,7 @@
     on:click={() => {
       createDialogOpen = true;
     }}>
-    <Plus class="mr-2 w-4 h-4" />
+    <Plus class="mr-2 h-4 w-4" />
     Create
   </Button>
 </div>
@@ -183,7 +183,7 @@
         </Form.Field>
         <Form.Button class="w-full">
           {#if $delayed}
-            <LoaderCircle class="animate-spin w-5 h-5" />
+            <LoaderCircle class="h-5 w-5 animate-spin" />
           {:else}
             Create
           {/if}
