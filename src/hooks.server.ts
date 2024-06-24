@@ -1,6 +1,17 @@
 import { sequence } from "@sveltejs/kit/hooks";
 import { handleErrorWithSentry, sentryHandle } from "@sentry/sveltekit";
 import * as Sentry from "@sentry/sveltekit";
+import { Cron } from "croner";
+import { rosterCron } from "$lib/crons/roster";
+import { connectionsCron } from "$lib/crons/connections";
+
+Cron("0 * * * *", { protect: true }, async () => {
+  await rosterCron();
+});
+
+Cron("* * * * *", { protect: true }, async () => {
+  await connectionsCron();
+});
 
 Sentry.init({
   dsn: "https://03638266a802a2ea3a089b0c79b1d8a7@o4507063667458048.ingest.us.sentry.io/4507063669948416",
