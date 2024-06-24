@@ -33,5 +33,6 @@ FROM oven/bun AS app
 WORKDIR /app
 
 COPY --from=builder /app/build ./build
+COPY --from=setup /app/node_modules ./node_modules
 EXPOSE 3000
 CMD bun ./build/index.js
