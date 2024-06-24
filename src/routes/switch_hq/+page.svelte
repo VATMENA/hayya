@@ -81,7 +81,7 @@
   }
 </script>
 
-<div class="flex h-full flex-col items-center justify-center space-y-4 p-6">
+<div class="flex h-screen flex-col items-center justify-center space-y-4 p-6">
   <Card.Root class="content-center justify-center">
     <Card.Header>
       <Card.Title>
