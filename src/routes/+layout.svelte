@@ -51,10 +51,10 @@
   <slot />
 </div>
 
-<p class="fixed bottom-1 left-1 text-xs">
+<p class="bottom-1 left-1 hidden text-xs md:fixed">
   Hayya {version}
 </p>
 
-<p class="fixed bottom-1 right-1 text-xs">
+<p class="bottom-1 right-1 hidden text-xs md:fixed">
   Made with &lt;3 by core, sharif_, hhhapz, and iconoclastic_
 </p>
