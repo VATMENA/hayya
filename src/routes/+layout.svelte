@@ -48,7 +48,7 @@
 
 <div
   class="flex h-screen flex-col items-center justify-center bg-[url('/sunset2.jpg')] bg-cover bg-no-repeat">
-  <div class="flex h-full w-full flex-col items-center gap-y-4 p-6">
+  <div class="flex h-screen w-full flex-col items-center gap-y-4 p-6">
     <slot />
   </div>
 
