@@ -9,13 +9,8 @@ import { redirect } from "sveltekit-flash-message/server";
 import { getPixels } from "@unpic/pixels";
 import { encode } from "blurhash";
 import { ulid } from "ulid";
-import type { Config } from "@sveltejs/adapter-vercel";
 import { MANAGE_EVENTS } from "$lib/perms/permissions";
 import { zod } from "sveltekit-superforms/adapters";
-
-export const config: Config = {
-  maxDuration: 300,
-};
 
 export const load: PageServerLoad = async ({ params }) => {
   const events = await prisma.event.findMany({
