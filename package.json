@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite dev --port 5173",
-    "build": "vite build",
+    "build": "prisma generate && vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -12,7 +12,7 @@
     "fmt": "prettier . --write",
     "lint": "prettier --check . && svelte-check",
     "fix": "prettier . --write",
-    "start": "bun build/index.js"
+    "start": "bun run --bun build/index.js"
   },
   "devDependencies": {
     "@event-calendar/core": "^2.7.0",
