@@ -473,19 +473,6 @@ export const actions = {
       },
     });
 
-    await prisma.session.create({
-      data: {
-        id: ulid(),
-        studentId: cert.holderId,
-        instructorId: user.id,
-        logType: "CertificateRevokal",
-        sessionType: str_name,
-        date: new Date(),
-        studentComments: form.data.studentComments,
-        instructorComments: form.data.mentorComments,
-      },
-    });
-
     return { form };
   },
 } satisfies Actions;

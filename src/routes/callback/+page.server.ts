@@ -89,8 +89,6 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
       ratingLong: user_details.vatsim.rating.long,
       region: user_details.vatsim.region.id,
       division: user_details.vatsim.division.id,
-      recommendedTrainingQueues: [],
-      completedTrainingQueues: [],
     },
   });
 

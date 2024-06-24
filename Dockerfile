@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY package.json bun.lockb ./
 COPY prisma ./prisma
-RUN bun i && bun prisma generate
+RUN bun i && bun svelte-kit sync && bun prisma generate
 
 ## Build bundle ##
 FROM base AS builder
