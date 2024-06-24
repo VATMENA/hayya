@@ -47,14 +47,16 @@
 <Toaster richColors />
 
 <div
-  class="flex h-screen flex-col items-center justify-center space-y-4 bg-[url('/sunset2.jpg')] bg-cover bg-no-repeat p-6">
-  <slot />
+  class="flex h-screen flex-col items-center justify-center bg-[url('/sunset2.jpg')] bg-cover bg-no-repeat">
+  <div class="flex h-full w-full flex-col items-center gap-y-4 p-6">
+    <slot />
+  </div>
+
+  <p class="fixed bottom-1 left-1 text-xs">
+    Hayya {version}
+  </p>
+
+  <p class="bottom-1 right-1 hidden text-xs md:fixed">
+    Made with &lt;3 by core, sharif_, hhhapz, and iconoclastic_
+  </p>
 </div>
-
-<p class="bottom-1 left-1 hidden text-xs md:fixed">
-  Hayya {version}
-</p>
-
-<p class="bottom-1 right-1 hidden text-xs md:fixed">
-  Made with &lt;3 by core, sharif_, hhhapz, and iconoclastic_
-</p>
