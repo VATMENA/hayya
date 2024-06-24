@@ -1,16 +1,15 @@
 import { VATSIM_CORE_API_TOKEN } from "$env/static/private";
-import prisma from "$lib/prisma";
 import { RATINGS } from "$lib/cert";
+import prisma from "$lib/prisma";
+import type { User, UserFacilityAssignment } from "@prisma/client";
 import { ulid } from "ulid";
-import { type User, type UserFacilityAssignment } from "@prisma/client";
-import { CronJob } from "quirrel/sveltekit";
 
 interface UserRecord {
   primary: UserFacilityAssignment | null;
   other: UserFacilityAssignment[];
 }
 
-const rosterCron = CronJob("api/cron/roster", "0 * * * *", async () => {
+export const rosterCron = async () => {
   console.log("[RosterUpdate] Roster update task started");
 
   console.log("[RosterUpdate] Pulling member count from VATSIM");
@@ -264,6 +263,4 @@ const rosterCron = CronJob("api/cron/roster", "0 * * * *", async () => {
   console.log(
     `[RosterUpdate] User assignments updated\tassigned=${assigned} reassigned=${reassigned} skipped=${askipped} total=${atotal}/${assigned + reassigned + askipped}`,
   );
-});
-
-export const POST = rosterCron;
+};
