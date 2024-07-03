@@ -1,4 +1,4 @@
-FROM imbios/bun-node AS base
+FROM oven/bun:1 AS base
 WORKDIR /app
 
 ## Install dependencies ##
@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY package.json bun.lockb ./
 COPY prisma ./prisma
-RUN bun i && bun prisma generate
+RUN bun i --frozen-lockfile --production && bun prisma generate
 
 ## Build bundle ##
 FROM base AS builder
