@@ -5,9 +5,10 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [
     sentrySvelteKit({
+      adapter: "other",
       sourceMapsUploadOptions: {
         org: "vatmena",
-        project: "javascript-sveltekit",
+        project: "hayya",
         authToken: process.env.SENTRY_AUTH_TOKEN,
       },
     }),
