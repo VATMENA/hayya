@@ -1,4 +1,3 @@
-import { env } from "$env/dynamic/private";
 import { sentrySvelteKit } from "@sentry/sveltekit";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig } from "vite";
@@ -9,7 +8,7 @@ export default defineConfig({
       sourceMapsUploadOptions: {
         org: "vatmena",
         project: "javascript-sveltekit",
-        authToken: env.SENTRY_AUTH_TOKEN,
+        authToken: process.env.SENTRY_AUTH_TOKEN,
       },
     }),
     sveltekit(),
