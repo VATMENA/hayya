@@ -7,7 +7,7 @@ WORKDIR /app
 
 COPY package.json bun.lockb ./
 COPY prisma ./prisma
-COPY svelte.config.mjs ./svelte.config.mjs
+COPY svelte.config.js ./svelte.config.js
 RUN bun i --frozen-lockfile && bun prisma generate
 
 ## Build bundle ##

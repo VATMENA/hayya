@@ -84,5 +84,6 @@
     "prisma",
     "protobufjs",
     "svelte-preprocess"
-  ]
+  ],
+  "type": "module"
 }
