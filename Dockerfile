@@ -26,6 +26,7 @@ ARG SENTRY_AUTH_TOKEN
 WORKDIR /app
 
 COPY --from=setup /app/node_modules ./node_modules
+COPY --from=setup /app/.svelte-kit ./.svelte-kit
 COPY . .
 
 RUN bun run build && bun prisma migrate deploy
@@ -36,5 +37,6 @@ WORKDIR /app
 
 COPY --from=builder /app/build ./build
 COPY --from=setup /app/node_modules ./node_modules
+COPY --from=setup /app/.svelte-kit ./.svelte-kit
 EXPOSE 3000
 CMD bun ./build/index.js
