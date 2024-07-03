@@ -14,6 +14,7 @@ RUN pnpm prisma generate
 ## Build bundle ##
 FROM install AS builder
 COPY --from=install /app/node_modules node_modules
+COPY --from=install /app/package.json package.json
 COPY . .
 
 ARG API_SUPERKEY
