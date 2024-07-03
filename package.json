@@ -1,7 +1,6 @@
 {
   "name": "hq",
   "version": "1.8.0",
-  "private": true,
   "scripts": {
     "dev": "vite dev --port 5173",
     "build": "vite build",
@@ -12,8 +11,7 @@
     "fmt": "prettier . --write",
     "lint": "prettier --check . && svelte-check",
     "fix": "prettier . --write",
-    "start": "bun run --bun build/index.js",
-    "prepare": "svelte-kit sync"
+    "start": "bun run --bun build/index.js"
   },
   "devDependencies": {
     "@event-calendar/core": "^2.7.0",
@@ -47,6 +45,7 @@
     "@internationalized/date": "^3.5.2",
     "@prisma/client": "^5.15.1",
     "@sentry/sveltekit": "^7.109.0",
+    "@sveltejs/adapter-auto": "^3.2.2",
     "@unpic/pixels": "^1.2.2",
     "@unpic/placeholder": "^0.1.2",
     "@unpic/svelte": "^0.0.51",
@@ -84,6 +83,5 @@
     "prisma",
     "protobufjs",
     "svelte-preprocess"
-  ],
-  "type": "module"
+  ]
 }

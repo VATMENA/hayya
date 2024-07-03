@@ -1,17 +1,17 @@
-FROM oven/bun:1 AS base
+FROM oven/bun:1.0.26 AS base
+
 WORKDIR /app
 
 ## Install dependencies ##
-FROM base AS setup
-WORKDIR /app
+FROM base AS install
 
 COPY package.json bun.lockb ./
 COPY prisma ./prisma
-COPY svelte.config.js ./svelte.config.js
-RUN bun i --frozen-lockfile && bun prisma generate
+RUN bun install --frozen-lockfile
+RUN bun prisma generate
 
 ## Build bundle ##
-FROM base AS builder
+FROM install AS prerelease
 
 ARG API_SUPERKEY
 ARG DATABASE_URL
@@ -23,20 +23,20 @@ ARG VATSIM_CORE_API_TOKEN
 ARG VATSIM_OAUTH_CLIENT_SECRET
 ARG SENTRY_AUTH_TOKEN
 
-WORKDIR /app
-
-COPY --from=setup /app/node_modules ./node_modules
-COPY --from=setup /app/.svelte-kit ./.svelte-kit
+COPY --from=install /app/node_modules ./node_modules
 COPY . .
 
-RUN bun run build && bun prisma migrate deploy
+ENV NODE_ENV=production
+
+RUN bun --bun run vite build
+RUN bun prisma migrate deploy
 
 ## Production image ##
-FROM oven/bun AS app
-WORKDIR /app
+FROM base AS app
 
-COPY --from=builder /app/build ./build
-COPY --from=setup /app/node_modules ./node_modules
-COPY --from=setup /app/.svelte-kit ./.svelte-kit
-EXPOSE 3000
+COPY --from=install /app/node_modules ./node_modules
+COPY --from=prerelease /app/build ./build
+EXPOSE 3000/tcp
 CMD bun ./build/index.js
+
+ENTRYPOINT [ "bun", "--bun" , "run", "build/index.js" ]
