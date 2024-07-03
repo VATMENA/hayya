@@ -14,7 +14,6 @@ RUN pnpm prisma generate
 ## Build bundle ##
 FROM install AS builder
 COPY --from=install /app/node_modules node_modules
-COPY --from=install /app/package.json package.json
 COPY . .
 
 ARG API_SUPERKEY
@@ -36,6 +35,7 @@ RUN pnpm prisma migrate deploy
 FROM base AS app
 
 COPY --from=install /app/node_modules node_modules
+COPY --from=install /app/package.json package.json
 COPY --from=builder /app/build ./build
 EXPOSE 3000/tcp
 CMD bun ./build/index.js
