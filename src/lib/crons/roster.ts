@@ -156,8 +156,6 @@ export const rosterCron = async () => {
           ratingLong: RATINGS[roster_user.rating][1],
           region: roster_user.region_id,
           division: roster_user.division_id,
-          recommendedTrainingQueues: [],
-          completedTrainingQueues: [],
         },
       });
 
