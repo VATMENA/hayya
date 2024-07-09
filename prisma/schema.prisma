@@ -24,15 +24,16 @@ model Facility {
   website      String
   contactEmail String
 
-  createdAt       DateTime                 @default(now())
-  updatedAt       DateTime                 @updatedAt
-  users           UserFacilityAssignment[]
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @updatedAt
+  users     UserFacilityAssignment[]
 
-  certificates    Certificate[]
-  resources       Resource[]
-  events          Event[]
+  certificates Certificate[]
+  resources    Resource[]
+  events       Event[]
 
-  TVCase          TVCase[]
+  TVCase       TVCase[]
+  TrainingPlan TrainingPlan[]
 }
 
 model Role {
@@ -94,16 +95,16 @@ model User {
   heldCertificates    Certificate[] @relation(name: "heldCertificates")
   grantedCertificates Certificate[] @relation(name: "grantedCertificates")
 
-
   eventSignups     EventSignup[]     @relation
   eventAssignments EventAssignment[] @relation
   Connection       Connection[]      @relation
 
   isSiteAdmin Boolean @default(false)
 
-  tvCases            TVCase[]
-  tvCaseComments     TVCaseComment[]
-  tvCaseStateChanges TVCaseStateChange[]
+  tvCases                  TVCase[]
+  tvCaseComments           TVCaseComment[]
+  tvCaseStateChanges       TVCaseStateChange[]
+  TrainingPlanRegistration TrainingPlanRegistration[]
 }
 
 model AuditLogEntry {
@@ -115,6 +116,7 @@ model AuditLogEntry {
   after     Json
   message   String
 }
+
 model Certificate {
   id BigInt @id @default(autoincrement())
 
@@ -147,7 +149,6 @@ model Resource {
   description String
   link        String
 }
-
 
 model Event {
   id String @id
@@ -289,4 +290,37 @@ model TVCaseStateChange {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model TrainingPlan {
+  id String @id
+
+  facility   Facility @relation(fields: [facilityId], references: [id])
+  facilityId String
+
+  name     String
+  includes String[]
+  excludes String[]
+
+  estimatedTimeToCompleteTraining String
+
+  relevantPolicy          String
+  hasAdjacentRestrictions Boolean
+
+  extraDetails String
+
+  createdAt                DateTime                   @default(now())
+  TrainingPlanRegistration TrainingPlanRegistration[]
+}
+
+model TrainingPlanRegistration {
+  id String @id
+
+  planId String
+  plan   TrainingPlan @relation(fields: [planId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  updatedAt DateTime @default(now())
 }
