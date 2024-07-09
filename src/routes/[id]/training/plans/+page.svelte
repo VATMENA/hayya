@@ -10,7 +10,7 @@
   import { page } from "$app/stores";
   import { can } from "$lib/perms/can";
   import { MANAGE_TRAINING_PLANS } from "$lib/perms/permissions";
-  import { CheckIcon, CircleAlertIcon, CogIcon, LoaderCircle, XIcon } from "lucide-svelte";
+  import { CheckIcon, CircleAlertIcon, CogIcon, LoaderCircle, TrashIcon, XIcon } from "lucide-svelte";
   import PlusIcon from "lucide-svelte/icons/plus";
   import * as Alert from "$lib/components/ui/alert";
   import { buttonVariants } from "$lib/components/ui/button";
@@ -20,6 +20,8 @@
   import * as Form from "$lib/components/ui/form";
   import { toast } from "svelte-sonner";
   import { Input } from "$lib/components/ui/input";
+  import SuperDebug from "sveltekit-superforms/client/SuperDebug.svelte";
+  import { Switch } from "$lib/components/ui/switch";
 
   export let data: PageData;
 
@@ -40,7 +42,8 @@
         createDialogOpen = false;
         toast.success("New plan created successfully!");
       }
-    }
+    },
+    dataType: 'json'
   });
 
   const { form: formData, enhance, delayed } = form;
@@ -58,30 +61,89 @@
         <Dialog.Title>New Plan</Dialog.Title>
       </Dialog.Header>
       <form class="space-y-2" method="POST" action="?/create" use:enhance>
-        <Form.Field {form} name="name">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <Form.Field {form} name="name">
+              <Form.Control let:attrs>
+                <Form.Label>Plan Name</Form.Label>
+                <Input placeholder="Your Super Amazing Training Plan" {...attrs} bind:value={$formData.name} />
+              </Form.Control>
+            </Form.Field>
+
+            <Form.Field {form} name="policy">
+              <Form.Control let:attrs>
+                <Form.Label>Relevant Facility Policy</Form.Label>
+                <Input placeholder="ATC Training Policy 7210.6B" {...attrs} bind:value={$formData.policy} />
+              </Form.Control>
+              <Form.Description>Ensure this sounds correct: "Consult {$formData.policy ? $formData.policy : 'your policy here'} for more details"</Form.Description>
+            </Form.Field>
+
+            <Form.Field {form} name="estimatedTime">
+              <Form.Control let:attrs>
+                <Form.Label>Estimated Time</Form.Label>
+                <Input placeholder="2.7 days" {...attrs} bind:value={$formData.estimatedTime} />
+              </Form.Control>
+              <Form.Description>Ensure this sounds correct: "Estimated Time to Completion: {$formData.estimatedTime ? $formData.estimatedTime : 'X Months'}"</Form.Description>
+            </Form.Field>
+          </div>
+
+          <div>
+            <div class="space-y-2">
+              <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 data-[fs-error]:text-destructive">Includes</label>
+              <Button on:click={() => {$formData.includes.push(""); $formData.includes = $formData.includes;}}>Add</Button>
+              {#each $formData.includes as s, n}
+                <div class="flex gap-2">
+                  <Input bind:value={$formData.includes[n]} placeholder="Unrestricted GND..." />
+                  <Button on:click={() => {$formData.includes.splice(n, 1); $formData.includes = $formData.includes;}}>
+                    <TrashIcon class="w-4 h-4" />
+                  </Button>
+                </div>
+              {/each}
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 data-[fs-error]:text-destructive">Excludes</label>
+              <Button on:click={() => {$formData.excludes.push(""); $formData.excludes = $formData.excludes;}}>Add</Button>
+              {#each $formData.excludes as s, n}
+                <div class="flex gap-2">
+                  <Input bind:value={$formData.excludes[n]} placeholder="OMDB GND..." />
+                  <Button on:click={() => {$formData.excludes.splice(n, 1); $formData.excludes = $formData.excludes;}}>
+                    <TrashIcon class="w-4 h-4" />
+                  </Button>
+                </div>
+              {/each}
+            </div>
+          </div>
+        </div>
+
+        <Form.Field {form} name="extraDetails">
           <Form.Control let:attrs>
-            <Form.Label>Plan Name</Form.Label>
-            <Input {...attrs} bind:value={$formData.name} />
+            <Form.Label>Extra Details (Airfields)</Form.Label>
+            <Input {...attrs} bind:value={$formData.extraDetails} placeholder="Unrestricted ratings cover most airfields, including EGLL, OTHH, YZZZ..." />
           </Form.Control>
         </Form.Field>
 
-        <Form.Field {form} name="policy">
+        <Form.Field
+          {form}
+          name="hasAdjacentRestriction"
+          class="flex flex-row items-center justify-between rounded-lg border p-4"
+        >
           <Form.Control let:attrs>
-            <Form.Label>Relevant Facility Policy</Form.Label>
-            <Input {...attrs} bind:value={$formData.policy} />
+            <div class="space-y-0.5">
+              <Form.Label>Has Adjacency Restriction?</Form.Label>
+              <Form.Description>
+                Whether this plan may have usage restrictions as laid out in GCAP 6.1(a). Most commonly seen with a Tier 1/2 APP and an unrestricted CTR.
+              </Form.Description>
+            </div>
+            <Switch
+              includeInput
+              {...attrs}
+              bind:checked={$formData.hasAdjacentRestriction}
+            />
           </Form.Control>
-          <Form.Description>Ensure this sounds correct: "Consult {$formData.policy ? $formData.policy : 'your policy here'} for more details"</Form.Description>
         </Form.Field>
 
-        <Form.Field {form} name="estimatedTime">
-          <Form.Control let:attrs>
-            <Form.Label>Estimated Time</Form.Label>
-            <Input {...attrs} bind:value={$formData.estimatedTime} />
-          </Form.Control>
-          <Form.Description>Ensure this sounds correct: "Estimated Time to Completion: {$formData.estimatedTime ? $formData.estimatedTime : 'X Months'}"</Form.Description>
-        </Form.Field>
-
-        <Form.Button>
+        <Form.Button class="w-full mt-4">
           {#if $delayed}
             <LoaderCircle class="w-4 h-4 animate-spin" />
           {:else}
@@ -94,170 +156,43 @@
 </div>
 
 <div class="gap-4 pt-2 flex flex-col md:flex-row md:flex-wrap">
-
+  {#each data.plans as plan}
     <Card.Root class="flex-1 md:min-w-96 md:max-w-96">
       <Card.Header>
-        <Card.Title>Unrestricted Training</Card.Title>
-        <Card.Description>See ATC training policy 7210.5B for more details.</Card.Description>
+        <Card.Title>{plan.name}</Card.Title>
+        <Card.Description>See {plan.relevantPolicy} for more details.</Card.Description>
       </Card.Header>
       <Card.Content>
-        <div class="flex flex-row gap-2">
-          <CheckIcon class="text-green-500" />
-          S1 Rating
-        </div>
-        <div class="flex flex-row gap-2">
-          <CheckIcon class="text-green-500" />
-          Unrestricted DEL & GND
-        </div>
-        <div class="flex flex-row gap-2">
-          <XIcon class="text-red-500" />
-          OMDB DEL & GND Certificates
-        </div>
+        {#each plan.includes as i}
+          <div class="flex flex-row gap-2">
+            <CheckIcon class="text-green-500" />
+            {i}
+          </div>
+        {/each}
+        {#each plan.excludes as e}
+          <div class="flex flex-row gap-2">
+            <XIcon class="text-red-500" />
+            {e}
+          </div>
+        {/each}
 
-        <p class="mt-6">Estimated Time to Completion: 4 months <span class="text-muted-foreground">(27 students in queue)</span></p>
+        <p class="mt-6">Estimated Time to Completion: {plan.estimatedTimeToCompleteTraining} <span class="text-muted-foreground">({plan.TrainingPlanRegistration.length} students in queue)</span></p>
 
-        <p class="text-xs text-muted-foreground">Time estimates may be inaccurate and do not constitute a guarantee of training.</p>
+        <p class="text-xs mt-6 text-muted-foreground">Time estimates may be inaccurate and do not constitute a guarantee of training.</p>
 
-        <p class="mt-6 text-xs text-muted-foreground">Unrestricted ratings cover most airfields, including OTHH, OBBI, OOMS, and OMSJ</p>
+        <p class="text-xs text-muted-foreground">{plan.extraDetails}</p>
 
-        <Alert.Root class="mt-6 bg-muted">
-          <CircleAlertIcon class="h-4 w-4" />
-          <Alert.Title>Rating Limitations</Alert.Title>
-          <Alert.Description>
-            This training plan may have limitations on when you can use your certification, in compliance with GCAP 6.1(a).
-            Consult ATC training policy 7210.5B for more details on what these limitations entail.
-          </Alert.Description>
-        </Alert.Root>
+        {#if plan.hasAdjacentRestrictions}
+          <Alert.Root class="mt-6 bg-muted">
+            <CircleAlertIcon class="h-4 w-4" />
+            <Alert.Title>Rating Limitations</Alert.Title>
+            <Alert.Description>
+              This training plan may have limitations on when you can use your certification, in compliance with GCAP 6.1(a).
+              Consult ATC training policy 7210.5B for more details on what these limitations entail.
+            </Alert.Description>
+          </Alert.Root>
+        {/if}
       </Card.Content>
     </Card.Root>
-  <Card.Root class="flex-1 md:min-w-96 md:max-w-96">
-    <Card.Header>
-      <Card.Title>OMDB Training</Card.Title>
-      <Card.Description>See ATC training policy 7210.5B for more details.</Card.Description>
-    </Card.Header>
-    <Card.Content>
-      <div class="flex flex-row gap-2">
-        <CheckIcon class="text-green-500" />
-        S1 Rating
-      </div>
-      <div class="flex flex-row gap-2">
-        <CheckIcon class="text-green-500" />
-        Unrestricted DEL & GND
-      </div>
-      <div class="flex flex-row gap-2">
-        <CheckIcon class="text-green-500" />
-        OMDB DEL & GND Certificates
-      </div>
-
-      <p class="mt-6">Estimated Time to Completion: 6 months</p>
-      <p class="text-xs text-muted-foreground">Time estimates may be inaccurate and do not constitute a guarantee of training.</p>
-
-      <p class="mt-6 text-xs text-muted-foreground">Unrestricted ratings cover most airfields, including OTHH, OBBI, OOMS, and OMSJ</p>
-    </Card.Content>
-  </Card.Root>
-  <Card.Root class="flex-1 md:min-w-96 md:max-w-96">
-    <Card.Header>
-      <Card.Title>Unrestricted Training</Card.Title>
-      <Card.Description>See ATC training policy 7210.5B for more details.</Card.Description>
-    </Card.Header>
-    <Card.Content>
-      <div class="flex flex-row gap-2">
-        <CheckIcon class="text-green-500" />
-        S1 Rating
-      </div>
-      <div class="flex flex-row gap-2">
-        <CheckIcon class="text-green-500" />
-        Unrestricted DEL & GND
-      </div>
-      <div class="flex flex-row gap-2">
-        <XIcon class="text-red-500" />
-        OMDB DEL & GND Certificates
-      </div>
-
-      <p class="mt-6">Estimated Time to Completion: 4 months <span class="text-muted-foreground">(27 students in queue)</span></p>
-
-      <p class="text-xs text-muted-foreground">Time estimates may be inaccurate and do not constitute a guarantee of training.</p>
-
-      <p class="mt-6 text-xs text-muted-foreground">Unrestricted ratings cover most airfields, including OTHH, OBBI, OOMS, and OMSJ</p>
-
-      <Alert.Root class="mt-6 bg-muted">
-        <CircleAlertIcon class="h-4 w-4" />
-        <Alert.Title>Rating Limitations</Alert.Title>
-        <Alert.Description>
-          This training plan may have limitations on when you can use your certification, in compliance with GCAP 6.1(a).
-          Consult ATC training policy 7210.5B for more details on what these limitations entail.
-        </Alert.Description>
-      </Alert.Root>
-    </Card.Content>
-  </Card.Root>
-  <Card.Root class="flex-1 md:min-w-96 md:max-w-96">
-    <Card.Header>
-      <Card.Title>Unrestricted Training</Card.Title>
-      <Card.Description>See ATC training policy 7210.5B for more details.</Card.Description>
-    </Card.Header>
-    <Card.Content>
-      <div class="flex flex-row gap-2">
-        <CheckIcon class="text-green-500" />
-        S1 Rating
-      </div>
-      <div class="flex flex-row gap-2">
-        <CheckIcon class="text-green-500" />
-        Unrestricted DEL & GND
-      </div>
-      <div class="flex flex-row gap-2">
-        <XIcon class="text-red-500" />
-        OMDB DEL & GND Certificates
-      </div>
-
-      <p class="mt-6">Estimated Time to Completion: 4 months <span class="text-muted-foreground">(27 students in queue)</span></p>
-
-      <p class="text-xs text-muted-foreground">Time estimates may be inaccurate and do not constitute a guarantee of training.</p>
-
-      <p class="mt-6 text-xs text-muted-foreground">Unrestricted ratings cover most airfields, including OTHH, OBBI, OOMS, and OMSJ</p>
-
-      <Alert.Root class="mt-6 bg-muted">
-        <CircleAlertIcon class="h-4 w-4" />
-        <Alert.Title>Rating Limitations</Alert.Title>
-        <Alert.Description>
-          This training plan may have limitations on when you can use your certification, in compliance with GCAP 6.1(a).
-          Consult ATC training policy 7210.5B for more details on what these limitations entail.
-        </Alert.Description>
-      </Alert.Root>
-    </Card.Content>
-  </Card.Root>
-  <Card.Root class="flex-1 md:min-w-96 md:max-w-96">
-    <Card.Header>
-      <Card.Title>Unrestricted Training</Card.Title>
-      <Card.Description>See ATC training policy 7210.5B for more details.</Card.Description>
-    </Card.Header>
-    <Card.Content>
-      <div class="flex flex-row gap-2">
-        <CheckIcon class="text-green-500" />
-        S1 Rating
-      </div>
-      <div class="flex flex-row gap-2">
-        <CheckIcon class="text-green-500" />
-        Unrestricted DEL & GND
-      </div>
-      <div class="flex flex-row gap-2">
-        <XIcon class="text-red-500" />
-        OMDB DEL & GND Certificates
-      </div>
-
-      <p class="mt-6">Estimated Time to Completion: 4 months <span class="text-muted-foreground">(27 students in queue)</span></p>
-
-      <p class="text-xs text-muted-foreground">Time estimates may be inaccurate and do not constitute a guarantee of training.</p>
-
-      <p class="mt-6 text-xs text-muted-foreground">Unrestricted ratings cover most airfields, including OTHH, OBBI, OOMS, and OMSJ</p>
-
-      <Alert.Root class="mt-6 bg-muted">
-        <CircleAlertIcon class="h-4 w-4" />
-        <Alert.Title>Rating Limitations</Alert.Title>
-        <Alert.Description>
-          This training plan may have limitations on when you can use your certification, in compliance with GCAP 6.1(a).
-          Consult ATC training policy 7210.5B for more details on what these limitations entail.
-        </Alert.Description>
-      </Alert.Root>
-    </Card.Content>
-  </Card.Root>
+  {/each}
 </div>
