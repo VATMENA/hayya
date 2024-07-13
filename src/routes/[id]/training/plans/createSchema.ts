@@ -7,7 +7,7 @@ export const createFormSchema = z.object({
   excludes: z.string().array(),
   estimatedTime: z.string(),
   extraDetails: z.string(),
-  hasAdjacentRestriction: z.boolean()
+  hasAdjacentRestriction: z.boolean(),
 });
 
 export type CreateFormSchema = typeof createFormSchema;

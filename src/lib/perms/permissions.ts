@@ -60,7 +60,7 @@ export const MANAGE_TV_REQUESTS: Permission = {
 
 export const MANAGE_TRAINING_PLANS: Permission = {
   id: "training.plans.manage",
-  description: "Allows the user to create, edit, and delete training plans."
+  description: "Allows the user to create, edit, and delete training plans.",
 };
 
 export const PERMISSIONS: Permission[] = [
@@ -77,5 +77,5 @@ export const PERMISSIONS: Permission[] = [
   REVOKE_OPENSKIES_CERTIFICATES,
   MANAGE_EVENTS,
   MANAGE_TV_REQUESTS,
-  MANAGE_TRAINING_PLANS
+  MANAGE_TRAINING_PLANS,
 ];

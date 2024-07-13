@@ -3,7 +3,7 @@
   import { Button } from "$lib/components/ui/button";
   import * as Card from "$lib/components/ui/card";
   import { can } from "$lib/perms/can";
-  import { MANAGE_EVENTS, MANAGE_QUEUES } from "$lib/perms/permissions";
+  import { MANAGE_EVENTS } from "$lib/perms/permissions";
   import type { Event } from "@prisma/client";
   import { PenBox, Trash2 } from "lucide-svelte";
   import type { PageData } from "./$types";

@@ -31,7 +31,11 @@
       <Card.Title>Your Training</Card.Title>
     </Card.Header>
     <Card.Content>
-      <p>Hayya's training system is undergoing a major overhaul and has been temporarily disabled. We apologise for the inconvenience. Please check again later.</p>
+      <p>
+        Hayya's training system is undergoing a major overhaul and has been
+        temporarily disabled. We apologise for the inconvenience. Please check
+        again later.
+      </p>
     </Card.Content>
   </Card.Root>
 
@@ -42,7 +46,7 @@
       </Card.Header>
       <Card.Content>
         <Button href="/{$page.params.id}/training/plans">
-          <CogIcon class="w-4 h-4 mr-2" />
+          <CogIcon class="mr-2 h-4 w-4" />
           Manage Training Plans
         </Button>
       </Card.Content>
