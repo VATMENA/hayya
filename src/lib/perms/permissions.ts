@@ -24,18 +24,6 @@ export const REVOKE_CERTIFICATE: Permission = {
   id: "training.certificate.revoke",
   description: "Allows the user to revoke certificates.",
 };
-export const RECOMMEND_FOR_QUEUE: Permission = {
-  id: "training.queues.recommend",
-  description: "Allows the user to recommend students for queues.",
-};
-export const MANAGE_QUEUES: Permission = {
-  id: "training.queues.manage",
-  description: "Allows the user to create, edit and delete training queues.",
-};
-export const TRAIN: Permission = {
-  id: "training.train",
-  description: "Allows the user to train other users.",
-};
 export const MANAGE_RESOURCES: Permission = {
   id: "resource.manage",
   description: "Allows the user to create, edit and delete resources.",
@@ -64,22 +52,15 @@ export const MANAGE_EVENTS: Permission = {
   id: "events.manage",
   description: "Allows the user to create and delete events.",
 };
-export const ASSIGN_MENTORS_TO_REQUEST: Permission = {
-  id: "training.request.assign",
-  description: "Allows the user to assign other mentors to training requests.",
-};
-export const SELF_ASSIGN_TO_REQUEST: Permission = {
-  id: "training.request.selfassign",
-  description: "Allows the user to assign themselves to training requests.",
-};
-export const DELETE_REQUEST: Permission = {
-  id: "training.request.delete",
-  description: "Allows the user to delete training requests.",
-};
 export const MANAGE_TV_REQUESTS: Permission = {
   id: "tv.requests.view",
   description:
     "Allows the user to manage Transfer & Visit requests, including approving or rejecting them.",
+};
+
+export const MANAGE_TRAINING_PLANS: Permission = {
+  id: "training.plans.manage",
+  description: "Allows the user to create, edit, and delete training plans.",
 };
 
 export const PERMISSIONS: Permission[] = [
@@ -88,9 +69,6 @@ export const PERMISSIONS: Permission[] = [
   ASSIGN_ROLES,
   ISSUE_CERTIFICATE,
   REVOKE_CERTIFICATE,
-  RECOMMEND_FOR_QUEUE,
-  MANAGE_QUEUES,
-  TRAIN,
   MANAGE_RESOURCES,
   VIEW_PRIVATE_RESOURCES,
   ISSUE_SOLO_CERTIFICATES,
@@ -98,8 +76,6 @@ export const PERMISSIONS: Permission[] = [
   REVOKE_SOLO_CERTIFICATES,
   REVOKE_OPENSKIES_CERTIFICATES,
   MANAGE_EVENTS,
-  ASSIGN_MENTORS_TO_REQUEST,
-  SELF_ASSIGN_TO_REQUEST,
-  DELETE_REQUEST,
   MANAGE_TV_REQUESTS,
+  MANAGE_TRAINING_PLANS,
 ];

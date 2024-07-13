@@ -24,15 +24,16 @@ model Facility {
   website      String
   contactEmail String
 
-  createdAt       DateTime                 @default(now())
-  updatedAt       DateTime                 @updatedAt
-  users           UserFacilityAssignment[]
-  trainingQueues  TrainingQueue[]
-  certificates    Certificate[]
-  resources       Resource[]
-  events          Event[]
-  TrainingRequest TrainingRequest[]
-  TVCase          TVCase[]
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @updatedAt
+  users     UserFacilityAssignment[]
+
+  certificates Certificate[]
+  resources    Resource[]
+  events       Event[]
+
+  TVCase       TVCase[]
+  TrainingPlan TrainingPlan[]
 }
 
 model Role {
@@ -88,18 +89,11 @@ model User {
 
   facilities UserFacilityAssignment[] @relation
 
-  trainingQueues            TrainingQueueMembership[]
-  recommendedTrainingQueues String[]
-  completedTrainingQueues   String[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   heldCertificates    Certificate[] @relation(name: "heldCertificates")
   grantedCertificates Certificate[] @relation(name: "grantedCertificates")
-
-  receivedSessions Session[] @relation(name: "receivedSessions")
-  taughtSessions   Session[] @relation(name: "taughtSessions")
 
   eventSignups     EventSignup[]     @relation
   eventAssignments EventAssignment[] @relation
@@ -107,11 +101,10 @@ model User {
 
   isSiteAdmin Boolean @default(false)
 
-  requestedSessions  TrainingRequest[]   @relation(name: "requestStudent")
-  acceptedSessions   TrainingRequest[]   @relation(name: "requestInstructor")
-  tvCases            TVCase[]
-  tvCaseComments     TVCaseComment[]
-  tvCaseStateChanges TVCaseStateChange[]
+  tvCases                  TVCase[]
+  tvCaseComments           TVCaseComment[]
+  tvCaseStateChanges       TVCaseStateChange[]
+  TrainingPlanRegistration TrainingPlanRegistration[]
 }
 
 model AuditLogEntry {
@@ -122,35 +115,6 @@ model AuditLogEntry {
   before    Json
   after     Json
   message   String
-}
-
-model TrainingQueue {
-  id String @id
-
-  facility   Facility @relation(fields: [facilityId], references: [id])
-  facilityId String
-
-  name              String
-  description       String
-  joinableByDefault Boolean
-
-  members TrainingQueueMembership[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model TrainingQueueMembership {
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-
-  queue   TrainingQueue @relation(fields: [queueId], references: [id])
-  queueId String
-
-  joinedAt DateTime @default(now())
-
-  @@id([userId, queueId])
-  @@unique([userId, queueId])
 }
 
 model Certificate {
@@ -184,32 +148,6 @@ model Resource {
   name        String
   description String
   link        String
-}
-
-enum LogType {
-  Training
-  CertificateRevokal
-}
-
-model Session {
-  id String @id
-
-  student   User   @relation(name: "receivedSessions", fields: [studentId], references: [id])
-  studentId String
-
-  instructor   User   @relation(name: "taughtSessions", fields: [instructorId], references: [id])
-  instructorId String
-
-  logType     LogType @default(Training)
-  sessionType String
-
-  date DateTime
-
-  studentComments    String
-  instructorComments String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Event {
@@ -275,29 +213,6 @@ model EventAssignment {
 
   startTime DateTime
   endTime   DateTime
-}
-
-model TrainingRequest {
-  id String @id
-
-  facility   Facility @relation(fields: [facilityId], references: [id])
-  facilityId String
-
-  student   User   @relation(fields: [studentId], references: [id], name: "requestStudent")
-  studentId String
-
-  instructor   User?   @relation(fields: [instructorId], references: [id], name: "requestInstructor")
-  instructorId String?
-
-  trainingType String
-
-  startDate DateTime
-  endDate   DateTime
-
-  availability String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Connection {
@@ -375,4 +290,37 @@ model TVCaseStateChange {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model TrainingPlan {
+  id String @id
+
+  facility   Facility @relation(fields: [facilityId], references: [id])
+  facilityId String
+
+  name     String
+  includes String[]
+  excludes String[]
+
+  estimatedTimeToCompleteTraining String
+
+  relevantPolicy          String
+  hasAdjacentRestrictions Boolean
+
+  extraDetails String
+
+  createdAt                DateTime                   @default(now())
+  TrainingPlanRegistration TrainingPlanRegistration[]
+}
+
+model TrainingPlanRegistration {
+  id String @id
+
+  planId String
+  plan   TrainingPlan @relation(fields: [planId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  updatedAt DateTime @default(now())
 }
