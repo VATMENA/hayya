@@ -31,6 +31,7 @@
       <Card.Title>Your Training</Card.Title>
     </Card.Header>
     <Card.Content>
+      <p>Hayya's training system is undergoing a major overhaul and has been temporarily disabled. We apologise for the inconvenience. Please check again later.</p>
     </Card.Content>
   </Card.Root>
 

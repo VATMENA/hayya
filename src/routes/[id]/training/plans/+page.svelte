@@ -10,7 +10,7 @@
   import { page } from "$app/stores";
   import { can } from "$lib/perms/can";
   import { MANAGE_TRAINING_PLANS } from "$lib/perms/permissions";
-  import { CheckIcon, CircleAlertIcon, CogIcon, LoaderCircle, TrashIcon, XIcon } from "lucide-svelte";
+  import { CheckIcon, CircleAlertIcon, CogIcon, EditIcon, LoaderCircle, TrashIcon, XIcon } from "lucide-svelte";
   import PlusIcon from "lucide-svelte/icons/plus";
   import * as Alert from "$lib/components/ui/alert";
   import { buttonVariants } from "$lib/components/ui/button";
@@ -22,6 +22,9 @@
   import { Input } from "$lib/components/ui/input";
   import SuperDebug from "sveltekit-superforms/client/SuperDebug.svelte";
   import { Switch } from "$lib/components/ui/switch";
+  import { updateFormSchema } from "./editSchema";
+  import { get } from "svelte/store";
+  import type { TrainingPlan } from "@prisma/client";
 
   export let data: PageData;
 
@@ -35,7 +38,7 @@
 
   let createDialogOpen = false;
 
-  const form = superForm(data.createForm, {
+  const createForm = superForm(data.createForm, {
     validators: zodClient(createFormSchema),
     onUpdated({form}) {
       if (form.valid) {
@@ -46,8 +49,141 @@
     dataType: 'json'
   });
 
-  const { form: formData, enhance, delayed } = form;
+  let updateDialogOpen = false;
+
+  const { form: createFormData, enhance: createEnhance, delayed: createDelayed } = createForm;
+
+  const updateForm = superForm(data.updateForm, {
+    validators: zodClient(updateFormSchema),
+    onUpdated({form}) {
+      if (form.valid) {
+        updateDialogOpen = false;
+        toast.success("Plan updated successfully!");
+      }
+    },
+    dataType: 'json'
+  });
+
+  const { form: updateFormData, enhance: updateEnhance, delayed: updateDelayed } = updateForm;
+
+  function update(plan: TrainingPlan): () => void {
+    return () => {
+      updateForm.reset();
+      let formData = get(updateFormData);
+
+      formData.id = plan.id;
+      formData.name = plan.name;
+      formData.estimatedTime = plan.estimatedTimeToCompleteTraining;
+      formData.includes = plan.includes;
+      formData.excludes = plan.excludes;
+      formData.policy = plan.relevantPolicy;
+      formData.hasAdjacentRestriction = plan.hasAdjacentRestrictions;
+      formData.extraDetails = plan.extraDetails;
+
+      updateFormData.set(formData);
+      updateDialogOpen = true;
+    }
+  }
 </script>
+
+<Dialog.Root bind:open={updateDialogOpen}>
+  <Dialog.Content>
+    <Dialog.Header>
+      <Dialog.Title>Update Plan - {$updateFormData.name}</Dialog.Title>
+    </Dialog.Header>
+    <form class="space-y-2" method="POST" action="?/update" use:updateEnhance>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <Form.Field form={updateForm} name="name">
+            <Form.Control let:attrs>
+              <Form.Label>Plan Name</Form.Label>
+              <Input placeholder="Your Super Amazing Training Plan" {...attrs} bind:value={$updateFormData.name} />
+            </Form.Control>
+          </Form.Field>
+
+          <Form.Field form={updateForm} name="policy">
+            <Form.Control let:attrs>
+              <Form.Label>Relevant Facility Policy</Form.Label>
+              <Input placeholder="ATC Training Policy 7210.6B" {...attrs} bind:value={$updateFormData.policy} />
+            </Form.Control>
+            <Form.Description>Ensure this sounds correct: "Consult {$updateFormData.policy ? $updateFormData.policy : 'your policy here'} for more details"</Form.Description>
+          </Form.Field>
+
+          <Form.Field form={updateForm} name="estimatedTime">
+            <Form.Control let:attrs>
+              <Form.Label>Estimated Time</Form.Label>
+              <Input placeholder="2.7 days" {...attrs} bind:value={$updateFormData.estimatedTime} />
+            </Form.Control>
+            <Form.Description>Ensure this sounds correct: "Estimated Time to Completion: {$updateFormData.estimatedTime ? $updateFormData.estimatedTime : 'X Months'}"</Form.Description>
+          </Form.Field>
+        </div>
+
+        <div>
+          <div class="space-y-2">
+            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 data-[fs-error]:text-destructive">Includes</label>
+            <Button on:click={() => {$updateFormData.includes.push(""); $updateFormData.includes = $updateFormData.includes;}}>Add</Button>
+            {#each $updateFormData.includes as s, n}
+              <div class="flex gap-2">
+                <Input bind:value={$updateFormData.includes[n]} placeholder="Unrestricted GND..." />
+                <Button on:click={() => {$updateFormData.includes.splice(n, 1); $updateFormData.includes = $updateFormData.includes;}}>
+                  <TrashIcon class="w-4 h-4" />
+                </Button>
+              </div>
+            {/each}
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 data-[fs-error]:text-destructive">Excludes</label>
+            <Button on:click={() => {$updateFormData.excludes.push(""); $updateFormData.excludes = $updateFormData.excludes;}}>Add</Button>
+            {#each $updateFormData.excludes as s, n}
+              <div class="flex gap-2">
+                <Input bind:value={$updateFormData.excludes[n]} placeholder="OMDB GND..." />
+                <Button on:click={() => {$updateFormData.excludes.splice(n, 1); $updateFormData.excludes = $updateFormData.excludes;}}>
+                  <TrashIcon class="w-4 h-4" />
+                </Button>
+              </div>
+            {/each}
+          </div>
+        </div>
+      </div>
+
+      <Form.Field form={updateForm} name="extraDetails">
+        <Form.Control let:attrs>
+          <Form.Label>Extra Details (Airfields)</Form.Label>
+          <Input {...attrs} bind:value={$updateFormData.extraDetails} placeholder="Unrestricted ratings cover most airfields, including EGLL, OTHH, YZZZ..." />
+        </Form.Control>
+      </Form.Field>
+
+      <Form.Field
+        form={updateForm}
+        name="hasAdjacentRestriction"
+        class="flex flex-row items-center justify-between rounded-lg border p-4"
+      >
+        <Form.Control let:attrs>
+          <div class="space-y-0.5">
+            <Form.Label>Has Adjacency Restriction?</Form.Label>
+            <Form.Description>
+              Whether this plan may have usage restrictions as laid out in GCAP 6.1(a). Most commonly seen with a Tier 1/2 APP and an unrestricted CTR.
+            </Form.Description>
+          </div>
+          <Switch
+            includeInput
+            {...attrs}
+            bind:checked={$updateFormData.hasAdjacentRestriction}
+          />
+        </Form.Control>
+      </Form.Field>
+
+      <Form.Button class="w-full mt-4">
+        {#if $updateDelayed}
+          <LoaderCircle class="w-4 h-4 animate-spin" />
+        {:else}
+          Update
+        {/if}
+      </Form.Button>
+    </form>
+  </Dialog.Content>
+</Dialog.Root>
 
 <div class="flex items-center justify-between">
   <h2 class="text-3xl font-bold tracking-tight">Training Plans</h2>
@@ -60,41 +196,41 @@
       <Dialog.Header>
         <Dialog.Title>New Plan</Dialog.Title>
       </Dialog.Header>
-      <form class="space-y-2" method="POST" action="?/create" use:enhance>
+      <form class="space-y-2" method="POST" action="?/create" use:createEnhance>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <Form.Field {form} name="name">
+            <Form.Field form={createForm} name="name">
               <Form.Control let:attrs>
                 <Form.Label>Plan Name</Form.Label>
-                <Input placeholder="Your Super Amazing Training Plan" {...attrs} bind:value={$formData.name} />
+                <Input placeholder="Your Super Amazing Training Plan" {...attrs} bind:value={$createFormData.name} />
               </Form.Control>
             </Form.Field>
 
-            <Form.Field {form} name="policy">
+            <Form.Field form={createForm} name="policy">
               <Form.Control let:attrs>
                 <Form.Label>Relevant Facility Policy</Form.Label>
-                <Input placeholder="ATC Training Policy 7210.6B" {...attrs} bind:value={$formData.policy} />
+                <Input placeholder="ATC Training Policy 7210.6B" {...attrs} bind:value={$createFormData.policy} />
               </Form.Control>
-              <Form.Description>Ensure this sounds correct: "Consult {$formData.policy ? $formData.policy : 'your policy here'} for more details"</Form.Description>
+              <Form.Description>Ensure this sounds correct: "Consult {$createFormData.policy ? $createFormData.policy : 'your policy here'} for more details"</Form.Description>
             </Form.Field>
 
-            <Form.Field {form} name="estimatedTime">
+            <Form.Field form={createForm} name="estimatedTime">
               <Form.Control let:attrs>
                 <Form.Label>Estimated Time</Form.Label>
-                <Input placeholder="2.7 days" {...attrs} bind:value={$formData.estimatedTime} />
+                <Input placeholder="2.7 days" {...attrs} bind:value={$createFormData.estimatedTime} />
               </Form.Control>
-              <Form.Description>Ensure this sounds correct: "Estimated Time to Completion: {$formData.estimatedTime ? $formData.estimatedTime : 'X Months'}"</Form.Description>
+              <Form.Description>Ensure this sounds correct: "Estimated Time to Completion: {$createFormData.estimatedTime ? $createFormData.estimatedTime : 'X Months'}"</Form.Description>
             </Form.Field>
           </div>
 
           <div>
             <div class="space-y-2">
               <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 data-[fs-error]:text-destructive">Includes</label>
-              <Button on:click={() => {$formData.includes.push(""); $formData.includes = $formData.includes;}}>Add</Button>
-              {#each $formData.includes as s, n}
+              <Button on:click={() => {$createFormData.includes.push(""); $createFormData.includes = $createFormData.includes;}}>Add</Button>
+              {#each $createFormData.includes as s, n}
                 <div class="flex gap-2">
-                  <Input bind:value={$formData.includes[n]} placeholder="Unrestricted GND..." />
-                  <Button on:click={() => {$formData.includes.splice(n, 1); $formData.includes = $formData.includes;}}>
+                  <Input bind:value={$createFormData.includes[n]} placeholder="Unrestricted GND..." />
+                  <Button on:click={() => {$createFormData.includes.splice(n, 1); $createFormData.includes = $createFormData.includes;}}>
                     <TrashIcon class="w-4 h-4" />
                   </Button>
                 </div>
@@ -103,11 +239,11 @@
 
             <div class="space-y-2">
               <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 data-[fs-error]:text-destructive">Excludes</label>
-              <Button on:click={() => {$formData.excludes.push(""); $formData.excludes = $formData.excludes;}}>Add</Button>
-              {#each $formData.excludes as s, n}
+              <Button on:click={() => {$createFormData.excludes.push(""); $createFormData.excludes = $createFormData.excludes;}}>Add</Button>
+              {#each $createFormData.excludes as s, n}
                 <div class="flex gap-2">
-                  <Input bind:value={$formData.excludes[n]} placeholder="OMDB GND..." />
-                  <Button on:click={() => {$formData.excludes.splice(n, 1); $formData.excludes = $formData.excludes;}}>
+                  <Input bind:value={$createFormData.excludes[n]} placeholder="OMDB GND..." />
+                  <Button on:click={() => {$createFormData.excludes.splice(n, 1); $createFormData.excludes = $createFormData.excludes;}}>
                     <TrashIcon class="w-4 h-4" />
                   </Button>
                 </div>
@@ -116,15 +252,15 @@
           </div>
         </div>
 
-        <Form.Field {form} name="extraDetails">
+        <Form.Field form={createForm} name="extraDetails">
           <Form.Control let:attrs>
             <Form.Label>Extra Details (Airfields)</Form.Label>
-            <Input {...attrs} bind:value={$formData.extraDetails} placeholder="Unrestricted ratings cover most airfields, including EGLL, OTHH, YZZZ..." />
+            <Input {...attrs} bind:value={$createFormData.extraDetails} placeholder="Unrestricted ratings cover most airfields, including EGLL, OTHH, YZZZ..." />
           </Form.Control>
         </Form.Field>
 
         <Form.Field
-          {form}
+          form={createForm}
           name="hasAdjacentRestriction"
           class="flex flex-row items-center justify-between rounded-lg border p-4"
         >
@@ -138,13 +274,13 @@
             <Switch
               includeInput
               {...attrs}
-              bind:checked={$formData.hasAdjacentRestriction}
+              bind:checked={$createFormData.hasAdjacentRestriction}
             />
           </Form.Control>
         </Form.Field>
 
         <Form.Button class="w-full mt-4">
-          {#if $delayed}
+          {#if $createDelayed}
             <LoaderCircle class="w-4 h-4 animate-spin" />
           {:else}
             Create
@@ -192,6 +328,11 @@
             </Alert.Description>
           </Alert.Root>
         {/if}
+
+        <Button on:click={update(plan)}>
+          <EditIcon class="w-4 h-4 mr-2" />
+          Edit
+        </Button>
       </Card.Content>
     </Card.Root>
   {/each}
