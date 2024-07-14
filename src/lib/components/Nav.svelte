@@ -232,6 +232,7 @@
               <Github class="mr-2 h-4 w-4" />
               <span>GitHub</span>
             </DropdownMenu.Item>
+            <!--
             <DropdownMenu.Item href="/dashboard/support">
               <LifeBuoy class="mr-2 h-4 w-4" />
               <span>Support</span>
@@ -240,7 +241,8 @@
               <Cloud class="mr-2 h-4 w-4" />
               <span>API</span>
             </DropdownMenu.Item>
-            <DropdownMenu.Item href="https://docs.hayya.vatsim.me">
+            -->
+            <DropdownMenu.Item href="/docs">
               <BookIcon class="mr-2 h-4 w-4" />
               <span>Documentation</span>
             </DropdownMenu.Item>

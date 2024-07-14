@@ -14,3 +14,7 @@ target
 
 # Sentry Config File
 .sentryclirc
+
+.contentlayer
+.contentlayer/
+/.contentlayer

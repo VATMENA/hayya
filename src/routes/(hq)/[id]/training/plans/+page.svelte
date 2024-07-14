@@ -153,10 +153,10 @@
 
         <div>
           <div class="space-y-2">
-            <label
+            <span
               class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 data-[fs-error]:text-destructive">
               Includes
-            </label>
+            </span>
             <Button
               on:click={() => {
                 $updateFormData.includes.push("");
@@ -181,10 +181,10 @@
           </div>
 
           <div class="space-y-2">
-            <label
+            <span
               class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 data-[fs-error]:text-destructive">
               Excludes
-            </label>
+            </span>
             <Button
               on:click={() => {
                 $updateFormData.excludes.push("");
@@ -308,10 +308,10 @@
 
           <div>
             <div class="space-y-2">
-              <label
+              <span
                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 data-[fs-error]:text-destructive">
                 Includes
-              </label>
+              </span>
               <Button
                 on:click={() => {
                   $createFormData.includes.push("");
@@ -336,10 +336,10 @@
             </div>
 
             <div class="space-y-2">
-              <label
+              <span
                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 data-[fs-error]:text-destructive">
                 Excludes
-              </label>
+              </span>
               <Button
                 on:click={() => {
                   $createFormData.excludes.push("");

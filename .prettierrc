@@ -1,6 +1,9 @@
 {
   "plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
-  "overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }],
+  "overrides": [
+    { "files": "*.svelte", "options": { "parser": "svelte" } },
+    { "files": "*.md", "options": { "parser": "markdown", "printWidth": 85 } }
+  ],
   "htmlWhitespaceSensitivity": "ignore",
   "bracketSameLine": true
 }
