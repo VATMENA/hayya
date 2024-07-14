@@ -1,6 +1,7 @@
 import { sentrySvelteKit } from "@sentry/sveltekit";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig } from "vite";
+import { fileURLToPath } from "url";
 
 export default defineConfig({
   plugins: [
@@ -38,6 +39,17 @@ export default defineConfig({
       "sveltekit-superforms/server",
       "sveltekit-superforms/client",
       "ulid",
+    ],
+  },
+  assetsInclude: ["**/*.md", "**/*.mdx"],
+  resolve: {
+    alias: [
+      {
+        find: "contentlayer/generated",
+        replacement: fileURLToPath(
+          new URL("./.contentlayer/generated", import.meta.url),
+        ),
+      },
     ],
   },
 });

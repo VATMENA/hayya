@@ -3,6 +3,8 @@ import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
+import { mdsx } from "mdsx";
+import { mdsxConfig } from "./mdsx.config.js";
 
 const file = fileURLToPath(new URL("package.json", import.meta.url));
 const json = readFileSync(file, "utf8");
@@ -12,7 +14,8 @@ const pkg = JSON.parse(json);
 const config = {
   // Consult https://kit.svelte.dev/docs/integrations#preprocessors
   // for more information about preprocessors
-  preprocess: vitePreprocess(),
+  preprocess: [mdsx(mdsxConfig), vitePreprocess()],
+  extensions: [".svelte", ".md"],
 
   kit: {
     // adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
