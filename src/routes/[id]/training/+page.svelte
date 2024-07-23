@@ -8,8 +8,8 @@
   import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
   import { page } from "$app/stores";
   import { can } from "$lib/perms/can";
-  import { MANAGE_TRAINING_PLANS } from "$lib/perms/permissions";
-  import { CogIcon } from "lucide-svelte";
+  import { MANAGE_PLAN_ENROLLMENT_REQUESTS, MANAGE_TRAINING_PLANS } from "$lib/perms/permissions";
+  import { CogIcon, DoorOpenIcon, MailsIcon, XCircleIcon } from "lucide-svelte";
 
   export let data: PageData;
 
@@ -31,24 +31,46 @@
       <Card.Title>Your Training</Card.Title>
     </Card.Header>
     <Card.Content>
-      <p>
-        Hayya's training system is undergoing a major overhaul and has been
-        temporarily disabled. We apologise for the inconvenience. Please check
-        again later.
-      </p>
+      {#if data.activePlan}
+        <p>You're currently enrolled in the {data.activePlan.plan.name} plan.</p>
+        <Button>
+          <DoorOpenIcon class="w-4 h-4 mr-2" />
+          Leave Plan
+        </Button>
+      {:else if data.activePlanRequest}
+        <p>You currently have an outstanding request to join the {data.activePlanRequest.plan.name} plan.</p>
+        <Button>
+          <XCircleIcon class="w-4 h-4 mr-2" />
+          Cancel Request
+        </Button>
+      {:else}
+        <Button>
+          <DoorOpenIcon class="w-4 h-4 mr-2" />
+          Enroll
+        </Button>
+      {/if}
     </Card.Content>
   </Card.Root>
 
-  {#if can(MANAGE_TRAINING_PLANS)}
+  {#if can(MANAGE_TRAINING_PLANS) || can(MANAGE_PLAN_ENROLLMENT_REQUESTS)}
     <Card.Root>
       <Card.Header>
         <Card.Title>Training Plans</Card.Title>
       </Card.Header>
       <Card.Content>
-        <Button href="/{$page.params.id}/training/plans">
-          <CogIcon class="mr-2 h-4 w-4" />
-          Manage Training Plans
-        </Button>
+        {#if can(MANAGE_TRAINING_PLANS)}
+          <Button href="/{$page.params.id}/training/plans">
+            <CogIcon class="mr-2 h-4 w-4" />
+            Manage Training Plans
+          </Button>
+        {/if}
+
+        {#if can(MANAGE_PLAN_ENROLLMENT_REQUESTS)}
+          <Button href="/{$page.params.id}/training/plans/requests">
+            <MailsIcon class="mr-2 h-4 w-4" />
+            Manage Plan Join Requests
+          </Button>
+        {/if}
       </Card.Content>
     </Card.Root>
   {/if}
