@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { cn } from "$lib/utils.js";
+	import { cn } from "$lib/utils";
 	import type { HTMLAttributes } from "svelte/elements";
-	import { alertVariants, type Variant } from "./index.js";
+	import { alertVariants, type Variant } from ".";
 
 	type $$Props = HTMLAttributes<HTMLDivElement> & {
 		variant?: Variant;
 	};
 
 	let className: $$Props["class"] = undefined;
-	export let variant: $$Props["variant"] = "default";
+	export let variant: $$Props["variant"] = "note";
 	export { className as class };
 </script>
 
