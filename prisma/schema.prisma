@@ -105,6 +105,11 @@ model User {
   tvCaseComments           TVCaseComment[]
   tvCaseStateChanges       TVCaseStateChange[]
   TrainingPlanRegistration TrainingPlanRegistration[]
+
+  studentSessions                 TrainingSession[]                 @relation(name: "student")
+  mentorSessions                  TrainingSession[]                 @relation(name: "mentor")
+  TrainingPlanRegistrationRequest TrainingPlanRegistrationRequest[]
+  TrainingPlanComment             TrainingPlanComment[]
 }
 
 model AuditLogEntry {
@@ -309,8 +314,23 @@ model TrainingPlan {
 
   extraDetails String
 
-  createdAt                DateTime                   @default(now())
-  TrainingPlanRegistration TrainingPlanRegistration[]
+  createdAt                       DateTime                          @default(now())
+  TrainingPlanRegistration        TrainingPlanRegistration[]
+  TrainingSession                 TrainingSession[]
+  TrainingPlanRegistrationRequest TrainingPlanRegistrationRequest[]
+}
+
+model TrainingPlanRegistrationRequest {
+  id String @id
+
+  planId String
+  plan   TrainingPlan @relation(fields: [planId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model TrainingPlanRegistration {
@@ -323,4 +343,66 @@ model TrainingPlanRegistration {
   user   User   @relation(fields: [userId], references: [id])
 
   updatedAt DateTime @default(now())
+
+  requests TrainingRequest[]
+}
+
+model TrainingRequest {
+  id String @id
+
+  registrationId String
+  registration   TrainingPlanRegistration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+
+  availability String // JSON, see src/lib/availability.ts for schema
+
+  notes String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TrainingSessionStatus {
+  Scheduled
+  Incomplete
+  Complete
+}
+
+model TrainingSession {
+  id String @id
+
+  planId String
+  plan   TrainingPlan @relation(fields: [planId], references: [id])
+
+  studentId String
+  student   User   @relation(fields: [studentId], references: [id], name: "student")
+
+  mentorId String
+  mentor   User   @relation(fields: [mentorId], references: [id], name: "mentor")
+
+  name          String
+  scheduledTime DateTime
+
+  status TrainingSessionStatus
+
+  scoresheetUrl String?
+
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  TrainingPlanComment TrainingPlanComment[]
+}
+
+model TrainingPlanComment {
+  id String @id
+
+  sessionId String
+  session   TrainingSession @relation(fields: [trainingSessionId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  content String
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  trainingSessionId String
 }

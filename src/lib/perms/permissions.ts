@@ -63,6 +63,11 @@ export const MANAGE_TRAINING_PLANS: Permission = {
   description: "Allows the user to create, edit, and delete training plans.",
 };
 
+export const MANAGE_PLAN_ENROLLMENT_REQUESTS: Permission = {
+  id: "training.plans.requests.manage",
+  description: "Allows the user to approve or deny requests to enroll in training plans."
+}
+
 export const PERMISSIONS: Permission[] = [
   EDIT_DETAILS,
   EXTENDED_ROSTER,
@@ -78,4 +83,5 @@ export const PERMISSIONS: Permission[] = [
   MANAGE_EVENTS,
   MANAGE_TV_REQUESTS,
   MANAGE_TRAINING_PLANS,
+  MANAGE_PLAN_ENROLLMENT_REQUESTS
 ];
