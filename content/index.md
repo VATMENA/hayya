@@ -1,6 +1,7 @@
 ---
 title: Introduction
 description: What this project is all about.
+tagline: "Applies to: Everyone"
 ---
 
 Hayya is the new all-in-one HQ system for use in VATMENA.

@@ -1,6 +1,7 @@
 ---
 title: Markdown Guide
 description: A quick reference to Markdown, the language used to add rich text in Hayya editor boxes
+tagline: "Applies to: Everyone"
 ---
 
 ## Headings

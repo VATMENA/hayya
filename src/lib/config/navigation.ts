@@ -51,6 +51,22 @@ export const navigation: Navigation = {
       ],
     },
     {
+      title: "Training",
+      collapsible: true,
+      items: [
+        {
+          title: "Overview",
+          href: "/docs/training/overview",
+          items: []
+        },
+        {
+          title: "Training Plans",
+          href: "/docs/training/training-plans",
+          items: []
+        }
+      ]
+    },
+    {
       title: "Misc",
       collapsible: true,
       items: [
