@@ -12,6 +12,7 @@
   // @formatter:on
   import { cn } from "$lib/utils";
   import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
 
   export let data: PageData;
 
@@ -199,5 +200,18 @@
         </Button>
       </div>
     </Card.Content>
+    <Card.Footer>
+      <div
+        class="flex w-full flex-row justify-center gap-4 text-sm text-muted-foreground">
+        <a class="underline-offset-4 hover:underline" href="/docs">
+          Documentation
+        </a>
+        {#if $page.data.user.isSiteAdmin}
+          <a class="underline-offset-4 hover:underline" href="/admin">
+            Site Administration
+          </a>
+        {/if}
+      </div>
+    </Card.Footer>
   </Card.Root>
 </div>

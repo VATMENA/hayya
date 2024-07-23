@@ -3,3 +3,9 @@ dist
 src/lib/components/ui
 db
 pnpm-lock.yaml
+package-lock.json
+yarn.lock
+.svelte-kit
+/.svelte-kit
+/.contentlayer
+.contentlayer
