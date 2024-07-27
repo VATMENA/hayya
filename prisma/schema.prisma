@@ -32,8 +32,9 @@ model Facility {
   resources    Resource[]
   events       Event[]
 
-  TVCase       TVCase[]
-  TrainingPlan TrainingPlan[]
+  TVCase                          TVCase[]
+  TrainingPlan                    TrainingPlan[]
+  TrainingPlanRegistrationRequest TrainingPlanRegistrationRequest[]
 }
 
 model Role {
@@ -328,6 +329,9 @@ model TrainingPlanRegistrationRequest {
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
+
+  facilityId String // Literally only exists to make /training/plans/requests easier to implement lol
+  facility   Facility @relation(fields: [facilityId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
