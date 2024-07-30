@@ -150,8 +150,6 @@ export const connectionsCron = async () => {
         ratingLong: RATINGS[u.rating][1],
         region: "",
         division: "",
-        recommendedTrainingQueues: [],
-        completedTrainingQueues: [],
       })),
     });
   }
