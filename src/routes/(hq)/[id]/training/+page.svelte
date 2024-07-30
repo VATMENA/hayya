@@ -16,7 +16,7 @@
     CircleAlertIcon,
     CogIcon,
     DoorOpenIcon,
-    EditIcon,
+    EditIcon, EyeIcon,
     MailsIcon,
     XCircleIcon,
     XIcon
@@ -27,6 +27,8 @@
   import type { TrainingPlan, TrainingPlanRegistration } from "@prisma/client";
   import { invalidateAll } from "$app/navigation";
   import { toast } from "svelte-sonner";
+  import PlusIcon from "lucide-svelte/icons/plus";
+  import RequestForm from "./RequestForm.svelte";
 
   export let data: PageData;
 
@@ -87,6 +89,12 @@
     await invalidateAll();
     toast.success("You've been unenrolled. Pick a new plan to start training.");
   }
+
+  let confirmUnenrollOpen = false;
+  let requestOpen = false;
+  let showRequestsOpen = false;
+
+
 </script>
 
 <div class="flex items-center justify-between">
@@ -101,10 +109,45 @@
     <Card.Content>
       {#if data.activePlan}
         <p>You're currently enrolled in the {data.activePlan.plan.name} plan.</p>
-        <Button on:click={unenroll}>
-          <DoorOpenIcon class="w-4 h-4 mr-2" />
-          Leave Plan
-        </Button>
+        <Dialog.Root bind:open={confirmUnenrollOpen}>
+          <Dialog.Trigger class="{buttonVariants()} mt-2">
+            <DoorOpenIcon class="w-4 h-4 mr-2" />
+            Leave Plan
+          </Dialog.Trigger>
+          <Dialog.Content>
+            <Dialog.Title>Leave Plan</Dialog.Title>
+            <p>You will be immediately removed from the plan. Outstanding training requests will be removed. Joining again will still place you at the back of the queue! Are you sure?</p>
+            <Dialog.Footer>
+              <Button on:click={() => {confirmUnenrollOpen = false;}}>Nevermind</Button>
+              <Button on:click={unenroll} variant="destructive">Yes, leave the plan</Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Root>
+        <p class="mt-2">You have {data.activePlan.requests.length} outstanding request{data.activePlan.requests.length === 1 ? "" : "s"} for training.</p>
+        <Dialog.Root bind:open={requestOpen}>
+          <Dialog.Trigger class="{buttonVariants()} mt-2">
+            <PlusIcon class="w-4 h-4 mr-2" />
+            Request Training
+          </Dialog.Trigger>
+          <Dialog.Content>
+            <Dialog.Title>Request Training</Dialog.Title>
+            <RequestForm data={data.requestForm} onsubmit={() => {toast.success('Request submitted successfully!'); requestOpen = false}} />
+          </Dialog.Content>
+        </Dialog.Root>
+        <Dialog.Root bind:open={showRequestsOpen}>
+          <Dialog.Trigger class="{buttonVariants()} mt-2">
+            <EyeIcon class="w-4 h-4 mr-2" />
+            View My Requests
+          </Dialog.Trigger>
+          <Dialog.Content>
+            <Dialog.Title>Leave Plan</Dialog.Title>
+            <p>You will be immediately removed from the plan. Outstanding training requests will be removed. Joining again will still place you at the back of the queue! Are you sure?</p>
+            <Dialog.Footer>
+              <Button on:click={() => {confirmUnenrollOpen = false;}}>Nevermind</Button>
+              <Button on:click={unenroll} variant="destructive">Yes, leave the plan</Button>
+            </Dialog.Footer>
+          </Dialog.Content>
+        </Dialog.Root>
       {:else if data.activePlanRequest}
         <p>You currently have an outstanding request to join the {data.activePlanRequest.plan.name} plan.</p>
         <Dialog.Root bind:open={confirmCancelOpen}>
@@ -130,6 +173,26 @@
       {/if}
     </Card.Content>
   </Card.Root>
+
+  {#if data.activePlan}
+    <Card.Root>
+      <Card.Header>
+        <Card.Title>Your Sessions</Card.Title>
+      </Card.Header>
+      <Card.Content>
+        <ScrollArea>
+          {#if data.sessions.length === 0}
+            <p>You haven't had any sessions yet.</p>
+          {:else}
+            {#each data.sessions as session}
+
+            {/each}
+          {/if}
+
+        </ScrollArea>
+      </Card.Content>
+    </Card.Root>
+  {/if}
 
   {#if can(MANAGE_TRAINING_PLANS) || can(MANAGE_PLAN_ENROLLMENT_REQUESTS)}
     <Card.Root>

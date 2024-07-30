@@ -3,6 +3,9 @@ import prisma from "$lib/prisma";
 import { loadUserData } from "$lib/auth";
 import { fail } from "@sveltejs/kit";
 import { ulid } from "ulid";
+import { superValidate } from "sveltekit-superforms/server";
+import { requestSchema } from "./requestSchema";
+import { zod } from "sveltekit-superforms/adapters";
 
 export const load: PageServerLoad = async ({parent, params}) => {
   let { user } = await parent();
@@ -13,7 +16,8 @@ export const load: PageServerLoad = async ({parent, params}) => {
       userId: user.id
     },
     include: {
-      plan: true
+      plan: true,
+      requests: true
     }
   });
   // get the user's training plan registration request, if they have one
@@ -32,7 +36,15 @@ export const load: PageServerLoad = async ({parent, params}) => {
     plans: await prisma.trainingPlan.findMany({
       where: { facilityId: params.id },
       include: { TrainingPlanRegistration: true }
-    })
+    }),
+    sessions: await prisma.trainingSession.findMany({
+      where: { studentId: user.id },
+      include: {
+        plan: true,
+        mentor: true
+      }
+    }),
+    requestForm: await superValidate(zod(requestSchema))
   }
 }
 
