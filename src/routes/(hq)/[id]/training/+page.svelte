@@ -29,6 +29,7 @@
   import { toast } from "svelte-sonner";
   import PlusIcon from "lucide-svelte/icons/plus";
   import RequestForm from "./RequestForm.svelte";
+  import RequestTable from "./RequestTable.svelte";
 
   export let data: PageData;
 
@@ -129,7 +130,7 @@
             <PlusIcon class="w-4 h-4 mr-2" />
             Request Training
           </Dialog.Trigger>
-          <Dialog.Content>
+          <Dialog.Content class="sm:w-screen md:w-[50vw]">
             <Dialog.Title>Request Training</Dialog.Title>
             <RequestForm data={data.requestForm} onsubmit={() => {toast.success('Request submitted successfully!'); requestOpen = false}} />
           </Dialog.Content>
@@ -140,12 +141,8 @@
             View My Requests
           </Dialog.Trigger>
           <Dialog.Content>
-            <Dialog.Title>Leave Plan</Dialog.Title>
-            <p>You will be immediately removed from the plan. Outstanding training requests will be removed. Joining again will still place you at the back of the queue! Are you sure?</p>
-            <Dialog.Footer>
-              <Button on:click={() => {confirmUnenrollOpen = false;}}>Nevermind</Button>
-              <Button on:click={unenroll} variant="destructive">Yes, leave the plan</Button>
-            </Dialog.Footer>
+            <Dialog.Title>Your Requests</Dialog.Title>
+            <RequestTable data={data.activePlan.requests} />
           </Dialog.Content>
         </Dialog.Root>
       {:else if data.activePlanRequest}

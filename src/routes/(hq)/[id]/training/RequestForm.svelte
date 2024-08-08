@@ -13,6 +13,7 @@
   import { cn } from "$lib/utils";
   import { Calendar } from "$lib/components/ui/calendar";
   import SuperDebug from "sveltekit-superforms/client/SuperDebug.svelte";
+  import { XIcon } from "lucide-svelte";
 
   export let data: SuperValidated<Infer<RequestSchema>>;
   export let onsubmit: () => void;
@@ -33,14 +34,11 @@
     dateStyle: "long"
   });
 
-  let value: DateValue | undefined;
-
-  $: value = $formData.dob ? parseDate($formData.dob) : undefined;
 
   let placeholder: DateValue = today(getLocalTimeZone());
 </script>
 
-<form method="POST" use:enhance>
+<form method="POST" use:enhance action="?/request">
   <Button
     on:click={() => {$formData.availability.push({ date: today(getLocalTimeZone()).toString(), start: { hour: 0, minute: 0}, end: { hour: 0, minute: 0 }}); $formData.availability = $formData.availability;}}>
     Add Availability
@@ -87,10 +85,10 @@
       </div>
 
       <div class="flex-2">
-        <div class="flex flex-row gap-1">
+        <div class="flex flex-row">
           <Form.Field {form} name="availability[{i}].start.hour" class="flex flex-col">
             <Form.Control let:attrs>
-              <Form.Label>From (HH)</Form.Label>
+              <Form.Label>From</Form.Label>
               <Input {...attrs} type="number" min={0} max={23} bind:value={$formData.availability[i].start.hour} />
             </Form.Control>
             <Form.FieldErrors />
@@ -103,9 +101,9 @@
             </Form.Control>
             <Form.FieldErrors />
           </Form.Field>
-          <Form.Field {form} name="availability[{i}].end.hour" class="flex flex-col">
+          <Form.Field {form} name="availability[{i}].end.hour" class="flex flex-col ml-2">
             <Form.Control let:attrs>
-              <Form.Label>To (HH)</Form.Label>
+              <Form.Label>To</Form.Label>
               <Input {...attrs} type="number" bind:value={$formData.availability[i].end.hour} />
             </Form.Control>
             <Form.FieldErrors />
@@ -118,6 +116,12 @@
             </Form.Control>
             <Form.FieldErrors />
           </Form.Field>
+          <Button on:click={() => {$formData.availability.splice(i, 1); $formData.availability = $formData.availability;}} variant="ghost" class="mt-5 ml-2">
+            <XIcon class="w-4 h-4" />
+          </Button>
+        </div>
+        <div class="flex-1">
+
         </div>
       </div>
     </div>
@@ -131,8 +135,6 @@
     <Form.Description>Any additional information you would want your mentor to know.</Form.Description>
     <Form.FieldErrors />
   </Form.Field>
-
-  <SuperDebug data={formData} />
 
   <Form.Button>Submit Request</Form.Button>
 </form>
