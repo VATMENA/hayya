@@ -86,5 +86,37 @@ export const actions: Actions = {
         userId: user.id
       }
     });
+  },
+  request: async (event) => {
+    let { user } = await loadUserData(event.cookies, event.params.id);
+
+    let form = await superValidate(event, zod(requestSchema));
+
+    if (!form.valid) {
+      return fail(400, { form });
+    }
+
+    let planRegs = await prisma.trainingPlanRegistration.findMany({
+      where: {
+        userId: user.id,
+      }
+    });
+
+    if (planRegs.length === 0) {
+      return fail(400, { form });
+    }
+
+    let reg = planRegs[0];
+
+    await prisma.trainingRequest.create({
+      data: {
+        id: ulid(),
+        registrationId: reg.id,
+        availability: JSON.stringify(form.data.availability),
+        notes: form.data.notes,
+      }
+    });
+
+    return { form };
   }
 }
