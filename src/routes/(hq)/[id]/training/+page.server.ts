@@ -44,6 +44,13 @@ export const load: PageServerLoad = async ({parent, params}) => {
         mentor: true
       }
     }),
+    mentorSessions: await prisma.trainingSession.findMany({
+      where: { mentorId:  user.id },
+      include: {
+        plan: true,
+        student: true
+      }
+    }),
     requestForm: await superValidate(zod(requestSchema))
   }
 }
@@ -114,9 +121,18 @@ export const actions: Actions = {
         registrationId: reg.id,
         availability: JSON.stringify(form.data.availability),
         notes: form.data.notes,
+        facilityId: event.params.id
       }
     });
 
     return { form };
+  },
+  cancelRequest: async (event) => {
+    let { user } = await loadUserData(event.cookies, event.params.id);
+    await prisma.trainingRequest.deleteMany({
+      where: {
+        id: (await event.request.formData()).get("id")!.toString(),
+      }
+    });
   }
 }

@@ -63,8 +63,7 @@
             </Popover.Trigger>
             <Popover.Content class="w-auto p-0" side="top">
               <Calendar
-                {value}
-                bind:placeholder
+                value={parseDate($formData.availability[i].date)}
                 minValue={today(getLocalTimeZone())}
                 calendarLabel="Date of birth"
                 initialFocus
@@ -119,9 +118,6 @@
           <Button on:click={() => {$formData.availability.splice(i, 1); $formData.availability = $formData.availability;}} variant="ghost" class="mt-5 ml-2">
             <XIcon class="w-4 h-4" />
           </Button>
-        </div>
-        <div class="flex-1">
-
         </div>
       </div>
     </div>

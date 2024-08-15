@@ -1,8 +1,9 @@
 <script lang="ts">
   import type { TrainingRequest } from "@prisma/client";
   import { writable } from "svelte/store";
-  import { createTable, Render, Subscribe } from "svelte-headless-table";
+  import { createRender, createTable, Render, Subscribe } from "svelte-headless-table";
   import * as Table from "$lib/components/ui/table";
+  import RequestTableActions from "./RequestTableActions.svelte";
 
   export let data: TrainingRequest[];
   let store = writable(data);
@@ -28,6 +29,11 @@
     table.column({
       accessor: "notes",
       header: "Notes",
+    }),
+    table.column({
+      accessor: ({ id }) => id,
+      header: "Actions",
+      cell: ({value}) => createRender(RequestTableActions, { id: value })
     })
   ]);
 
