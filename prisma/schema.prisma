@@ -35,6 +35,7 @@ model Facility {
   TVCase                          TVCase[]
   TrainingPlan                    TrainingPlan[]
   TrainingPlanRegistrationRequest TrainingPlanRegistrationRequest[]
+  TrainingRequest                 TrainingRequest[]
 }
 
 model Role {
@@ -110,7 +111,7 @@ model User {
   studentSessions                 TrainingSession[]                 @relation(name: "student")
   mentorSessions                  TrainingSession[]                 @relation(name: "mentor")
   TrainingPlanRegistrationRequest TrainingPlanRegistrationRequest[]
-  TrainingPlanComment             TrainingPlanComment[]
+  TrainingSessionComment             TrainingSessionComment[]
 }
 
 model AuditLogEntry {
@@ -346,13 +347,17 @@ model TrainingPlanRegistration {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  updatedAt DateTime @default(now())
-
   requests TrainingRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model TrainingRequest {
   id String @id
+
+  facilityId String
+  facility   Facility @relation(fields: [facilityId], references: [id])
 
   registrationId String
   registration   TrainingPlanRegistration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
@@ -392,14 +397,14 @@ model TrainingSession {
 
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
-  TrainingPlanComment TrainingPlanComment[]
+  TrainingSessionComment TrainingSessionComment[]
 }
 
-model TrainingPlanComment {
+model TrainingSessionComment {
   id String @id
 
   sessionId String
-  session   TrainingSession @relation(fields: [trainingSessionId], references: [id])
+  session   TrainingSession @relation(fields: [sessionId], references: [id])
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
@@ -408,5 +413,4 @@ model TrainingPlanComment {
 
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
-  trainingSessionId String
 }
