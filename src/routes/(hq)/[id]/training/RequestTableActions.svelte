@@ -12,11 +12,11 @@
     let data = new URLSearchParams();
     data.set("id", id);
     await fetch("?/cancelRequest", {
-      method: 'POST',
+      method: "POST",
       body: data.toString(),
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-      }
+      },
     });
     deleteOpen = false;
     await invalidateAll();
@@ -30,11 +30,18 @@
     <Dialog.Header>
       <Dialog.Title>Are you sure?</Dialog.Title>
       <Dialog.Description>
-        This will immediately remove your training request. New requests will be moved to the back of the queue.
+        This will immediately remove your training request. New requests will be
+        moved to the back of the queue.
       </Dialog.Description>
     </Dialog.Header>
     <Dialog.Footer>
-      <Button on:click={() => {deleteOpen = false;}} variant="outline">Nevermind</Button>
+      <Button
+        on:click={() => {
+          deleteOpen = false;
+        }}
+        variant="outline">
+        Nevermind
+      </Button>
       <Button on:click={cancel} variant="destructive">Yes, cancel it</Button>
     </Dialog.Footer>
   </Dialog.Content>

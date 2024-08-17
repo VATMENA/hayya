@@ -3,7 +3,12 @@
   import { addItem, addPage, clearItems } from "$lib/breadcrumbs";
   import { page } from "$app/stores";
   import { writable } from "svelte/store";
-  import { createRender, createTable, Render, Subscribe } from "svelte-headless-table";
+  import {
+    createRender,
+    createTable,
+    Render,
+    Subscribe,
+  } from "svelte-headless-table";
   import * as Table from "$lib/components/ui/table";
   import { relativeTime } from "$lib/date";
   import ORActions from "./ORActions.svelte";
@@ -19,8 +24,13 @@
     addPage($page.data.url, "Outstanding Requests");
   }
 
-  function sortArrayByWaitingPeriod(a: (typeof data.requests[0]), b: (typeof data.requests[0])) {
-    return b.registration.createdAt.getTime() - a.registration.createdAt.getTime();
+  function sortArrayByWaitingPeriod(
+    a: (typeof data.requests)[0],
+    b: (typeof data.requests)[0],
+  ) {
+    return (
+      b.registration.createdAt.getTime() - a.registration.createdAt.getTime()
+    );
   }
 
   const store = writable(data.requests.toSorted(sortArrayByWaitingPeriod));
@@ -37,25 +47,25 @@
         return {
           cid: value.registration.user.id,
           name: value.registration.user.name,
-          rating: value.registration.user.ratingShort
-        }
+          rating: value.registration.user.ratingShort,
+        };
       },
       header: "Student",
-      cell: ({value}) => {
-        return `${value.name} - ${value.rating} (${value.cid})`
-      }
+      cell: ({ value }) => {
+        return `${value.name} - ${value.rating} (${value.cid})`;
+      },
     }),
     table.column({
       accessor: (value) => value.registration.createdAt,
       header: "Waiting Since",
-      cell: ({value}) => {
+      cell: ({ value }) => {
         return relativeTime(value, new Date(), "day");
-      }
+      },
     }),
     table.column({
       accessor: "availability",
       header: "Availability",
-      cell: ({value}) => createRender(ORAvailability, { avail: value })
+      cell: ({ value }) => createRender(ORAvailability, { avail: value }),
     }),
     table.column({
       accessor: "notes",
@@ -64,8 +74,9 @@
     table.column({
       accessor: ({ id }) => id,
       header: "Actions",
-      cell: ({value}) => createRender(ORActions, { id: value, data: data.upgradeForm })
-    })
+      cell: ({ value }) =>
+        createRender(ORActions, { id: value, data: data.upgradeForm }),
+    }),
   ]);
   const { headerRows, pageRows, tableAttrs, tableBodyAttrs } =
     table.createViewModel(columns);

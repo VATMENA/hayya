@@ -1,7 +1,7 @@
 export interface Availability {
-  days: DayAvail[]
+  days: DayAvail[];
 }
 export interface DayAvail {
-  start: Date,
-  end: Date
+  start: Date;
+  end: Date;
 }

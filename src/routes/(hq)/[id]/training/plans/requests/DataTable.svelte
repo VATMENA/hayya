@@ -1,11 +1,23 @@
 <script lang="ts">
-  import type { TrainingPlanRegistrationRequest, User, TrainingPlan } from "@prisma/client";
+  import type {
+    TrainingPlanRegistrationRequest,
+    User,
+    TrainingPlan,
+  } from "@prisma/client";
   import { writable } from "svelte/store";
   import * as Table from "$lib/components/ui/table";
-  import { createTable, Subscribe, Render, createRender } from "svelte-headless-table";
+  import {
+    createTable,
+    Subscribe,
+    Render,
+    createRender,
+  } from "svelte-headless-table";
   import DataTableActions from "./DataTableActions.svelte";
 
-  export let data: (TrainingPlanRegistrationRequest & { user: User, plan: TrainingPlan })[];
+  export let data: (TrainingPlanRegistrationRequest & {
+    user: User;
+    plan: TrainingPlan;
+  })[];
 
   let store = writable(data);
   $: $store = data;
@@ -18,19 +30,18 @@
     }),
     table.column({
       accessor: ({ user }) => user.ratingShort,
-      header: "Student Rating"
+      header: "Student Rating",
     }),
     table.column({
       accessor: ({ plan }) => plan.name,
-      header: "Plan"
+      header: "Plan",
     }),
     table.column({
       accessor: ({ id }) => id,
       header: "Actions",
-      cell: ({value}) => createRender(DataTableActions, { id: value })
-    })
+      cell: ({ value }) => createRender(DataTableActions, { id: value }),
+    }),
   ]);
-
 
   const { headerRows, pageRows, tableAttrs, tableBodyAttrs } =
     table.createViewModel(columns);

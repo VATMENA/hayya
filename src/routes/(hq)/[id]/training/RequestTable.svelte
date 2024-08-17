@@ -1,7 +1,12 @@
 <script lang="ts">
   import type { TrainingRequest } from "@prisma/client";
   import { writable } from "svelte/store";
-  import { createRender, createTable, Render, Subscribe } from "svelte-headless-table";
+  import {
+    createRender,
+    createTable,
+    Render,
+    Subscribe,
+  } from "svelte-headless-table";
   import * as Table from "$lib/components/ui/table";
   import RequestTableActions from "./RequestTableActions.svelte";
 
@@ -14,17 +19,17 @@
     table.column({
       accessor: "availability",
       header: "Availability",
-      cell: ({value}) => {
+      cell: ({ value }) => {
         let str = "";
 
         let jd = JSON.parse(value);
 
         for (let day of jd) {
-          str += `${day.date}: ${day.start.hour.toString().padStart(2, '0')}:${day.start.minute.toString().padStart(2, '0')} -> ${day.end.hour.toString().padStart(2, '0')}:${day.end.minute.toString().padStart(2, '0')};`
+          str += `${day.date}: ${day.start.hour.toString().padStart(2, "0")}:${day.start.minute.toString().padStart(2, "0")} -> ${day.end.hour.toString().padStart(2, "0")}:${day.end.minute.toString().padStart(2, "0")};`;
         }
 
         return str;
-      }
+      },
     }),
     table.column({
       accessor: "notes",
@@ -33,8 +38,8 @@
     table.column({
       accessor: ({ id }) => id,
       header: "Actions",
-      cell: ({value}) => createRender(RequestTableActions, { id: value })
-    })
+      cell: ({ value }) => createRender(RequestTableActions, { id: value }),
+    }),
   ]);
 
   const { headerRows, pageRows, tableAttrs, tableBodyAttrs } =
