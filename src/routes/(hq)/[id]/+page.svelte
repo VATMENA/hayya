@@ -4,7 +4,7 @@
   import { page } from "$app/stores";
   import * as Card from "$lib/components/ui/card";
   import * as Table from "$lib/components/ui/table";
-  import type { Certificate } from "@prisma/client";
+  import type { Certificate, User } from "@prisma/client";
   import CertificateBadge from "./CertificateBadge.svelte";
 
   export let data: PageData;
@@ -15,10 +15,12 @@
     addPage($page.data.url, "Dashboard");
   }
 
-  let facilCerts: Record<string, Certificate[]>;
+  type C = Certificate & { instructor: User };
 
-  function calcFcerts(dat: Certificate[]): Record<string, Certificate[]> {
-    let data: Record<string, Certificate[]> = {};
+  let facilCerts: Record<string, C[]>;
+
+  function calcFcerts(dat: C[]): Record<string, C[]> {
+    let data: Record<string, C[]> = {};
 
     for (let c of dat) {
       if (!Object.keys(data).includes(c.issuedInId)) {
