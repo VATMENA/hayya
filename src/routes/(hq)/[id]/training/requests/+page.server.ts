@@ -30,12 +30,12 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
         registration: {
           include: {
             user: true,
-            plan: true
-          }
-        }
-      }
+            plan: true,
+          },
+        },
+      },
     }),
-    upgradeForm: await superValidate(zod(upgradeSchema))
+    upgradeForm: await superValidate(zod(upgradeSchema)),
   };
 };
 
@@ -45,7 +45,7 @@ export const actions: Actions = {
     await prisma.trainingRequest.deleteMany({
       where: {
         id: (await event.request.formData()).get("id")!.toString(),
-      }
+      },
     });
   },
   upgradeRequest: async (event) => {
@@ -70,10 +70,10 @@ export const actions: Actions = {
         registration: {
           include: {
             user: true,
-            plan: true
-          }
-        }
-      }
+            plan: true,
+          },
+        },
+      },
     });
 
     console.log(form.data.requestId);
@@ -87,16 +87,35 @@ export const actions: Actions = {
     let session = await prisma.trainingSession.create({
       data: {
         id: ulid(),
+        facilityId: event.params.id,
         planId: request.registration.plan.id,
         studentId: request.registration.user.id,
         mentorId: user.id,
         name: request.registration.plan.name,
-        scheduledTime: toCalendarDateTime(parseDate(form.data.sessionDate.date), new Time(form.data.sessionDate.time.hour, form.data.sessionDate.time.minute)).toString() + "Z",
+        scheduledTime:
+          toCalendarDateTime(
+            parseDate(form.data.sessionDate.date),
+            new Time(
+              form.data.sessionDate.time.hour,
+              form.data.sessionDate.time.minute,
+            ),
+          ).toString() + "Z",
         status: "Scheduled",
         scoresheetUrl: form.data.scoresheetUrl,
-      }
+      },
     });
 
-    return redirect(307, `/${event.params.id}/training/${session.id}`, { type: 'success', message: 'Session scheduled successfully!' }, event);
-  }
-}
+    await prisma.trainingRequest.delete({
+      where: {
+        id: request.id,
+      },
+    });
+
+    return redirect(
+      307,
+      `/${event.params.id}/training/${session.id}`,
+      { type: "success", message: "Session scheduled successfully!" },
+      event,
+    );
+  },
+};

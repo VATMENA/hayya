@@ -36,6 +36,7 @@ model Facility {
   TrainingPlan                    TrainingPlan[]
   TrainingPlanRegistrationRequest TrainingPlanRegistrationRequest[]
   TrainingRequest                 TrainingRequest[]
+  TrainingSession                 TrainingSession[]
 }
 
 model Role {
@@ -111,7 +112,7 @@ model User {
   studentSessions                 TrainingSession[]                 @relation(name: "student")
   mentorSessions                  TrainingSession[]                 @relation(name: "mentor")
   TrainingPlanRegistrationRequest TrainingPlanRegistrationRequest[]
-  TrainingSessionComment             TrainingSessionComment[]
+  TrainingSessionComment          TrainingSessionComment[]
 }
 
 model AuditLogEntry {
@@ -379,6 +380,9 @@ enum TrainingSessionStatus {
 model TrainingSession {
   id String @id
 
+  facilityId String
+  facility   Facility @relation(fields: [facilityId], references: [id])
+
   planId String
   plan   TrainingPlan @relation(fields: [planId], references: [id])
 
@@ -395,8 +399,8 @@ model TrainingSession {
 
   scoresheetUrl String?
 
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
   TrainingSessionComment TrainingSessionComment[]
 }
 
@@ -411,6 +415,6 @@ model TrainingSessionComment {
 
   content String
 
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

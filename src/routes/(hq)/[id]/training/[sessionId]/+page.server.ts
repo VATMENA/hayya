@@ -9,33 +9,51 @@ import { superValidate } from "sveltekit-superforms/server";
 import { updateDetailsSchema } from "./updateDetailsSchema";
 import { zod } from "sveltekit-superforms/adapters";
 import { fail } from "@sveltejs/kit";
-import { parseDate, parseDateTime, Time, toCalendarDate, toCalendarDateTime } from "@internationalized/date";
+import {
+  parseDate,
+  parseDateTime,
+  Time,
+  toCalendarDate,
+  toCalendarDateTime,
+} from "@internationalized/date";
 
 export const load: PageServerLoad = async ({ params, parent, cookies }) => {
   let { user } = await parent();
 
   let session = await prisma.trainingSession.findUnique({
     where: {
-      id: params.sessionId
+      id: params.sessionId,
     },
     include: {
       mentor: true,
-      student: true
-    }
+      student: true,
+    },
   });
 
   if (!session) {
-    return redirect(307, `/${params.id}/training`, { type: 'error', message: 'You don\'t have permission to view that.' }, cookies);
+    return redirect(
+      307,
+      `/${params.id}/training`,
+      { type: "error", message: "You don't have permission to view that." },
+      cookies,
+    );
   }
 
   let canTrain = can(TRAIN);
   let isUsersSession = user.id == session.studentId;
 
   if (!(canTrain || isUsersSession)) {
-    return redirect(307, `/${params.id}/training`, { type: 'error', message: 'You don\'t have permission to view that.' }, cookies);
+    return redirect(
+      307,
+      `/${params.id}/training`,
+      { type: "error", message: "You don't have permission to view that." },
+      cookies,
+    );
   }
 
-  let dateTime = parseDateTime(session.scheduledTime.toISOString().replace("Z", ""));
+  let dateTime = parseDateTime(
+    session.scheduledTime.toISOString().replace("Z", ""),
+  );
 
   let prepopulatedData = {
     scoresheetUrl: session.scoresheetUrl ? session.scoresheetUrl : undefined,
@@ -44,9 +62,9 @@ export const load: PageServerLoad = async ({ params, parent, cookies }) => {
       date: toCalendarDate(dateTime).toString(),
       time: {
         hour: dateTime.hour,
-        minute: dateTime.minute
-      }
-    }
+        minute: dateTime.minute,
+      },
+    },
   };
 
   console.log(prepopulatedData);
@@ -55,17 +73,17 @@ export const load: PageServerLoad = async ({ params, parent, cookies }) => {
     session,
     comments: await prisma.trainingSessionComment.findMany({
       where: {
-        sessionId: session.id
+        sessionId: session.id,
       },
       include: {
-        user: true
-      }
+        user: true,
+      },
     }),
     canTrain,
     isUsersSession,
-    updateForm: await superValidate(prepopulatedData, zod(updateDetailsSchema))
-  }
-}
+    updateForm: await superValidate(prepopulatedData, zod(updateDetailsSchema)),
+  };
+};
 
 export const actions: Actions = {
   addComment: async (event) => {
@@ -73,23 +91,33 @@ export const actions: Actions = {
 
     let session = await prisma.trainingSession.findUnique({
       where: {
-        id: event.params.sessionId
+        id: event.params.sessionId,
       },
       include: {
         mentor: true,
-        student: true
-      }
+        student: true,
+      },
     });
 
     if (!session) {
-      return redirect(307, `/${event.params.id}/training`, { type: 'error', message: 'You don\'t have permission to view that.' }, event.cookies);
+      return redirect(
+        307,
+        `/${event.params.id}/training`,
+        { type: "error", message: "You don't have permission to view that." },
+        event.cookies,
+      );
     }
 
     let canTrain = can(TRAIN);
     let isUsersSession = user.id == session.studentId;
 
     if (!(canTrain || isUsersSession)) {
-      return redirect(307, `/${event.params.id}/training`, { type: 'error', message: 'You don\'t have permission to view that.' }, event.cookies);
+      return redirect(
+        307,
+        `/${event.params.id}/training`,
+        { type: "error", message: "You don't have permission to view that." },
+        event.cookies,
+      );
     }
 
     await prisma.trainingSessionComment.create({
@@ -97,8 +125,8 @@ export const actions: Actions = {
         id: ulid(),
         sessionId: session.id,
         userId: user.id,
-        content: (await event.request.formData()).get("comment")!.toString()
-      }
+        content: (await event.request.formData()).get("comment")!.toString(),
+      },
     });
   },
   deleteSession: async (event) => {
@@ -106,33 +134,43 @@ export const actions: Actions = {
 
     let session = await prisma.trainingSession.findUnique({
       where: {
-        id: event.params.sessionId
+        id: event.params.sessionId,
       },
       include: {
         mentor: true,
-        student: true
-      }
+        student: true,
+      },
     });
 
     if (!session) {
-      return redirect(307, `/${event.params.id}/training`, { type: 'error', message: 'You don\'t have permission to view that.' }, event.cookies);
+      return redirect(
+        307,
+        `/${event.params.id}/training`,
+        { type: "error", message: "You don't have permission to view that." },
+        event.cookies,
+      );
     }
 
     let canTrain = can(TRAIN);
 
-    if (!(canTrain/* || isUsersSession*/)) {
-      return redirect(307, `/${event.params.id}/training`, { type: 'error', message: 'You don\'t have permission to view that.' }, event.cookies);
+    if (!(canTrain /* || isUsersSession*/)) {
+      return redirect(
+        307,
+        `/${event.params.id}/training`,
+        { type: "error", message: "You don't have permission to view that." },
+        event.cookies,
+      );
     }
 
     await prisma.trainingSessionComment.deleteMany({
       where: {
-        sessionId: session.id
-      }
+        sessionId: session.id,
+      },
     });
     await prisma.trainingSession.delete({
       where: {
-        id: session.id
-      }
+        id: session.id,
+      },
     });
   },
   updateDetails: async (event) => {
@@ -145,35 +183,52 @@ export const actions: Actions = {
 
     let session = await prisma.trainingSession.findUnique({
       where: {
-        id: event.params.sessionId
+        id: event.params.sessionId,
       },
       include: {
         mentor: true,
-        student: true
-      }
+        student: true,
+      },
     });
 
     if (!session) {
-      return redirect(307, `/${event.params.id}/training`, { type: 'error', message: 'You don\'t have permission to view that.' }, event.cookies);
+      return redirect(
+        307,
+        `/${event.params.id}/training`,
+        { type: "error", message: "You don't have permission to view that." },
+        event.cookies,
+      );
     }
 
     let canTrain = can(TRAIN);
 
-    if (!(canTrain/* || isUsersSession*/)) {
-      return redirect(307, `/${event.params.id}/training`, { type: 'error', message: 'You don\'t have permission to view that.' }, event.cookies);
+    if (!(canTrain /* || isUsersSession*/)) {
+      return redirect(
+        307,
+        `/${event.params.id}/training`,
+        { type: "error", message: "You don't have permission to view that." },
+        event.cookies,
+      );
     }
 
     await prisma.trainingSession.update({
       where: {
-        id: session.id
+        id: session.id,
       },
       data: {
-        scheduledTime: toCalendarDateTime(parseDate(form.data.sessionDate.date), new Time(form.data.sessionDate.time.hour, form.data.sessionDate.time.minute)).toString() + "Z",
+        scheduledTime:
+          toCalendarDateTime(
+            parseDate(form.data.sessionDate.date),
+            new Time(
+              form.data.sessionDate.time.hour,
+              form.data.sessionDate.time.minute,
+            ),
+          ).toString() + "Z",
         status: form.data.status,
         scoresheetUrl: form.data.scoresheetUrl,
-      }
+      },
     });
 
     return { form };
-  }
+  },
 };

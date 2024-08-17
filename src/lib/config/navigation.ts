@@ -57,14 +57,14 @@ export const navigation: Navigation = {
         {
           title: "Overview",
           href: "/docs/training/overview",
-          items: []
+          items: [],
         },
         {
           title: "Training Plans",
           href: "/docs/training/training-plans",
-          items: []
-        }
-      ]
+          items: [],
+        },
+      ],
     },
     {
       title: "Misc",

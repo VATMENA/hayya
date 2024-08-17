@@ -1,6 +1,11 @@
 <script lang="ts">
   import * as Alert from "$lib/components/ui/alert";
-  import { InfoIcon, OctagonXIcon, RocketIcon, TriangleAlertIcon } from "lucide-svelte";
+  import {
+    InfoIcon,
+    OctagonXIcon,
+    RocketIcon,
+    TriangleAlertIcon,
+  } from "lucide-svelte";
 
   export let type: "note" | "warning" | "danger" | "tip" = "note";
   export let title: string | undefined = type

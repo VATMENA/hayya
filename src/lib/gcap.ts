@@ -10,9 +10,7 @@ export const TIER_1 = [
   "OMDB_*_DEL",
   "OMDB_*_GND",
   "OMDB_*_TWR",
-  "OMDB_*_APP"
+  "OMDB_*_APP",
 ];
 
-export const TIER_2 = [
-
-];
+export const TIER_2 = [];

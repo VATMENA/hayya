@@ -7,53 +7,54 @@ import { superValidate } from "sveltekit-superforms/server";
 import { requestSchema } from "./requestSchema";
 import { zod } from "sveltekit-superforms/adapters";
 
-export const load: PageServerLoad = async ({parent, params}) => {
+export const load: PageServerLoad = async ({ parent, params }) => {
   let { user } = await parent();
 
   // get the user's training plan registration, if they have one
   let activePlan = await prisma.trainingPlanRegistration.findFirst({
     where: {
-      userId: user.id
+      userId: user.id,
     },
     include: {
       plan: true,
-      requests: true
-    }
+      requests: true,
+    },
   });
   // get the user's training plan registration request, if they have one
-  let activePlanRequest = await prisma.trainingPlanRegistrationRequest.findFirst({
-    where: {
-      userId: user.id
-    },
-    include: {
-      plan: true
-    }
-  });
+  let activePlanRequest =
+    await prisma.trainingPlanRegistrationRequest.findFirst({
+      where: {
+        userId: user.id,
+      },
+      include: {
+        plan: true,
+      },
+    });
 
   return {
     activePlan,
     activePlanRequest,
     plans: await prisma.trainingPlan.findMany({
       where: { facilityId: params.id },
-      include: { TrainingPlanRegistration: true }
+      include: { TrainingPlanRegistration: true },
     }),
     sessions: await prisma.trainingSession.findMany({
       where: { studentId: user.id },
       include: {
         plan: true,
-        mentor: true
-      }
+        mentor: true,
+      },
     }),
     mentorSessions: await prisma.trainingSession.findMany({
-      where: { mentorId:  user.id },
+      where: { mentorId: user.id },
       include: {
         plan: true,
-        student: true
-      }
+        student: true,
+      },
     }),
-    requestForm: await superValidate(zod(requestSchema))
-  }
-}
+    requestForm: await superValidate(zod(requestSchema)),
+  };
+};
 
 export const actions: Actions = {
   enroll: async (event) => {
@@ -61,15 +62,16 @@ export const actions: Actions = {
     // get the user's training plan registration, if they have one
     let activePlan = await prisma.trainingPlanRegistration.findFirst({
       where: {
-        userId: user.id
-      }
+        userId: user.id,
+      },
     });
     // get the user's training plan registration request, if they have one
-    let activePlanRequest = await prisma.trainingPlanRegistrationRequest.findFirst({
-      where: {
-        userId: user.id
-      }
-    });
+    let activePlanRequest =
+      await prisma.trainingPlanRegistrationRequest.findFirst({
+        where: {
+          userId: user.id,
+        },
+      });
     if (activePlan) {
       return fail(400);
     }
@@ -82,16 +84,16 @@ export const actions: Actions = {
         id: ulid(),
         userId: user.id,
         planId: (await event.request.formData()).get("id")!.toString(),
-        facilityId: event.params.id
-      }
+        facilityId: event.params.id,
+      },
     });
   },
   cancelEnrollment: async (event) => {
     let { user } = await loadUserData(event.cookies, event.params.id);
     await prisma.trainingPlanRegistration.deleteMany({
       where: {
-        userId: user.id
-      }
+        userId: user.id,
+      },
     });
   },
   request: async (event) => {
@@ -106,7 +108,7 @@ export const actions: Actions = {
     let planRegs = await prisma.trainingPlanRegistration.findMany({
       where: {
         userId: user.id,
-      }
+      },
     });
 
     if (planRegs.length === 0) {
@@ -121,8 +123,8 @@ export const actions: Actions = {
         registrationId: reg.id,
         availability: JSON.stringify(form.data.availability),
         notes: form.data.notes,
-        facilityId: event.params.id
-      }
+        facilityId: event.params.id,
+      },
     });
 
     return { form };
@@ -132,7 +134,7 @@ export const actions: Actions = {
     await prisma.trainingRequest.deleteMany({
       where: {
         id: (await event.request.formData()).get("id")!.toString(),
-      }
+      },
     });
-  }
-}
+  },
+};
