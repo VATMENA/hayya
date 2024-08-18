@@ -12,6 +12,8 @@ import { ulid } from "ulid";
 import { updateFormSchema } from "./editSchema";
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
+  await loadUserData(cookies, params.id); // This route specifically this isn't running in time and the global isn't being set. I don't know why
+
   if (!can(MANAGE_TRAINING_PLANS)) {
     redirect(
       307,
