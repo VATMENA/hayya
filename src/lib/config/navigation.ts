@@ -60,10 +60,20 @@ export const navigation: Navigation = {
           items: [],
         },
         {
+          title: "Get Training",
+          href: "/docs/training/get-training",
+          items: []
+        },
+        {
           title: "Training Plans",
           href: "/docs/training/training-plans",
           items: [],
         },
+        {
+          title: "Training Requests",
+          href: "/docs/training/training-requests",
+          items: []
+        }
       ],
     },
     {

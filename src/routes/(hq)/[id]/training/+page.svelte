@@ -225,7 +225,6 @@
     </Card.Content>
   </Card.Root>
 
-  {#if data.activePlan}
     <Card.Root class="sm:w-full md:w-[50vw]">
       <Card.Header>
         <Card.Title>Your Sessions</Card.Title>
@@ -287,7 +286,6 @@
         {/if}
       </Card.Content>
     </Card.Root>
-  {/if}
 
   {#if can(MANAGE_TRAINING_PLANS) || can(MANAGE_PLAN_ENROLLMENT_REQUESTS)}
     <Card.Root class="sm:w-full md:w-[50vw]">
