@@ -35,6 +35,6 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
         plan: true,
         mentor: true,
       },
-    })!,
+    })!.toReversed(),
   };
 };

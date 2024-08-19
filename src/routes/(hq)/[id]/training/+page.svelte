@@ -246,7 +246,7 @@
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {#each data.sessions.toReversed() as session}
+                  {#each data.sessions as session}
                     <Table.Row>
                       <Table.Cell>{session.plan.name}</Table.Cell>
                       <Table.Cell>
@@ -353,7 +353,7 @@
                   </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {#each data.mentorSessions.toReversed() as session}
+                  {#each data.mentorSessions as session}
                     <Table.Row>
                       <Table.Cell>{session.plan.name}</Table.Cell>
                       <Table.Cell>
