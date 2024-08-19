@@ -48,7 +48,7 @@
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {#each data.sessions.toReversed() as session}
+        {#each data.sessions as session}
           <Table.Row>
             <Table.Cell>{session.plan.name}</Table.Cell>
             <Table.Cell>{humanReadableDate(session.scheduledTime)}</Table.Cell>

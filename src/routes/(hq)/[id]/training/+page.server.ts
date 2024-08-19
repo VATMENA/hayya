@@ -44,14 +44,14 @@ export const load: PageServerLoad = async ({ parent, params }) => {
         plan: true,
         mentor: true,
       },
-    }),
+    }).toReversed(),
     mentorSessions: await prisma.trainingSession.findMany({
       where: { mentorId: user.id },
       include: {
         plan: true,
         student: true,
       },
-    }),
+    }).toReversed(),
     requestForm: await superValidate(zod(requestSchema)),
   };
 };
