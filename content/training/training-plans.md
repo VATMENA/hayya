@@ -13,10 +13,10 @@ import Steps from "$lib/docs/components/Steps.svelte";
 With the release of the Training V2 system overhaul, Hayya is introducing a new system, the Training Plan system. Training plans intend to be a more consolidated and concise method of showing your facilities training tracks and to allow you to easily register for and begin requesting training along these tracks.
 
 ## Joining Training Plans
-*This section continues the Get Training tutorial. You're on step 1!*
+
+_This section continues the Get Training tutorial. You're on step 1!_
 
 _Join Training Plan (you are here) - [(next) Create Training Request &rarr;](/docs/training/training-requests#create-a-request)_
-
 
 <Callout title="Facility assignment required">
 To join a training plan, you need to be a home or visiting member of a vACC that uses Hayya.
@@ -37,7 +37,7 @@ Under the message telling you that you're not enrolled in a training plan, click
 See a different message?
 
 | Message                                                                   | Meaning                                                                                | Action                                                                                                |
-|---------------------------------------------------------------------------|----------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | You're not currently enrolled in a training plan.                         | You need to join a plan first.                                                         | Continue with these instructions                                                                      |
 | You currently have an outstanding request to join the [ Plan Name ] plan. | Your join was recieved, but a staff member needs to approve it before you're enrolled. | Wait for staff to approve your request, OR click Cancel Request if you want to join a different plan. |
 | You're currently enrolled in the [ Plan Name ] plan.                      | You are already enrolled in a plan.                                                    | Request your training OR click Leave Plan to select a different plan.                                 |
@@ -60,7 +60,7 @@ Check back occasionally (no more than once a day) to wait for a decision on your
 You'll see one of three messages:
 
 | Message                                                                   | Meaning                             | Action                                                                                                                                               |
-|---------------------------------------------------------------------------|-------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------------------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | You currently have an outstanding request to join the [ Plan Name ] plan. | Your request is yet to be reviewed. | Keep waiting and check back often.                                                                                                                   |
 | You're currently enrolled in the [ Plan Name ] plan.                      | Your request was approved.          | Read on to start requesting training!                                                                                                                |
 | You're not currently enrolled in a training plan.                         | Your request was denied.            | You should have recieved some communication from a staff member about the reason for your rejection. Resolve any issues and make a new join request. |
@@ -208,6 +208,6 @@ You will be presented with a table of outstanding join requests. Each entry will
 
 Based on the relevant requirements, make a decision on a user, and select the appropriate action, either Accept or Reject.
 
-*Especially* with rejections, it is highly encouraged you reach out to the user to inform them of your action, as a courtesy, as Hayya itself does not currently notify them when action is taken on their account.
+_Especially_ with rejections, it is highly encouraged you reach out to the user to inform them of your action, as a courtesy, as Hayya itself does not currently notify them when action is taken on their account.
 
 </Steps>

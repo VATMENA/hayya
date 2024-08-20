@@ -39,20 +39,24 @@ export const load: PageServerLoad = async ({ parent, params }) => {
       where: { facilityId: params.id },
       include: { TrainingPlanRegistration: true },
     }),
-    sessions: reversed(await prisma.trainingSession.findMany({
-      where: { studentId: user.id },
-      include: {
-        plan: true,
-        mentor: true,
-      },
-    })),
-    mentorSessions: reversed(await prisma.trainingSession.findMany({
-      where: { mentorId: user.id },
-      include: {
-        plan: true,
-        student: true,
-      },
-    })),
+    sessions: reversed(
+      await prisma.trainingSession.findMany({
+        where: { studentId: user.id },
+        include: {
+          plan: true,
+          mentor: true,
+        },
+      }),
+    ),
+    mentorSessions: reversed(
+      await prisma.trainingSession.findMany({
+        where: { mentorId: user.id },
+        include: {
+          plan: true,
+          student: true,
+        },
+      }),
+    ),
     requestForm: await superValidate(zod(requestSchema)),
   };
 };

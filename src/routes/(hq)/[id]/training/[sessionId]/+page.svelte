@@ -174,7 +174,7 @@
           <div class="h-min">
             <Textarea
               bind:value={comment}
-              class="resize-none h-32"
+              class="h-32 resize-none"
               placeholder="Enter your comment here. You can use Markdown to add links and styles." />
             <Button on:click={addComment} class="mt-2">Add Comment</Button>
           </div>
