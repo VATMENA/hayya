@@ -41,7 +41,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
     }),
     sessions: reversed(
       await prisma.trainingSession.findMany({
-        where: { studentId: user.id },
+        where: { studentId: user.id, facilityId: params.id },
         include: {
           plan: true,
           mentor: true,
@@ -50,7 +50,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
     ),
     mentorSessions: reversed(
       await prisma.trainingSession.findMany({
-        where: { mentorId: user.id },
+        where: { mentorId: user.id, facilityId: params.id },
         include: {
           plan: true,
           student: true,

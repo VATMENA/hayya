@@ -25,6 +25,9 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 
   return {
     plans: await prisma.trainingPlan.findMany({
+      where: {
+        facilityId: params.id
+      },
       include: {
         TrainingPlanRegistration: true,
       },
