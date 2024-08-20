@@ -6,6 +6,7 @@ import { ulid } from "ulid";
 import { superValidate } from "sveltekit-superforms/server";
 import { requestSchema } from "./requestSchema";
 import { zod } from "sveltekit-superforms/adapters";
+import { reversed } from "$lib/autil";
 
 export const load: PageServerLoad = async ({ parent, params }) => {
   let { user } = await parent();
@@ -38,20 +39,20 @@ export const load: PageServerLoad = async ({ parent, params }) => {
       where: { facilityId: params.id },
       include: { TrainingPlanRegistration: true },
     }),
-    sessions: (await prisma.trainingSession.findMany({
+    sessions: reversed(await prisma.trainingSession.findMany({
       where: { studentId: user.id },
       include: {
         plan: true,
         mentor: true,
       },
-    })).toReversed(),
-    mentorSessions: (await prisma.trainingSession.findMany({
+    })),
+    mentorSessions: reversed(await prisma.trainingSession.findMany({
       where: { mentorId: user.id },
       include: {
         plan: true,
         student: true,
       },
-    })).toReversed(),
+    })),
     requestForm: await superValidate(zod(requestSchema)),
   };
 };
