@@ -40,6 +40,8 @@
   import RequestForm from "./RequestForm.svelte";
   import RequestTable from "./RequestTable.svelte";
   import { humanReadableDate } from "$lib/date.js";
+  import { Label } from "$lib/components/ui/label";
+  import { Input } from "$lib/components/ui/input";
 
   export let data: PageData;
 
@@ -108,6 +110,8 @@
   let confirmUnenrollOpen = false;
   let requestOpen = false;
   let showRequestsOpen = false;
+
+  let transcriptCid: string;
 </script>
 
 <div class="flex items-center justify-between">
@@ -334,6 +338,13 @@
                 Enter a user's CID then click the button to view their *whole*
                 transcript, including those sessions conducted in other vACCs.
               </Dialog.Description>
+
+              <div class="flex w-full flex-col gap-1.5">
+                <Label for="email">VATSIM ID</Label>
+                <Input bind:value={transcriptCid} type="number" id="cid" placeholder="1710004" />
+              </div>
+
+              <Button href="/{$page.params.id}/training/transcript/{transcriptCid}/">View</Button>
             </Dialog.Header>
           </Dialog.Content>
         </Dialog.Root>
