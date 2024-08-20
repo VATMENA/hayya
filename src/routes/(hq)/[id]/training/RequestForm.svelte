@@ -44,7 +44,7 @@
   let placeholder: DateValue = today(getLocalTimeZone());
 </script>
 
-<form method="POST" use:enhance action="?/request">
+<form method="POST" use:enhance action="?/request" class="space-y-2">
   <Button
     on:click={() => {
       $formData.availability.push({
