@@ -229,67 +229,67 @@
     </Card.Content>
   </Card.Root>
 
-    <Card.Root class="sm:w-full md:w-[50vw]">
-      <Card.Header>
-        <Card.Title>Your Sessions</Card.Title>
-      </Card.Header>
-      <Card.Content>
-        {#if data.sessions.length === 0}
-          <p>You haven't had any sessions yet.</p>
-        {:else}
-          <ScrollArea class="h-[33vh]">
-            <ScrollArea>
-              <Table.Root>
-                <Table.Header>
+  <Card.Root class="sm:w-full md:w-[50vw]">
+    <Card.Header>
+      <Card.Title>Your Sessions</Card.Title>
+    </Card.Header>
+    <Card.Content>
+      {#if data.sessions.length === 0}
+        <p>You haven't had any sessions yet.</p>
+      {:else}
+        <ScrollArea class="h-[33vh]">
+          <ScrollArea>
+            <Table.Root>
+              <Table.Header>
+                <Table.Row>
+                  <Table.Head>Type</Table.Head>
+                  <Table.Head>Date</Table.Head>
+                  <Table.Head>Status</Table.Head>
+                  <Table.Head>Mentor</Table.Head>
+                  <Table.Head>Actions</Table.Head>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {#each data.sessions as session}
                   <Table.Row>
-                    <Table.Head>Type</Table.Head>
-                    <Table.Head>Date</Table.Head>
-                    <Table.Head>Status</Table.Head>
-                    <Table.Head>Mentor</Table.Head>
-                    <Table.Head>Actions</Table.Head>
+                    <Table.Cell>{session.plan.name}</Table.Cell>
+                    <Table.Cell>
+                      {humanReadableDate(session.scheduledTime)}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {#if session.status === "Scheduled"}
+                        <Badge>
+                          <ClockIcon class="mr-2 h-4 w-4" />
+                          Scheduled
+                        </Badge>
+                      {:else if session.status === "Incomplete"}
+                        <Badge class="bg-yellow-300">
+                          <XIcon class="mr-2 h-4 w-4" />
+                          Incomplete
+                        </Badge>
+                      {:else if session.status === "Complete"}
+                        <Badge class="bg-green-400">
+                          <CheckIcon class="mr-2 h-4 w-4" />
+                          Complete
+                        </Badge>
+                      {/if}
+                    </Table.Cell>
+                    <Table.Cell>{session.mentor.name}</Table.Cell>
+                    <Table.Cell>
+                      <Button href="/{$page.params.id}/training/{session.id}">
+                        <EyeIcon class="mr-2 h-4 w-4" />
+                        View
+                      </Button>
+                    </Table.Cell>
                   </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {#each data.sessions as session}
-                    <Table.Row>
-                      <Table.Cell>{session.plan.name}</Table.Cell>
-                      <Table.Cell>
-                        {humanReadableDate(session.scheduledTime)}
-                      </Table.Cell>
-                      <Table.Cell>
-                        {#if session.status === "Scheduled"}
-                          <Badge>
-                            <ClockIcon class="mr-2 h-4 w-4" />
-                            Scheduled
-                          </Badge>
-                        {:else if session.status === "Incomplete"}
-                          <Badge class="bg-yellow-300">
-                            <XIcon class="mr-2 h-4 w-4" />
-                            Incomplete
-                          </Badge>
-                        {:else if session.status === "Complete"}
-                          <Badge class="bg-green-400">
-                            <CheckIcon class="mr-2 h-4 w-4" />
-                            Complete
-                          </Badge>
-                        {/if}
-                      </Table.Cell>
-                      <Table.Cell>{session.mentor.name}</Table.Cell>
-                      <Table.Cell>
-                        <Button href="/{$page.params.id}/training/{session.id}">
-                          <EyeIcon class="mr-2 h-4 w-4" />
-                          View
-                        </Button>
-                      </Table.Cell>
-                    </Table.Row>
-                  {/each}
-                </Table.Body>
-              </Table.Root>
-            </ScrollArea>
+                {/each}
+              </Table.Body>
+            </Table.Root>
           </ScrollArea>
-        {/if}
-      </Card.Content>
-    </Card.Root>
+        </ScrollArea>
+      {/if}
+    </Card.Content>
+  </Card.Root>
 
   {#if can(MANAGE_TRAINING_PLANS) || can(MANAGE_PLAN_ENROLLMENT_REQUESTS)}
     <Card.Root class="sm:w-full md:w-[50vw]">
@@ -341,10 +341,17 @@
 
               <div class="flex w-full flex-col gap-1.5">
                 <Label for="email">VATSIM ID</Label>
-                <Input bind:value={transcriptCid} type="number" id="cid" placeholder="1710004" />
+                <Input
+                  bind:value={transcriptCid}
+                  type="number"
+                  id="cid"
+                  placeholder="1710004" />
               </div>
 
-              <Button href="/{$page.params.id}/training/transcript/{transcriptCid}/">View</Button>
+              <Button
+                href="/{$page.params.id}/training/transcript/{transcriptCid}/">
+                View
+              </Button>
             </Dialog.Header>
           </Dialog.Content>
         </Dialog.Root>

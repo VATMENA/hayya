@@ -8,7 +8,7 @@ Welcome to VATMENA, and welcome to your vACC of choice! This guide will help you
 
 ## Facility Policy Disclaimer
 
-This guide is a general, technical guide about how to navigate the *typical* process of training in facilities that use Hayya's system.
+This guide is a general, technical guide about how to navigate the _typical_ process of training in facilities that use Hayya's system.
 Facilities may have their own alterations or specific restrictions to this process, and they may not use Hayya's system at all.
 Make sure to read over and fully understand your facilities administrative policies before attempting to request training.
 

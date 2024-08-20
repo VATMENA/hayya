@@ -62,7 +62,7 @@ export const navigation: Navigation = {
         {
           title: "Get Training",
           href: "/docs/training/get-training",
-          items: []
+          items: [],
         },
         {
           title: "Training Plans",
@@ -72,8 +72,8 @@ export const navigation: Navigation = {
         {
           title: "Training Requests",
           href: "/docs/training/training-requests",
-          items: []
-        }
+          items: [],
+        },
       ],
     },
     {
