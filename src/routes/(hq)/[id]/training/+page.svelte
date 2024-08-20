@@ -42,6 +42,7 @@
   import { humanReadableDate } from "$lib/date.js";
   import { Label } from "$lib/components/ui/label";
   import { Input } from "$lib/components/ui/input";
+  import Markdown from "$lib/components/Markdown.svelte";
 
   export let data: PageData;
 
@@ -429,20 +430,20 @@
             <Card.Header>
               <Card.Title>{plan.name}</Card.Title>
               <Card.Description>
-                See {plan.relevantPolicy} for more details.
+                <Markdown src="See {plan.relevantPolicy} for more details." />
               </Card.Description>
             </Card.Header>
             <Card.Content>
               {#each plan.includes as i}
                 <div class="flex flex-row gap-2">
                   <CheckIcon class="text-green-500" />
-                  {i}
+                  <Markdown src={i} />
                 </div>
               {/each}
               {#each plan.excludes as e}
                 <div class="flex flex-row gap-2">
                   <XIcon class="text-red-500" />
-                  {e}
+                  <Markdown src={e} />
                 </div>
               {/each}
 
@@ -458,7 +459,7 @@
                 guarantee of training.
               </p>
 
-              <p class="text-xs text-muted-foreground">{plan.extraDetails}</p>
+              <p class="text-xs text-muted-foreground"><Markdown src={plan.extraDetails} /></p>
 
               <Button
                 on:click={() => {
