@@ -22,7 +22,7 @@
 </script>
 
 <Alert.Root class="mt-4" variant={type}>
-  <svelte:component this={iconMap[type]} class="size-6" weight="bold" />
+  <svelte:component this={iconMap[type]} class="size-6 font-bold" />
 
   {#if title}
     <Alert.Title class="text-lg">

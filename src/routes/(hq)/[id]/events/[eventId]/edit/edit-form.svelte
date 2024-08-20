@@ -170,9 +170,9 @@
     Cancel
   </Button>
 
-  {#if positions != event.positions}
+  {#if positions !== event.positions}
     <div transition:fade class="mt-4 max-w-sm">
-      <Alert.Root variant="destructive">
+      <Alert.Root variant="danger">
         <AlertCircle class="h-4 w-4" />
         <Alert.Title>Unsaved changes!</Alert.Title>
         <Alert.Description>
