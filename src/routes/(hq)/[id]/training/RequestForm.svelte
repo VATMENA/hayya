@@ -102,7 +102,7 @@
           <Form.Field
             {form}
             name="availability[{i}].start.hour"
-            class="flex flex-col">
+            class="flex flex-1 flex-col">
             <Form.Control let:attrs>
               <Form.Label>From</Form.Label>
               <Input
@@ -118,7 +118,7 @@
           <Form.Field
             {form}
             name="availability[{i}].start.minute"
-            class="flex flex-col">
+            class="flex flex-1 flex-col">
             <Form.Control let:attrs>
               <Form.Label>(MM)</Form.Label>
               <Input
@@ -131,7 +131,7 @@
           <Form.Field
             {form}
             name="availability[{i}].end.hour"
-            class="ml-2 flex flex-col">
+            class="ml-2 flex flex-1 flex-col">
             <Form.Control let:attrs>
               <Form.Label>To</Form.Label>
               <Input
@@ -145,7 +145,7 @@
           <Form.Field
             {form}
             name="availability[{i}].end.minute"
-            class="flex flex-col">
+            class="flex flex-1 flex-col">
             <Form.Control let:attrs>
               <Form.Label>(MM)</Form.Label>
               <Input
