@@ -29,12 +29,12 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 
   return {
     student,
-    sessions: await prisma.trainingSession.findMany({
+    sessions: (await prisma.trainingSession.findMany({
       where: { studentId: params.studentId },
       include: {
         plan: true,
         mentor: true,
       },
-    })!.toReversed(),
+    })).toReversed(),
   };
 };
