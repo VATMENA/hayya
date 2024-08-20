@@ -19,8 +19,8 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
     where: { id: params.studentId },
   });
 
-  if (!student) {
-    redirect(
+  if (student === null) {
+    return redirect(
       307,
       `/${params.id}/training`,
       { type: "error", message: "Couldn't find a student by that CID." },
