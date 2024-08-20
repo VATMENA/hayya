@@ -164,7 +164,7 @@
             <PlusIcon class="mr-2 h-4 w-4" />
             Request Training
           </Dialog.Trigger>
-          <Dialog.Content class="sm:w-screen md:w-[50vw]">
+          <Dialog.Content class="min-w-screen md:min-w-[30vw]">
             <Dialog.Title>Request Training</Dialog.Title>
             <RequestForm
               data={data.requestForm}
