@@ -25,8 +25,12 @@
   const table = createTable(store);
   const columns = table.createColumns([
     table.column({
+      accessor: ({ user }) => user.id,
+      header: "Student CID",
+    }),
+    table.column({
       accessor: ({ user }) => user.name,
-      header: "Student",
+      header: "Student Name",
     }),
     table.column({
       accessor: ({ user }) => user.ratingShort,
