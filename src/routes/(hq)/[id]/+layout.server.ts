@@ -3,7 +3,7 @@ import { redirect } from "sveltekit-flash-message/server";
 import prisma from "$lib/prisma";
 import { loadUserData } from "$lib/auth";
 
-export const load: LayoutServerLoad = async ({ params, cookies }) => {
+export const load: LayoutServerLoad = async ({ params, cookies, url }) => {
   const { user, roles } = await loadUserData(cookies, params.id);
 
   const show_popup = [
@@ -39,9 +39,33 @@ export const load: LayoutServerLoad = async ({ params, cookies }) => {
     );
   }
 
+  // check for a user assignment
+  const assignments = await prisma.userFacilityAssignment.findMany({
+    where: {
+      userId: user.id,
+      facilityId: facility.id
+    }
+  });
+
+  // only allow non-members to access the roster
+  if (assignments.length === 0 && !url.pathname.includes("roster")) {
+    redirect(
+      301,
+      "/switch_hq",
+      show_popup
+        ? {
+          type: "error",
+          message: "You don't have permission to access that facility.",
+        }
+        : undefined,
+      cookies,
+    );
+  }
+
   return {
     facility,
     user,
     roles,
+    assignments
   };
 };

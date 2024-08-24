@@ -35,12 +35,12 @@
     training: {
       name: "Training",
       link: `/${$page.data.facility.id}/training`,
-      visible: true,
+      visible: $page.data.assignments.length !== 0,
     },
     events: {
       name: "Events",
       link: `/${$page.data.facility.id}/events`,
-      visible: true,
+      visible: $page.data.assignments.length !== 0,
     },
     roster: {
       name: "Roster",
@@ -50,17 +50,17 @@
     manage: {
       name: "Manage vACC",
       link: `/${$page.data.facility.id}/manage`,
-      visible: can(EDIT_DETAILS),
+      visible: $page.data.assignments.length !== 0 && can(EDIT_DETAILS),
     },
     tv: {
       name: "Transfer & Visiting",
       link: `/${$page.data.facility.id}/tvc`,
-      visible: can(MANAGE_TV_REQUESTS),
+      visible: $page.data.assignments.length !== 0 && can(MANAGE_TV_REQUESTS),
     },
     resources: {
       name: "Resources",
       link: `/${$page.data.facility.id}/resources`,
-      visible: true,
+      visible: $page.data.assignments.length !== 0,
     },
   };
 
