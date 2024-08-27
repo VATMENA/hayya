@@ -93,7 +93,7 @@ export const actions: Actions = {
       },
     });
   },
-  cancelEnrollment: async (event) => {
+  cancelEnroll: async (event) => {
     let { user } = await loadUserData(event.cookies, event.params.id);
     await prisma.trainingPlanRegistration.deleteMany({
       where: {
