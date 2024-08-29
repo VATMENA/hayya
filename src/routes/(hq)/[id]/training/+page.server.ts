@@ -100,6 +100,11 @@ export const actions: Actions = {
         userId: user.id,
       },
     });
+    await prisma.trainingPlanRegistrationRequest.deleteMany({
+      where: {
+        userId: user.id,
+      },
+    });
   },
   request: async (event) => {
     let { user } = await loadUserData(event.cookies, event.params.id);
