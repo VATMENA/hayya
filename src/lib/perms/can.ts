@@ -27,11 +27,14 @@ export function can(permission: Permission): boolean {
     );
   }
 
+  console.log(`[PERMISSION DEBUG]: checking ${JSON.stringify(permission)} for ${_user.id}`);
+
   if (_user.isSiteAdmin) {
     return true;
   }
 
   for (const role of roles) {
+    console.log(role);
     for (const rPermission of role.permissions) {
       if (minimatch(permission.id, rPermission)) {
         return true;
