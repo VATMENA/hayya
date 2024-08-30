@@ -28,8 +28,10 @@ export function can(permission: Permission): boolean {
   }
 
   console.log(`[PERMISSION DEBUG]: checking ${JSON.stringify(permission)} for ${_user.id}`);
-
+  console.log(_user);
+  
   if (_user.isSiteAdmin) {
+    console.log(`[PERMISSION DEBUG]: approved, isSiteAdmin = true`);
     return true;
   }
 
@@ -37,10 +39,12 @@ export function can(permission: Permission): boolean {
     console.log(role);
     for (const rPermission of role.permissions) {
       if (minimatch(permission.id, rPermission)) {
+        console.log(`[PERMISSION DEBUG]: approved, ${rPermission} matches ${permission.id} for ${role.id}`);
         return true;
       }
     }
   }
 
+  console.log(`[PERMISSION DEBUG]: denied, no matcher and not admin`);
   return false;
 }
