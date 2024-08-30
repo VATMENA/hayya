@@ -81,6 +81,11 @@
   }
 
   let confirmCancelOpen = false;
+  let confirmUnenrollOpen = false;
+  let requestOpen = false;
+  let showRequestsOpen = false;
+
+  let transcriptCid: string;
 
   async function cancelEnroll() {
     await fetch("?/cancelEnroll", {
@@ -96,23 +101,19 @@
   }
 
   async function unenroll() {
-    await fetch("?/cancelEnrollment", {
+    await fetch("?/cancelEnroll", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Cookie: document.cookie,
       },
     });
-
+    confirmUnenrollOpen = false;
     await invalidateAll();
     toast.success("You've been unenrolled. Pick a new plan to start training.");
   }
 
-  let confirmUnenrollOpen = false;
-  let requestOpen = false;
-  let showRequestsOpen = false;
-
-  let transcriptCid: string;
+  
 </script>
 
 <div class="flex items-center justify-between">
