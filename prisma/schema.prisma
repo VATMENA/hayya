@@ -37,6 +37,7 @@ model Facility {
   TrainingPlanRegistrationRequest TrainingPlanRegistrationRequest[]
   TrainingRequest                 TrainingRequest[]
   TrainingSession                 TrainingSession[]
+  TrainingPlanRegistration        TrainingPlanRegistration[]
 }
 
 model Role {
@@ -332,7 +333,7 @@ model TrainingPlanRegistrationRequest {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  facilityId String // Literally only exists to make /training/plans/requests easier to implement lol
+  facilityId String
   facility   Facility @relation(fields: [facilityId], references: [id])
 
   createdAt DateTime @default(now())
@@ -347,6 +348,9 @@ model TrainingPlanRegistration {
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
+
+  facilityId String
+  facility   Facility @relation(fields: [facilityId], references: [id])
 
   requests TrainingRequest[]
 

@@ -45,6 +45,7 @@ export const actions: Actions = {
     await prisma.trainingRequest.deleteMany({
       where: {
         id: (await event.request.formData()).get("id")!.toString(),
+        facilityId: event.params.id
       },
     });
   },
@@ -65,6 +66,7 @@ export const actions: Actions = {
     let request = await prisma.trainingRequest.findUnique({
       where: {
         id: form.data.requestId,
+        facilityId: event.params.id
       },
       include: {
         registration: {
@@ -108,6 +110,7 @@ export const actions: Actions = {
     await prisma.trainingRequest.delete({
       where: {
         id: request.id,
+        facilityId: event.params.id
       },
     });
 

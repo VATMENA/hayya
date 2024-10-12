@@ -23,6 +23,7 @@ export const load: PageServerLoad = async ({ params, parent, cookies }) => {
   let session = await prisma.trainingSession.findUnique({
     where: {
       id: params.sessionId,
+      facilityId: params.id
     },
     include: {
       mentor: true,
@@ -91,6 +92,7 @@ export const actions: Actions = {
 
     let session = await prisma.trainingSession.findUnique({
       where: {
+        facilityId: event.params.id,
         id: event.params.sessionId,
       },
       include: {
@@ -134,6 +136,7 @@ export const actions: Actions = {
 
     let session = await prisma.trainingSession.findUnique({
       where: {
+        facilityId: event.params.id,
         id: event.params.sessionId,
       },
       include: {
@@ -183,6 +186,7 @@ export const actions: Actions = {
 
     let session = await prisma.trainingSession.findUnique({
       where: {
+        facilityId: event.params.id,
         id: event.params.sessionId,
       },
       include: {
@@ -213,6 +217,7 @@ export const actions: Actions = {
 
     await prisma.trainingSession.update({
       where: {
+        facilityId: event.params.id,
         id: session.id,
       },
       data: {

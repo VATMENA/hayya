@@ -1,6 +1,6 @@
 {
   "name": "hq",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "scripts": {
     "dev": "concurrently \"pnpm:dev:content\" \"pnpm:dev:svelte\"",
     "dev:content": "contentlayer dev",

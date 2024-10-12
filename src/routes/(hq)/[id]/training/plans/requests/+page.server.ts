@@ -47,6 +47,7 @@ export const actions: Actions = {
     let joinRequest = await prisma.trainingPlanRegistrationRequest.findUnique({
       where: {
         id: id,
+        facilityId: event.params.id
       },
     });
     if (!joinRequest) {
@@ -58,11 +59,13 @@ export const actions: Actions = {
         id: ulid(),
         planId: joinRequest.planId,
         userId: joinRequest.userId,
+        facilityId: event.params.id
       },
     });
     await prisma.trainingPlanRegistrationRequest.deleteMany({
       where: {
         id: id,
+        facilityId: event.params.id
       },
     });
   },
@@ -82,6 +85,7 @@ export const actions: Actions = {
     await prisma.trainingPlanRegistrationRequest.deleteMany({
       where: {
         id: id,
+        facilityId: event.params.id
       },
     });
   },

@@ -15,6 +15,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
   let activePlan = await prisma.trainingPlanRegistration.findFirst({
     where: {
       userId: user.id,
+      facilityId: params.id,
     },
     include: {
       plan: true,
@@ -26,6 +27,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
     await prisma.trainingPlanRegistrationRequest.findFirst({
       where: {
         userId: user.id,
+        facilityId: params.id
       },
       include: {
         plan: true,
@@ -68,6 +70,7 @@ export const actions: Actions = {
     let activePlan = await prisma.trainingPlanRegistration.findFirst({
       where: {
         userId: user.id,
+        facilityId: event.params.id
       },
     });
     // get the user's training plan registration request, if they have one
@@ -75,6 +78,7 @@ export const actions: Actions = {
       await prisma.trainingPlanRegistrationRequest.findFirst({
         where: {
           userId: user.id,
+          facilityId: event.params.id
         },
       });
     if (activePlan) {
@@ -98,11 +102,13 @@ export const actions: Actions = {
     await prisma.trainingPlanRegistration.deleteMany({
       where: {
         userId: user.id,
+        facilityId: event.params.id
       },
     });
     await prisma.trainingPlanRegistrationRequest.deleteMany({
       where: {
         userId: user.id,
+        facilityId: event.params.id
       },
     });
   },
@@ -118,6 +124,7 @@ export const actions: Actions = {
     let planRegs = await prisma.trainingPlanRegistration.findMany({
       where: {
         userId: user.id,
+        facilityId: event.params.id
       },
     });
 
@@ -144,6 +151,7 @@ export const actions: Actions = {
     await prisma.trainingRequest.deleteMany({
       where: {
         id: (await event.request.formData()).get("id")!.toString(),
+        facilityId: event.params.id
       },
     });
   },

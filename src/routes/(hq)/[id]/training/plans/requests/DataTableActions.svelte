@@ -79,7 +79,7 @@
     <Dialog.Footer>
       <Button
         on:click={() => {
-          approveOpen = false;
+          rejectOpen = false;
         }}>
         Nevermind
       </Button>

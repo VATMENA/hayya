@@ -16,8 +16,8 @@
     CogIcon,
     EditIcon,
     LoaderCircle,
-    TrashIcon,
-    XIcon,
+    TrashIcon, UsersIcon,
+    XIcon
   } from "lucide-svelte";
   import PlusIcon from "lucide-svelte/icons/plus";
   import * as Alert from "$lib/components/ui/alert";
@@ -461,6 +461,10 @@
         <Button on:click={update(plan)}>
           <EditIcon class="mr-2 h-4 w-4" />
           Edit
+        </Button>
+        <Button href="/{$page.params.id}/training/plans/{plan.id}/members">
+          <UsersIcon class="mr-2 h-4 w-4" />
+          Members
         </Button>
       </Card.Content>
     </Card.Root>

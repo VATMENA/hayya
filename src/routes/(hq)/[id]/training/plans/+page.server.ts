@@ -79,6 +79,7 @@ export const actions: Actions = {
     await prisma.trainingPlan.update({
       where: {
         id: form.data.id,
+        facilityId: event.params.id
       },
       data: {
         facilityId: event.params.id,

@@ -32,7 +32,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
     student,
     sessions: reversed(
       await prisma.trainingSession.findMany({
-        where: { studentId: params.studentId },
+        where: { studentId: params.studentId, facilityId: params.id },
         include: {
           plan: true,
           mentor: true,
