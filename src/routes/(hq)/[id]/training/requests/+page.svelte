@@ -33,8 +33,14 @@
     );
   }
 
-  const store = writable(data.requests.toSorted(sortArrayByWaitingPeriod));
-  $: $store = data.requests.toSorted(sortArrayByWaitingPeriod);
+  function mToSorted(i: (typeof data.requests)): (typeof data.requests) {
+    const res = [...i];
+    res.sort(sortArrayByWaitingPeriod);
+    return res;
+  }
+
+  const store = writable(mToSorted(data.requests));
+  $: $store = mToSorted(data.requests);
 
   const table = createTable(store);
   const columns = table.createColumns([

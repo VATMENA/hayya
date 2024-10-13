@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ cookies, params }) => {
     redirect(
       307,
       `/${params.id}`,
-      { type: "error", message: "You don't have permission to do that." },
+      { type: "error", message: "You don't have permission to do that. (E-9af2)" },
       cookies,
     );
   }
@@ -42,7 +42,7 @@ export const actions: Actions = {
       redirect(
         307,
         `/${event.params.id}/training`,
-        { type: "error", message: "You don't have permission to do that." },
+        { type: "error", message: "You don't have permission to do that. (E-51f3)" },
         event.cookies,
       );
     }

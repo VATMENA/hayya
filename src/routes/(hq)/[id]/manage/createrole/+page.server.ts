@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
     redirect(
       307,
       `/${params.id}`,
-      { type: "error", message: "You don't have permission for that." },
+      { type: "error", message: "You don't have permission for that. (E-1cb6)" },
       cookies,
     );
   }

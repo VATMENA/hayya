@@ -8,7 +8,7 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
     redirect(
       301,
       "/",
-      { type: "error", message: "You need to be logged in for that" },
+      { type: "error", message: "You need to be logged in for that. (E-9241)" },
       cookies,
     );
   }
@@ -19,7 +19,7 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
     redirect(
       301,
       "/",
-      { type: "error", message: "You need to be logged in for that" },
+      { type: "error", message: "You need to be logged in for that. (E-fe98)" },
       cookies,
     );
   }
@@ -40,7 +40,7 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
     redirect(
       307,
       "/",
-      { type: "error", message: "You need to be logged in for that." },
+      { type: "error", message: "You need to be logged in for that. (E-cc73)" },
       cookies,
     );
   }

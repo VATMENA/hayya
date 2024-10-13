@@ -35,7 +35,7 @@ export const load: PageServerLoad = async ({ params, parent, cookies }) => {
     return redirect(
       307,
       `/${params.id}/training`,
-      { type: "error", message: "You don't have permission to view that." },
+      { type: "error", message: "You don't have permission to view that. (E-8bec)" },
       cookies,
     );
   }
@@ -47,7 +47,7 @@ export const load: PageServerLoad = async ({ params, parent, cookies }) => {
     return redirect(
       307,
       `/${params.id}/training`,
-      { type: "error", message: "You don't have permission to view that." },
+      { type: "error", message: "You don't have permission to view that. (E-5220)" },
       cookies,
     );
   }
@@ -105,7 +105,7 @@ export const actions: Actions = {
       return redirect(
         307,
         `/${event.params.id}/training`,
-        { type: "error", message: "You don't have permission to view that." },
+        { type: "error", message: "You don't have permission to view that. (E-e6fe)" },
         event.cookies,
       );
     }
@@ -117,7 +117,7 @@ export const actions: Actions = {
       return redirect(
         307,
         `/${event.params.id}/training`,
-        { type: "error", message: "You don't have permission to view that." },
+        { type: "error", message: "You don't have permission to view that. (E-a89a)" },
         event.cookies,
       );
     }
@@ -149,7 +149,7 @@ export const actions: Actions = {
       return redirect(
         307,
         `/${event.params.id}/training`,
-        { type: "error", message: "You don't have permission to view that." },
+        { type: "error", message: "You don't have permission to view that. (E-7423)" },
         event.cookies,
       );
     }
@@ -160,7 +160,7 @@ export const actions: Actions = {
       return redirect(
         307,
         `/${event.params.id}/training`,
-        { type: "error", message: "You don't have permission to view that." },
+        { type: "error", message: "You don't have permission to view that. (E-d9ea)" },
         event.cookies,
       );
     }
@@ -199,7 +199,7 @@ export const actions: Actions = {
       return redirect(
         307,
         `/${event.params.id}/training`,
-        { type: "error", message: "You don't have permission to view that." },
+        { type: "error", message: "You don't have permission to view that. (E-c915)" },
         event.cookies,
       );
     }
@@ -210,7 +210,7 @@ export const actions: Actions = {
       return redirect(
         307,
         `/${event.params.id}/training`,
-        { type: "error", message: "You don't have permission to view that." },
+        { type: "error", message: "You don't have permission to view that. (E-0e00)" },
         event.cookies,
       );
     }

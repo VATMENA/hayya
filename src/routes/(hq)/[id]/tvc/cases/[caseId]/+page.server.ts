@@ -35,7 +35,7 @@ export const load: PageServerLoad = async ({ parent, cookies, params }) => {
     return redirect(
       301,
       `/${params.id}`,
-      { type: "error", message: "You don't have permission to view that." },
+      { type: "error", message: "You don't have permission to view that. (E-fc39)" },
       cookies,
     );
   }
@@ -128,7 +128,7 @@ export const actions: Actions = {
       redirect(
         307,
         event.url,
-        { type: "error", message: "You can't comment on a closed case." },
+        { type: "error", message: "You can't comment on a closed case. (E-2e31)" },
         event.cookies,
       );
     }

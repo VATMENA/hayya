@@ -33,7 +33,7 @@ export async function loadUserData(
     redirect(
       307,
       "/",
-      { type: "error", message: "You need to be logged in for that" },
+      { type: "error", message: "You need to be logged in for that. (E-618f)" },
       cookies,
     );
   }
@@ -43,7 +43,7 @@ export async function loadUserData(
     redirect(
       307,
       "/",
-      { type: "error", message: "You need to be logged in for that" },
+      { type: "error", message: "You need to be logged in for that. (E-33cc)" },
       cookies,
     );
   }
@@ -63,7 +63,7 @@ export async function loadUserData(
     redirect(
       307,
       "/",
-      { type: "error", message: "You need to be logged in for that." },
+      { type: "error", message: "You need to be logged in for that. (E-66dc)" },
       cookies,
     );
   }
@@ -72,7 +72,7 @@ export async function loadUserData(
 
   for (const facility of user.facilities) {
     if (facility.facilityId === inFacility) {
-      roles = facility.roles;
+      roles.push(...facility.roles);
       if (facility.assignmentType === "DivisionalStaff") {
         roles.push({
           id: ulid(),

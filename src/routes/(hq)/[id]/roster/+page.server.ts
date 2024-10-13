@@ -173,7 +173,7 @@ export const actions = {
       redirect(
         301,
         "/",
-        { type: "error", message: "You need to be logged in for that" },
+        { type: "error", message: "You need to be logged in for that. (E-9fce)" },
         event,
       );
     }
