@@ -75,6 +75,11 @@ export const TRAIN: Permission = {
     "Allows the user to view outstanding training requests, and accept them into sessions.",
 };
 
+export const VIEW_ALL_SESSIONS: Permission = {
+  id: "training.atd.view_all_sessions",
+  description: "Allows the user to view all sessions within the facility."
+};
+
 export const PERMISSIONS: Permission[] = [
   EDIT_DETAILS,
   EXTENDED_ROSTER,
@@ -92,4 +97,5 @@ export const PERMISSIONS: Permission[] = [
   MANAGE_TRAINING_PLANS,
   MANAGE_PLAN_ENROLLMENT_REQUESTS,
   TRAIN,
+  VIEW_ALL_SESSIONS
 ];

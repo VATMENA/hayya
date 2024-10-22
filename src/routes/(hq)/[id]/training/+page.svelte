@@ -13,7 +13,7 @@
   import {
     MANAGE_PLAN_ENROLLMENT_REQUESTS,
     MANAGE_TRAINING_PLANS,
-    TRAIN,
+    TRAIN, VIEW_ALL_SESSIONS
   } from "$lib/perms/permissions";
   import {
     CheckCircleIcon,
@@ -410,6 +410,73 @@
               </Table.Root>
             </ScrollArea>
           </ScrollArea>
+        {/if}
+      </Card.Content>
+    </Card.Root>
+  {/if}
+  {#if can(VIEW_ALL_SESSIONS)}
+    <Card.Root class="sm:w-full md:w-[50vw]">
+      <Card.Header>
+        <Card.Title>ATD</Card.Title>
+      </Card.Header>
+      <Card.Content>
+        {#if data.atdAllSessions !== null}
+          {#if data.atdAllSessions.length === 0}
+            <p>There have been no sessions in this vACC.</p>
+          {:else}
+            <ScrollArea class="h-[33vh]">
+              <ScrollArea>
+                <Table.Root>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.Head>Type</Table.Head>
+                      <Table.Head>Date</Table.Head>
+                      <Table.Head>Status</Table.Head>
+                      <Table.Head>Student</Table.Head>
+                      <Table.Head>Mentor</Table.Head>
+                      <Table.Head>Actions</Table.Head>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {#each data.atdAllSessions as session}
+                      <Table.Row>
+                        <Table.Cell>{session.plan.name}</Table.Cell>
+                        <Table.Cell>
+                          {humanReadableDate(session.scheduledTime)}
+                        </Table.Cell>
+                        <Table.Cell>
+                          {#if session.status === "Scheduled"}
+                            <Badge>
+                              <ClockIcon class="mr-2 h-4 w-4" />
+                              Scheduled
+                            </Badge>
+                          {:else if session.status === "Incomplete"}
+                            <Badge class="bg-yellow-300">
+                              <XIcon class="mr-2 h-4 w-4" />
+                              Incomplete
+                            </Badge>
+                          {:else if session.status === "Complete"}
+                            <Badge class="bg-green-400">
+                              <CheckIcon class="mr-2 h-4 w-4" />
+                              Complete
+                            </Badge>
+                          {/if}
+                        </Table.Cell>
+                        <Table.Cell>{session.student.name}</Table.Cell>
+                        <Table.Cell>{session.mentor.name}</Table.Cell>
+                        <Table.Cell>
+                          <Button href="/{$page.params.id}/training/{session.id}">
+                            <EyeIcon class="mr-2 h-4 w-4" />
+                            View/Modify
+                          </Button>
+                        </Table.Cell>
+                      </Table.Row>
+                    {/each}
+                  </Table.Body>
+                </Table.Root>
+              </ScrollArea>
+            </ScrollArea>
+          {/if}
         {/if}
       </Card.Content>
     </Card.Root>

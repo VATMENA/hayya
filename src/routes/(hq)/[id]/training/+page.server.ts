@@ -7,6 +7,8 @@ import { superValidate } from "sveltekit-superforms/server";
 import { requestSchema } from "./requestSchema";
 import { zod } from "sveltekit-superforms/adapters";
 import { reversed } from "$lib/autil";
+import { VIEW_ALL_SESSIONS } from "$lib/perms/permissions";
+import { can } from "$lib/perms/can";
 
 export const load: PageServerLoad = async ({ parent, params }) => {
   let { user } = await parent();
@@ -59,6 +61,14 @@ export const load: PageServerLoad = async ({ parent, params }) => {
         },
       }),
     ),
+    atdAllSessions: can(VIEW_ALL_SESSIONS) ? reversed(await prisma.trainingSession.findMany({
+      where: { facilityId: params.id },
+      include: {
+        plan: true,
+        student: true,
+        mentor: true
+      }
+    })) : null,
     requestForm: await superValidate(zod(requestSchema)),
   };
 };
