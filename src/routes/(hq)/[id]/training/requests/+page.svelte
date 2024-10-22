@@ -36,6 +36,7 @@
   function mToSorted(i: (typeof data.requests)): (typeof data.requests) {
     const res = [...i];
     res.sort(sortArrayByWaitingPeriod);
+    res.reverse();
     return res;
   }
 
