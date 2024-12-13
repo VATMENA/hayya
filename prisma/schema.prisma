@@ -307,6 +307,8 @@ model TrainingPlan {
   facility   Facility @relation(fields: [facilityId], references: [id])
   facilityId String
 
+  order Int @default(0)
+
   name     String
   includes String[]
   excludes String[]

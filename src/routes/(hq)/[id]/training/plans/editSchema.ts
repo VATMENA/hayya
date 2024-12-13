@@ -9,6 +9,7 @@ export const updateFormSchema = z.object({
   estimatedTime: z.string(),
   extraDetails: z.string(),
   hasAdjacentRestriction: z.boolean(),
+  order: z.coerce.number()
 });
 
 export type UpdateFormSchema = typeof updateFormSchema;

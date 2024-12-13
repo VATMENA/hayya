@@ -25,6 +25,11 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 
   return {
     plans: await prisma.trainingPlan.findMany({
+      orderBy: [
+        {
+          order: 'asc'
+        }
+      ],
       where: {
         facilityId: params.id
       },
@@ -60,6 +65,7 @@ export const actions: Actions = {
         relevantPolicy: form.data.policy,
         hasAdjacentRestrictions: form.data.hasAdjacentRestriction,
         extraDetails: form.data.extraDetails,
+        order: form.data.order
       },
     });
 
@@ -90,9 +96,10 @@ export const actions: Actions = {
         relevantPolicy: form.data.policy,
         hasAdjacentRestrictions: form.data.hasAdjacentRestriction,
         extraDetails: form.data.extraDetails,
+        order: form.data.order
       },
     });
 
     return { form };
-  },
+  }
 };

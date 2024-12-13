@@ -40,6 +40,11 @@ export const load: PageServerLoad = async ({ parent, params }) => {
     activePlan,
     activePlanRequest,
     plans: await prisma.trainingPlan.findMany({
+      orderBy: [
+        {
+          order: 'asc'
+        }
+      ],
       where: { facilityId: params.id },
       include: { TrainingPlanRegistration: true },
     }),

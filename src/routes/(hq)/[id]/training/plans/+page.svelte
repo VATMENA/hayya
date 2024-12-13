@@ -96,6 +96,7 @@
       formData.policy = plan.relevantPolicy;
       formData.hasAdjacentRestriction = plan.hasAdjacentRestrictions;
       formData.extraDetails = plan.extraDetails;
+      formData.order = plan.order;
 
       updateFormData.set(formData);
       updateDialogOpen = true;
@@ -238,6 +239,16 @@
             includeInput
             {...attrs}
             bind:checked={$updateFormData.hasAdjacentRestriction} />
+        </Form.Control>
+      </Form.Field>
+
+      <Form.Field form={updateForm} name="order">
+        <Form.Control let:attrs>
+          <Form.Label>Ordering (lower #s come first)</Form.Label>
+          <Input
+            {...attrs}
+            bind:value={$updateFormData.order}
+            placeholder="0" />
         </Form.Control>
       </Form.Field>
 
@@ -393,6 +404,16 @@
               includeInput
               {...attrs}
               bind:checked={$createFormData.hasAdjacentRestriction} />
+          </Form.Control>
+        </Form.Field>
+
+        <Form.Field form={updateForm} name="order">
+          <Form.Control let:attrs>
+            <Form.Label>Ordering (lower #s come first)</Form.Label>
+            <Input
+              {...attrs}
+              bind:value={$createFormData.order}
+              placeholder="0" />
           </Form.Control>
         </Form.Field>
 
