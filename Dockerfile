@@ -1,4 +1,6 @@
-FROM node:18-alpine AS base
+FROM node AS base
+
+RUN apt install libssl1.1 libssl3
 
 WORKDIR /app
 
@@ -8,7 +10,6 @@ FROM base AS install
 COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma/
 
-RUN apt install libssl1.1 libssl3
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
 RUN pnpm prisma generate
 
