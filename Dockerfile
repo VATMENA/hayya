@@ -1,7 +1,5 @@
 FROM node AS base
 
-RUN apt install libssl1.1 libssl3
-
 WORKDIR /app
 
 ## Install dependencies ##
