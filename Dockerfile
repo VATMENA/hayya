@@ -8,6 +8,7 @@ FROM base AS install
 COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma/
 
+RUN apt install libssl1.1 libssl3
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
 RUN pnpm prisma generate
 
@@ -38,6 +39,5 @@ COPY --from=install /app/node_modules node_modules
 COPY --from=install /app/package.json package.json
 COPY --from=builder /app/build ./build
 EXPOSE 3000/tcp
-CMD bun ./build/index.js
 
 ENTRYPOINT [ "node", "build/index.js" ]
