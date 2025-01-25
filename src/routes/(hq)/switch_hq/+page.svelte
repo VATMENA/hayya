@@ -211,6 +211,9 @@
             Site Administration
           </a>
         {/if}
+        <a class="underline-offset-4 hover:underline" href="/logout">
+          Log out
+        </a>
       </div>
     </Card.Footer>
   </Card.Root>
