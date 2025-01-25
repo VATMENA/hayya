@@ -8,6 +8,7 @@ import { VATSIM_OAUTH_CLIENT_SECRET } from "$env/static/private";
 import prisma from "$lib/prisma";
 import { makeToken } from "$lib/auth";
 import { redirect } from "sveltekit-flash-message/server";
+import { ulid } from "ulid";
 
 export const load: PageServerLoad = async ({ url, cookies }) => {
   if (!url.searchParams.get("code")) {
@@ -91,6 +92,37 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
       division: user_details.vatsim.division.id,
     },
   });
+
+  if (user_details.vatsim.subdivision && user_details.vatsim.subdivision.id && user_details.region.id == 'EMEA' && user_details.division.id == 'MENA') {
+    let assignmentsToTheirFacility = await prisma.userFacilityAssignment.findMany({
+      where: {
+        userId: user_details.cid,
+        facilityId: user_details.vatsim.subdivision.id
+      }
+    });
+    for (let assignment of assignmentsToTheirFacility) {
+      if (assignment.assignmentType != 'Primary') {
+        await prisma.userFacilityAssignment.update({
+          where: {
+            id: assignment.id
+          },
+          data: {
+            assignmentType: 'Primary'
+          }
+        });
+      }
+    }
+    if (assignmentsToTheirFacility.length == 0) {
+      await prisma.userFacilityAssignment.create({
+        data: {
+          id: ulid(),
+          userId: user_details.cid,
+          facilityId: user_details.vatsim.subdivision.id,
+          assignmentType: 'Primary'
+        }
+      });
+    }
+  }
 
   const token = makeToken(user_details.cid);
 
