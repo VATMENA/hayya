@@ -82,7 +82,6 @@
                 <Popover.Content class="w-auto p-0" side="top">
                   <Calendar
                     value={parseDate($formData.sessionDate.date)}
-                    minValue={today(getLocalTimeZone())}
                     calendarLabel="Date of birth"
                     initialFocus
                     onValueChange={(v) => {
