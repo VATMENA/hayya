@@ -94,6 +94,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
   });
 
   if (user_details.vatsim.subdivision && user_details.vatsim.subdivision.id && user_details.region.id == 'EMEA' && user_details.division.id == 'MENA') {
+    try {
     let assignmentsToTheirFacility = await prisma.userFacilityAssignment.findMany({
       where: {
         userId: user_details.cid,
@@ -122,6 +123,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
         }
       });
     }
+    } catch (e) {} // VATSIM api weirdness
   }
 
   const token = makeToken(user_details.cid);
