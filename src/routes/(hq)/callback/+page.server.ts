@@ -93,7 +93,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
     },
   });
 
-  if (user_details.vatsim.subdivision && user_details.vatsim.subdivision.id && user_details.region.id == 'EMEA' && user_details.division.id == 'MENA') {
+  if (user_details.vatsim.subdivision !== undefined && user_details.vatsim.subdivision.id !== undefined && user_details.region.id == 'EMEA' && user_details.division.id == 'MENA') {
     try {
     let assignmentsToTheirFacility = await prisma.userFacilityAssignment.findMany({
       where: {
