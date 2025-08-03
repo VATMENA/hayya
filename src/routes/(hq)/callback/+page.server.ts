@@ -93,36 +93,40 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
     },
   });
 
-  if (user_details.vatsim.subdivision && user_details.vatsim.subdivision.id && user_details.region.id == 'EMEA' && user_details.division.id == 'MENA') {
-    let assignmentsToTheirFacility = await prisma.userFacilityAssignment.findMany({
-      where: {
-        userId: user_details.cid,
-        facilityId: user_details.vatsim.subdivision.id
+  try {
+  if (user_details.vatsim.subdivision !== undefined && user_details.vatsim.subdivision.id !== undefined && user_details.region.id == 'EMEA' && user_details.division.id == 'MENA') {
+    
+      let assignmentsToTheirFacility = await prisma.userFacilityAssignment.findMany({
+        where: {
+          userId: user_details.cid,
+          facilityId: user_details.vatsim.subdivision.id
+        }
+      });
+      for (let assignment of assignmentsToTheirFacility) {
+        if (assignment.assignmentType != 'Primary') {
+          await prisma.userFacilityAssignment.update({
+            where: {
+              id: assignment.id
+            },
+            data: {
+              assignmentType: 'Primary'
+            }
+          });
+        }
       }
-    });
-    for (let assignment of assignmentsToTheirFacility) {
-      if (assignment.assignmentType != 'Primary') {
-        await prisma.userFacilityAssignment.update({
-          where: {
-            id: assignment.id
-          },
+      if (assignmentsToTheirFacility.length == 0) {
+        await prisma.userFacilityAssignment.create({
           data: {
+            id: ulid(),
+            userId: user_details.cid,
+            facilityId: user_details.vatsim.subdivision.id,
             assignmentType: 'Primary'
           }
         });
       }
-    }
-    if (assignmentsToTheirFacility.length == 0) {
-      await prisma.userFacilityAssignment.create({
-        data: {
-          id: ulid(),
-          userId: user_details.cid,
-          facilityId: user_details.vatsim.subdivision.id,
-          assignmentType: 'Primary'
-        }
-      });
-    }
+    
   }
+    } catch (e) {} // VATSIM api weirdness
 
   const token = makeToken(user_details.cid);
 
