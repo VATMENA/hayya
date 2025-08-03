@@ -1,5 +1,5 @@
 FROM node:24-alpine AS base
-
+RUN apk add --no-cache openssl
 WORKDIR /app
 
 ## Install dependencies ##
